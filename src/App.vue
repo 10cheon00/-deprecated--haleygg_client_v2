@@ -22,7 +22,7 @@ export default defineComponent({
     AppNavBar,
   },
   setup(){
-
+    
   }
 });
 </script>
