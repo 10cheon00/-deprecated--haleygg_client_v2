@@ -49,4 +49,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.p-menubar{
+  border-radius: 0px;
+}
 </style>
