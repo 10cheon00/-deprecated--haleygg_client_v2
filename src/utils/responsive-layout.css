@@ -1,0 +1,29 @@
+:root{
+  /* 
+  sm: 576<=
+  md: 768<=
+  lg: 992<=
+  xl: 1200<=
+  */
+  --responsive-sm: 576px;
+  --responsive-md: 768px;
+  --responsive-lg: 992px;
+  --responsive-xl: 1200px;
+}
+
+.layout {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.content {
+  width: auto;
+}
+
+@media (min-width: 1200px){
+  .content{
+    width: var(--responsive-xl);
+  }
+}
+
