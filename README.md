@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # haleygg-client
+=======
+# client
+>>>>>>> b111f4c1401e1429d25ab6018b485429734b847c
 
 ## Project setup
 ```
