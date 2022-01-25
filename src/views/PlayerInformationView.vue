@@ -9,33 +9,52 @@
     <div class="grid grid-nogutter">
       <!-- Statistics -->
       <div class="col-12 md:col-4 p-3">
-        <StatBoard
-          header="Statistics" 
-          :itemList="playerInformation.statistics"
-          stripeColor="protoss"
-        />
+        <StripePanel header="Statistics" :stripeColor="race">
+          <div
+            v-for="(item, index) in playerInformation.statistics"
+            :key="index"
+            id="content-item" 
+            class="flex justify-content-between p-2"
+          >
+            <span>{{ item.label }}</span>
+            <span>{{ item.value }}</span>
+          </div>
+        </StripePanel>
         
       </div>
 
       <!-- Elo chart -->
       <div class="col-12 md:col-8 p-3 ">
-        ChartChartChartChartChartChartChartChartChartChart
-        ChartChartChartChartChartChartChartChartChartChart
-        ChartChartChartChartChartChartChartChartChartChart
-        ChartChartChartChartChartChartChartChartChartChart
-        ChartChartChartChartChartChartChartChartChartChart
-        ChartChartChartChartChartChartChartChartChartChart
-        ChartChartChartChartChartChartChartChartChartChart
+        <StripePanel header="Elo Chart" :stripeColor="race">
+          ChartChartChartChartChartChartChartChartChartChart
+          ChartChartChartChartChartChartChartChartChartChart
+          ChartChartChartChartChartChartChartChartChartChart
+          ChartChartChartChartChartChartChartChartChartChart
+          ChartChartChartChartChartChartChartChartChartChart
+          ChartChartChartChartChartChartChartChartChartChart
+          ChartChartChartChartChartChartChartChartChartChart
+        </StripePanel>
       </div>
-      <!-- List of Matches -->
-      
+    </div>
+
+
+    <!-- List of Matches -->
+    <div class="col-12 p-3">
+      <StripePanel header="Recent Matches" :stripeColor="race">
+      </StripePanel>
+      <MatchResultList 
+        class="mt-3"
+        :matchResultList="matchResultList" 
+        resultListOwnerName="asdf" 
+      />
     </div>
   </div>
 </template>
 <script>
 import { defineComponent } from "vue";
 
-import StatBoard from "@/components/StatBoardComponent.vue";
+import MatchResultList from "@/components/MatchResultList.vue";
+import StripePanel from "@/components/StripePanel.vue";
 
 export default defineComponent({
   props: {
@@ -45,7 +64,8 @@ export default defineComponent({
     },
   },
   components: {
-    StatBoard
+    MatchResultList,
+    StripePanel
   },
   setup() {
     const playerInformation = {
@@ -64,14 +84,273 @@ export default defineComponent({
     }
     applySyntaxToStatistics();
 
+    const matchResultList = [
+      {
+        "league": "dasf",
+        "date": "2022-01-24",
+        "title": "41341",
+        "map": "투혼",
+        "winners": [
+          {
+            "name": "asdf",
+            "race": "T"
+          }
+        ],
+        "losers": [
+          {
+            "name": "fasdfdf",
+            "race": "Z"
+          }
+        ],
+        "miscellaneous": ""
+      },{
+        "league": "dasf",
+        "date": "2022-01-24",
+        "title": "41341",
+        "map": "투혼",
+        "winners": [
+          {
+            "name": "asdf",
+            "race": "T"
+          }
+        ],
+        "losers": [
+          {
+            "name": "fasdfdf",
+            "race": "Z"
+          }
+        ],
+        "miscellaneous": ""
+      },
+      {
+        "league": "das31f",
+        "date": "2022-12-24",
+        "title": "41341314",
+        "map": "헌트리스",
+        "winners": [
+          {
+            "name": "r13r1r",
+            "race": "P"
+          },
+          {
+            "name": "zzz--33f",
+            "race": "T"
+          }
+        ],
+        "losers": [
+          {
+            "name": "fasdfdf",
+            "race": "Z"
+          },
+          {
+            "name": "asdf",
+            "race": "T"
+          }
+        ],
+        "miscellaneous": "기권패"
+      },
+      {
+        "league": "das31f",
+        "date": "2022-12-24",
+        "title": "41341314",
+        "map": "헌트리스",
+        "winners": [
+          {
+            "name": "r13r1r",
+            "race": "P"
+          },
+          {
+            "name": "zzz--33f",
+            "race": "T"
+          }
+        ],
+        "losers": [
+          {
+            "name": "fasdfdf",
+            "race": "Z"
+          },
+          {
+            "name": "asdf",
+            "race": "T"
+          }
+        ],
+        "miscellaneous": "기권패"
+      },
+      {
+        "league": "das31f",
+        "date": "2022-12-24",
+        "title": "41341314",
+        "map": "헌트리스",
+        "winners": [
+          {
+            "name": "r13r1r",
+            "race": "P"
+          },
+          {
+            "name": "zzz--33f",
+            "race": "T"
+          }
+        ],
+        "losers": [
+          {
+            "name": "fasdfdf",
+            "race": "Z"
+          },
+          {
+            "name": "asdf",
+            "race": "T"
+          }
+        ],
+        "miscellaneous": "기권패"
+      },{
+        "league": "dasf",
+        "date": "2022-01-24",
+        "title": "41341",
+        "map": "투혼",
+        "winners": [
+          {
+            "name": "asdf",
+            "race": "T"
+          }
+        ],
+        "losers": [
+          {
+            "name": "fasdfdf",
+            "race": "Z"
+          }
+        ],
+        "miscellaneous": ""
+      },{
+        "league": "dasf",
+        "date": "2022-01-24",
+        "title": "41341",
+        "map": "투혼",
+        "winners": [
+          {
+            "name": "asdf",
+            "race": "T"
+          }
+        ],
+        "losers": [
+          {
+            "name": "fasdfdf",
+            "race": "Z"
+          }
+        ],
+        "miscellaneous": ""
+      },{
+        "league": "dasf",
+        "date": "2022-01-24",
+        "title": "41341",
+        "map": "투혼",
+        "winners": [
+          {
+            "name": "asdf",
+            "race": "T"
+          }
+        ],
+        "losers": [
+          {
+            "name": "fasdfdf",
+            "race": "Z"
+          }
+        ],
+        "miscellaneous": ""
+      },{
+        "league": "dasf",
+        "date": "2022-01-24",
+        "title": "41341",
+        "map": "투혼",
+        "winners": [
+          {
+            "name": "asdf",
+            "race": "T"
+          }
+        ],
+        "losers": [
+          {
+            "name": "fasdfdf",
+            "race": "Z"
+          }
+        ],
+        "miscellaneous": ""
+      },
+      {
+        "league": "das31f",
+        "date": "2022-12-24",
+        "title": "41341314",
+        "map": "헌트리스",
+        "winners": [
+          {
+            "name": "r13r1r",
+            "race": "P"
+          },
+          {
+            "name": "zzz--33f",
+            "race": "T"
+          }
+        ],
+        "losers": [
+          {
+            "name": "fasdfdf",
+            "race": "Z"
+          },
+          {
+            "name": "asdf",
+            "race": "T"
+          }
+        ],
+        "miscellaneous": "기권패"
+      },
+      {
+        "league": "das31f",
+        "date": "2022-12-24",
+        "title": "41341314",
+        "map": "헌트리스",
+        "winners": [
+          {
+            "name": "r13r1r",
+            "race": "P"
+          },
+          {
+            "name": "zzz--33f",
+            "race": "T"
+          }
+        ],
+        "losers": [
+          {
+            "name": "fasdfdf",
+            "race": "Z"
+          },
+          {
+            "name": "asdf",
+            "race": "T"
+          }
+        ],
+        "miscellaneous": "기권패"
+      },
+    ]
+    
+    const race = "protoss"
+
     return {
-      playerInformation
+      matchResultList,
+      playerInformation,
+      race
     }
   },
 });
 </script>
 
 <style scoped>
+
+#content-item {
+  border-bottom: solid 1px #dee2e6;
+}
+
+#content-item:last-child{
+  border-bottom: none;
+}
 
 #profile {
   width: auto;

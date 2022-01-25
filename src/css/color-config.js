@@ -14,6 +14,16 @@ const colorConfig = {
   terran: '#1d73dd',
   zerg: '#7424ae',
 };
+
+const getColor = (key) => {
+  const color = colorConfig[key];
+  if(color === undefined){
+    return colorConfig.primary;
+  }
+  return color;
+};
+
 export { 
-  colorConfig 
+  colorConfig,
+  getColor
 }
