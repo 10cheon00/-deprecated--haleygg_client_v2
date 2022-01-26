@@ -1,30 +1,40 @@
 <template>
   <div id="view">
     <!-- Profile -->
-    <div id="profile" class="flex justify-content-between align-items-center text-white">
-      <div class="pl-8 text-4xl font-bold">{{ playerName }}</div>
-      <small class="pr-8">signup date : 2022-01-12</small>
+    <div id="profile" class="p-8">
+      <div id="player-name" class="text-4xl font-bold">{{ playerName }} </div>
+      <small id="signup-date" class="text-sm">2022-01-12 가입</small>
     </div>
 
     <div class="grid grid-nogutter">
-      <!-- Statistics -->
-      <div class="col-12 md:col-4 p-3">
-        <StripePanel header="Statistics" :stripeColor="race">
-          <div
-            v-for="(item, index) in playerInformation.statistics"
-            :key="index"
-            id="content-item" 
-            class="flex justify-content-between p-2"
-          >
-            <span>{{ item.label }}</span>
-            <span>{{ item.value }}</span>
-          </div>
-        </StripePanel>
-        
+      <div class="col-12 md:col-4 grid grid-nogutter">
+        <!-- Career -->
+        <div class="col-12 p-3">
+          <StripePanel header="Career" :stripeColor="race">
+            <div class="p-3">
+              아직 힘을 숨기고 있습니다...
+            </div>
+          </StripePanel>
+        </div>
+
+        <!-- Statistics -->
+        <div class="col-12 p-3">
+          <StripePanel header="Statistics" :stripeColor="race">
+            <div
+              v-for="(item, index) in playerInformation.statistics"
+              :key="index"
+              id="content-item" 
+              class="flex justify-content-between p-2"
+            >
+              <span>{{ item.label }}</span>
+              <span>{{ item.value }}</span>
+            </div>
+          </StripePanel>        
+        </div>
       </div>
 
       <!-- Elo chart -->
-      <div class="col-12 md:col-8 p-3 ">
+      <div class="col-12 md:col-8 p-3">
         <StripePanel header="Elo Chart" :stripeColor="race">
           ChartChartChartChartChartChartChartChartChartChart
           ChartChartChartChartChartChartChartChartChartChart
@@ -39,34 +49,43 @@
 
 
     <!-- List of Matches -->
-    <div class="col-12 p-3">
-      <StripePanel header="Recent Matches" :stripeColor="race">
+    <div id="match-result-list" class="col-12 p-3">
+      <StripePanel header="Recent Matches" :stripeColor="race" class="pb-1">
+        <template #header-right>
+          <CheckBox name="밀리 전적" v-model="isMeleeMatchResultShown" :binary="true"/>
+          <label class="ml-1 mr-3">밀리</label>
+          <CheckBox name="팀플 전적" v-model="isTopAndBottomMatchResultShown" :binary="true"/>
+          <label class="ml-1">팀플</label>
+        </template>
       </StripePanel>
+
       <MatchResultList 
-        class="mt-3"
         :matchResultList="matchResultList" 
-        resultListOwnerName="asdf" 
+        resultListOwnerName="zzz--33f" 
       />
     </div>
   </div>
 </template>
 <script>
-import { defineComponent } from "vue";
+import { defineComponent, ref, computed } from "vue";
+import CheckBox from "primevue/checkbox";
 
 import MatchResultList from "@/components/MatchResultList.vue";
 import StripePanel from "@/components/StripePanel.vue";
 
 export default defineComponent({
+  components: {
+    CheckBox,
+    MatchResultList,
+    StripePanel,
+  },
   props: {
     playerName: {
       required: true,
       type: String,
     },
   },
-  components: {
-    MatchResultList,
-    StripePanel
-  },
+
   setup() {
     const playerInformation = {
       statistics: [
@@ -84,7 +103,7 @@ export default defineComponent({
     }
     applySyntaxToStatistics();
 
-    const matchResultList = [
+    const rawMatchResultList = [
       {
         "league": "dasf",
         "date": "2022-01-24",
@@ -330,10 +349,29 @@ export default defineComponent({
         "miscellaneous": "기권패"
       },
     ]
+
+    const isMeleeMatchResultShown = ref(true);
+    const isTopAndBottomMatchResultShown = ref(true);
+
+    const matchResultList = computed(() => {
+      return rawMatchResultList.filter(matchResult => {
+        const matchType = (matchResult.winners.length > 1)?'topAndBottom':'melee';
+        console.log(3)
+        if(matchType == 'topAndBottom' && isTopAndBottomMatchResultShown.value){
+          return true;
+        }
+        if(matchType == 'melee' && isMeleeMatchResultShown.value){
+          return true;
+        }
+        return false;
+      });
+    });
     
-    const race = "protoss"
+    const race = "zerg"
 
     return {
+      isMeleeMatchResultShown,
+      isTopAndBottomMatchResultShown,
       matchResultList,
       playerInformation,
       race
@@ -352,14 +390,22 @@ export default defineComponent({
   border-bottom: none;
 }
 
+#player-name {
+  color: white;
+}
+
 #profile {
   width: auto;
   min-height: 200px;
   background-attachment: fixed;
-  background-image: url("https://bnetcmsus-a.akamaihd.net/cms/gallery/7EKSWN98V7M91498587613057.jpg");
-  /* background-image: url("https://bnetcmsus-a.akamaihd.net/cms/gallery/JHXVBPP04GHH1498587636883.jpg"); */
+  /* background-image: url("https://bnetcmsus-a.akamaihd.net/cms/gallery/7EKSWN98V7M91498587613057.jpg"); */
+  background-image: url("https://bnetcmsus-a.akamaihd.net/cms/gallery/JHXVBPP04GHH1498587636883.jpg");
   /* background-image: url("https://bnetcmsus-a.akamaihd.net/cms/gallery/lt/LTHPT2MPAS8P1502725038501.jpg"); */
   background-repeat: no-repeat;
   background-size: 100%;
+}
+
+#signup-date {
+  color: #767676;
 }
 </style>

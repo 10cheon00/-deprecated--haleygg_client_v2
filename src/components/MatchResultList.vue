@@ -1,7 +1,5 @@
 <template>
-  <div class="">
-    <!-- Summary? -->
-
+  <div>
     <!-- Match result list -->
     <div
       class="
@@ -22,24 +20,23 @@
               return '#ffb3b3';
             }
           }
-          return '#ecf0f5';
+          return '#d7d9db';
         })(),
         'margin-bottom': index < matchResultList.length - 1 ? '0.25rem' : 'none',
       }"
     >
-        <!-- 'border-bottom': index < matchResultList.length - 1 ? 'solid 1px white' : 'none', -->
       <div class="col-3">
-        <div class="match-result-date">{{ matchResult.date }}</div>
         <div class="match-result-league">
           {{ matchResult.league }} {{ matchResult.title }}
         </div>
+        <div class="match-result-date mt-1">{{ matchResult.date }}</div>
       </div>
       <div class="col-3">
         <div v-for="winner in matchResult.winners" :key="winner.name">
           {{ winner.name }} ( {{ winner.race }} )
         </div>
       </div>
-      <div class="col-1 match-result-map">{{ matchResult.map }}</div>
+      <div class="col-1 match-result-map text-lg font-bold">{{ matchResult.map }}</div>
       <div class="col-3">
         <div v-for="loser in matchResult.losers" :key="loser.name">
           {{ loser.name }} ( {{ loser.race }} )
@@ -93,6 +90,6 @@ export default defineComponent({
 }
 .match-result-date {
   font-size: 0.5rem;
-  margin-bottom: 0.5rem;
+  color: gray;
 }
 </style>

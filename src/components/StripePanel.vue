@@ -4,7 +4,14 @@
     <div id="header-stripe" :style="stripeStyle"/>
 
     <!-- Header -->
-    <div id="header">{{ header }}</div>
+    <div id="header">
+      <div class="flex justify-content-between align-items-center">
+        <div>{{ header }}</div>
+        <div id="header-right-items" class="flex">
+          <slot name="header-right"></slot>
+        </div>
+      </div>
+    </div>
 
     <!-- Content -->
     <div id="content">
@@ -20,7 +27,7 @@ import { getColor } from '@/css/color-config.js';
 export default defineComponent({
   props: {
     header: {
-      required: true,
+      required: false,
       type: String
     },
     stripeColor: {
@@ -53,6 +60,14 @@ export default defineComponent({
 #content {
   border: solid 1px #dee2e6;
   border-top: none;
+  height: auto;
 }
 
+#content:empty{
+  display: none;
+}
+
+#header-right{
+  vertical-align: middle;
+}
 </style>

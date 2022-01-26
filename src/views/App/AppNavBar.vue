@@ -4,18 +4,23 @@
       <div class="text-4xl mr-4">Haley.GG</div>
     </template>
     <template #end>
+      <form @submit.prevent="search()">
       <div class="p-input-icon-right">
-        <i class="pi pi-search"/>
-        <InputText placeholder="검색"/>
+        <i class="pi pi-search" @click="search()"/>
+        <InputText class="p-inputtext-sm" placeholder="검색" type="text" v-model="playerName"/>
       </div>
+      </form>
     </template>
   </MenuBar>
 </template>
 
 <script>
 import { defineComponent, ref } from "vue";
+import { useRouter } from "vue-router";
+
 import MenuBar from "primevue/menubar";
 import InputText from "primevue/inputtext";
+
 
 export default defineComponent({
   components: {
@@ -23,7 +28,16 @@ export default defineComponent({
     InputText
   },
   setup() {
-    const sideBarVisible = ref(false);
+    const router = useRouter();
+    const search = () => {
+      router.push({
+        "name": "UserInformationView",
+        "params": {
+          "playerName": playerName.value
+        }
+      });
+    }
+    const playerName = ref("");
     return {
       items: [
         {
@@ -42,7 +56,8 @@ export default defineComponent({
           to: "/map/"
         },
       ],
-      sideBarVisible,
+      search,
+      playerName
     };
   },
 });
