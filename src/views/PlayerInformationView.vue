@@ -1,9 +1,9 @@
 <template>
   <div id="view">
     <!-- Profile -->
-    <div id="profile" class="p-8">
-      <div id="player-name" class="text-4xl font-bold">{{ playerName }} </div>
-      <small id="signup-date" class="text-sm">2022-01-12 가입</small>
+    <div class="p-8" id="profile">
+      <div class="text-4xl font-bold" id="player-name">{{ playerName }}</div>
+      <small class="text-sm" id="signup-date">2022-01-12 가입</small>
     </div>
 
     <div class="grid grid-nogutter">
@@ -11,9 +11,7 @@
         <!-- Career -->
         <div class="col-12 p-3">
           <StripePanel header="Career" :stripeColor="race">
-            <div class="p-3">
-              아직 힘을 숨기고 있습니다...
-            </div>
+            <div class="p-3">아직 힘을 숨기고 있습니다...</div>
           </StripePanel>
         </div>
 
@@ -21,15 +19,15 @@
         <div class="col-12 p-3">
           <StripePanel header="Statistics" :stripeColor="race">
             <div
+              class="flex justify-content-between p-2"
+              id="content-item"
               v-for="(item, index) in playerInformation.statistics"
               :key="index"
-              id="content-item" 
-              class="flex justify-content-between p-2"
             >
               <span>{{ item.label }}</span>
               <span>{{ item.value }}</span>
             </div>
-          </StripePanel>        
+          </StripePanel>
         </div>
       </div>
 
@@ -47,21 +45,24 @@
       </div>
     </div>
 
-
     <!-- List of Matches -->
-    <div id="match-result-list" class="col-12 p-3">
-      <StripePanel header="Recent Matches" :stripeColor="race" class="pb-1">
+    <div class="col-12 p-3" id="match-result-list">
+      <StripePanel class="pb-1" header="Recent Matches" :stripeColor="race">
         <template #header-right>
-          <CheckBox name="밀리 전적" v-model="isMeleeMatchResultShown" :binary="true"/>
+          <CheckBox name="밀리 전적" v-model="isMeleeMatchResultShown" :binary="true" />
           <label class="ml-1 mr-3">밀리</label>
-          <CheckBox name="팀플 전적" v-model="isTopAndBottomMatchResultShown" :binary="true"/>
+          <CheckBox
+            name="팀플 전적"
+            v-model="isTopAndBottomMatchResultShown"
+            :binary="true"
+          />
           <label class="ml-1">팀플</label>
         </template>
       </StripePanel>
 
-      <MatchResultList 
-        :matchResultList="matchResultList" 
-        resultListOwnerName="zzz--33f" 
+      <MatchResultList
+        :matchResultList="matchResultList"
+        resultListOwnerName="zzz--33f"
       />
     </div>
   </div>
@@ -94,299 +95,298 @@ export default defineComponent({
         { label: "프로토스 승률", value: "14-11, 35%" },
         { label: "테란 승률", value: "13-13, 35%" },
         { label: "저그 승률", value: "21-31, 35%" },
-      ]
+      ],
     };
 
-    const applySyntaxToStatistics = () => {
-      // before syntaxing, get statistics from server.
-      // do syntax
-    }
-    applySyntaxToStatistics();
+    // before syntaxing, get statistics from server.
 
     const rawMatchResultList = [
       {
-        "league": "dasf",
-        "date": "2022-01-24",
-        "title": "41341",
-        "map": "투혼",
-        "winners": [
+        league: "dasf",
+        date: "2022-01-24",
+        title: "41341",
+        map: "투혼",
+        winners: [
           {
-            "name": "asdf",
-            "race": "T"
-          }
+            name: "asdf",
+            race: "T",
+          },
         ],
-        "losers": [
+        losers: [
           {
-            "name": "fasdfdf",
-            "race": "Z"
-          }
+            name: "fasdfdf",
+            race: "Z",
+          },
         ],
-        "miscellaneous": ""
-      },{
-        "league": "dasf",
-        "date": "2022-01-24",
-        "title": "41341",
-        "map": "투혼",
-        "winners": [
-          {
-            "name": "asdf",
-            "race": "T"
-          }
-        ],
-        "losers": [
-          {
-            "name": "fasdfdf",
-            "race": "Z"
-          }
-        ],
-        "miscellaneous": ""
+        miscellaneous: "",
       },
       {
-        "league": "das31f",
-        "date": "2022-12-24",
-        "title": "41341314",
-        "map": "헌트리스",
-        "winners": [
+        league: "dasf",
+        date: "2022-01-24",
+        title: "41341",
+        map: "투혼",
+        winners: [
           {
-            "name": "r13r1r",
-            "race": "P"
+            name: "asdf",
+            race: "T",
           },
-          {
-            "name": "zzz--33f",
-            "race": "T"
-          }
         ],
-        "losers": [
+        losers: [
           {
-            "name": "fasdfdf",
-            "race": "Z"
+            name: "fasdfdf",
+            race: "Z",
           },
-          {
-            "name": "asdf",
-            "race": "T"
-          }
         ],
-        "miscellaneous": "기권패"
+        miscellaneous: "",
       },
       {
-        "league": "das31f",
-        "date": "2022-12-24",
-        "title": "41341314",
-        "map": "헌트리스",
-        "winners": [
+        league: "das31f",
+        date: "2022-12-24",
+        title: "41341314",
+        map: "헌트리스",
+        winners: [
           {
-            "name": "r13r1r",
-            "race": "P"
+            name: "r13r1r",
+            race: "P",
           },
           {
-            "name": "zzz--33f",
-            "race": "T"
-          }
+            name: "zzz--33f",
+            race: "T",
+          },
         ],
-        "losers": [
+        losers: [
           {
-            "name": "fasdfdf",
-            "race": "Z"
+            name: "fasdfdf",
+            race: "Z",
           },
           {
-            "name": "asdf",
-            "race": "T"
-          }
+            name: "asdf",
+            race: "T",
+          },
         ],
-        "miscellaneous": "기권패"
+        miscellaneous: "기권패",
       },
       {
-        "league": "das31f",
-        "date": "2022-12-24",
-        "title": "41341314",
-        "map": "헌트리스",
-        "winners": [
+        league: "das31f",
+        date: "2022-12-24",
+        title: "41341314",
+        map: "헌트리스",
+        winners: [
           {
-            "name": "r13r1r",
-            "race": "P"
+            name: "r13r1r",
+            race: "P",
           },
           {
-            "name": "zzz--33f",
-            "race": "T"
-          }
+            name: "zzz--33f",
+            race: "T",
+          },
         ],
-        "losers": [
+        losers: [
           {
-            "name": "fasdfdf",
-            "race": "Z"
+            name: "fasdfdf",
+            race: "Z",
           },
           {
-            "name": "asdf",
-            "race": "T"
-          }
+            name: "asdf",
+            race: "T",
+          },
         ],
-        "miscellaneous": "기권패"
-      },{
-        "league": "dasf",
-        "date": "2022-01-24",
-        "title": "41341",
-        "map": "투혼",
-        "winners": [
-          {
-            "name": "asdf",
-            "race": "T"
-          }
-        ],
-        "losers": [
-          {
-            "name": "fasdfdf",
-            "race": "Z"
-          }
-        ],
-        "miscellaneous": ""
-      },{
-        "league": "dasf",
-        "date": "2022-01-24",
-        "title": "41341",
-        "map": "투혼",
-        "winners": [
-          {
-            "name": "asdf",
-            "race": "T"
-          }
-        ],
-        "losers": [
-          {
-            "name": "fasdfdf",
-            "race": "Z"
-          }
-        ],
-        "miscellaneous": ""
-      },{
-        "league": "dasf",
-        "date": "2022-01-24",
-        "title": "41341",
-        "map": "투혼",
-        "winners": [
-          {
-            "name": "asdf",
-            "race": "T"
-          }
-        ],
-        "losers": [
-          {
-            "name": "fasdfdf",
-            "race": "Z"
-          }
-        ],
-        "miscellaneous": ""
-      },{
-        "league": "dasf",
-        "date": "2022-01-24",
-        "title": "41341",
-        "map": "투혼",
-        "winners": [
-          {
-            "name": "asdf",
-            "race": "T"
-          }
-        ],
-        "losers": [
-          {
-            "name": "fasdfdf",
-            "race": "Z"
-          }
-        ],
-        "miscellaneous": ""
+        miscellaneous: "기권패",
       },
       {
-        "league": "das31f",
-        "date": "2022-12-24",
-        "title": "41341314",
-        "map": "헌트리스",
-        "winners": [
+        league: "das31f",
+        date: "2022-12-24",
+        title: "41341314",
+        map: "헌트리스",
+        winners: [
           {
-            "name": "r13r1r",
-            "race": "P"
+            name: "r13r1r",
+            race: "P",
           },
           {
-            "name": "zzz--33f",
-            "race": "T"
-          }
+            name: "zzz--33f",
+            race: "T",
+          },
         ],
-        "losers": [
+        losers: [
           {
-            "name": "fasdfdf",
-            "race": "Z"
+            name: "fasdfdf",
+            race: "Z",
           },
           {
-            "name": "asdf",
-            "race": "T"
-          }
+            name: "asdf",
+            race: "T",
+          },
         ],
-        "miscellaneous": "기권패"
+        miscellaneous: "기권패",
       },
       {
-        "league": "das31f",
-        "date": "2022-12-24",
-        "title": "41341314",
-        "map": "헌트리스",
-        "winners": [
+        league: "dasf",
+        date: "2022-01-24",
+        title: "41341",
+        map: "투혼",
+        winners: [
           {
-            "name": "r13r1r",
-            "race": "P"
+            name: "asdf",
+            race: "T",
           },
-          {
-            "name": "zzz--33f",
-            "race": "T"
-          }
         ],
-        "losers": [
+        losers: [
           {
-            "name": "fasdfdf",
-            "race": "Z"
+            name: "fasdfdf",
+            race: "Z",
           },
-          {
-            "name": "asdf",
-            "race": "T"
-          }
         ],
-        "miscellaneous": "기권패"
+        miscellaneous: "",
       },
-    ]
+      {
+        league: "dasf",
+        date: "2022-01-24",
+        title: "41341",
+        map: "투혼",
+        winners: [
+          {
+            name: "asdf",
+            race: "T",
+          },
+        ],
+        losers: [
+          {
+            name: "fasdfdf",
+            race: "Z",
+          },
+        ],
+        miscellaneous: "",
+      },
+      {
+        league: "dasf",
+        date: "2022-01-24",
+        title: "41341",
+        map: "투혼",
+        winners: [
+          {
+            name: "asdf",
+            race: "T",
+          },
+        ],
+        losers: [
+          {
+            name: "fasdfdf",
+            race: "Z",
+          },
+        ],
+        miscellaneous: "",
+      },
+      {
+        league: "dasf",
+        date: "2022-01-24",
+        title: "41341",
+        map: "투혼",
+        winners: [
+          {
+            name: "asdf",
+            race: "T",
+          },
+        ],
+        losers: [
+          {
+            name: "fasdfdf",
+            race: "Z",
+          },
+        ],
+        miscellaneous: "",
+      },
+      {
+        league: "das31f",
+        date: "2022-12-24",
+        title: "41341314",
+        map: "헌트리스",
+        winners: [
+          {
+            name: "r13r1r",
+            race: "P",
+          },
+          {
+            name: "zzz--33f",
+            race: "T",
+          },
+        ],
+        losers: [
+          {
+            name: "fasdfdf",
+            race: "Z",
+          },
+          {
+            name: "asdf",
+            race: "T",
+          },
+        ],
+        miscellaneous: "기권패",
+      },
+      {
+        league: "das31f",
+        date: "2022-12-24",
+        title: "41341314",
+        map: "헌트리스",
+        winners: [
+          {
+            name: "r13r1r",
+            race: "P",
+          },
+          {
+            name: "zzz--33f",
+            race: "T",
+          },
+        ],
+        losers: [
+          {
+            name: "fasdfdf",
+            race: "Z",
+          },
+          {
+            name: "asdf",
+            race: "T",
+          },
+        ],
+        miscellaneous: "기권패",
+      },
+    ];
 
     const isMeleeMatchResultShown = ref(true);
     const isTopAndBottomMatchResultShown = ref(true);
 
     const matchResultList = computed(() => {
-      return rawMatchResultList.filter(matchResult => {
-        const matchType = (matchResult.winners.length > 1)?'topAndBottom':'melee';
-        console.log(3)
-        if(matchType == 'topAndBottom' && isTopAndBottomMatchResultShown.value){
+      return rawMatchResultList.filter((matchResult) => {
+        const matchType = matchResult.winners.length > 1 ? "topAndBottom" : "melee";
+        if (matchType == "topAndBottom" && isTopAndBottomMatchResultShown.value) {
           return true;
         }
-        if(matchType == 'melee' && isMeleeMatchResultShown.value){
+        if (matchType == "melee" && isMeleeMatchResultShown.value) {
           return true;
         }
         return false;
       });
     });
-    
-    const race = "zerg"
+
+    const race = "zerg";
 
     return {
       isMeleeMatchResultShown,
       isTopAndBottomMatchResultShown,
       matchResultList,
       playerInformation,
-      race
-    }
+      race,
+    };
   },
 });
 </script>
 
 <style scoped>
-
 #content-item {
   border-bottom: solid 1px #dee2e6;
 }
 
-#content-item:last-child{
+#content-item:last-child {
   border-bottom: none;
 }
 

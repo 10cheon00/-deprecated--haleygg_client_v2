@@ -5,10 +5,15 @@
     </template>
     <template #end>
       <form @submit.prevent="search()">
-      <div class="p-input-icon-right">
-        <i class="pi pi-search" @click="search()"/>
-        <InputText class="p-inputtext-sm" placeholder="검색" type="text" v-model="playerName"/>
-      </div>
+        <div class="p-input-icon-right">
+          <i class="pi pi-search" @click="search()" />
+          <InputText
+            class="p-inputtext-sm"
+            placeholder="검색"
+            type="text"
+            v-model="playerName"
+          />
+        </div>
       </form>
     </template>
   </MenuBar>
@@ -17,26 +22,24 @@
 <script>
 import { defineComponent, ref } from "vue";
 import { useRouter } from "vue-router";
-
 import MenuBar from "primevue/menubar";
 import InputText from "primevue/inputtext";
-
 
 export default defineComponent({
   components: {
     MenuBar,
-    InputText
+    InputText,
   },
   setup() {
     const router = useRouter();
     const search = () => {
       router.push({
-        "name": "UserInformationView",
-        "params": {
-          "playerName": playerName.value
-        }
+        name: "UserInformationView",
+        params: {
+          playerName: playerName.value,
+        },
       });
-    }
+    };
     const playerName = ref("");
     return {
       items: [
@@ -53,18 +56,18 @@ export default defineComponent({
         {
           label: "맵별 통계",
           icon: "pi pi-fw pi-eye",
-          to: "/map/"
+          to: "/map/",
         },
       ],
       search,
-      playerName
+      playerName,
     };
   },
 });
 </script>
 
 <style scoped>
-.p-menubar{
+.p-menubar {
   border-radius: 0px;
 }
 </style>

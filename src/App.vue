@@ -3,7 +3,7 @@
     <!-- Navigation bar -->
     <AppNavBar/>
 
-    <div id="layout" class="flex justify-content-center">
+    <div class="flex justify-content-center" id="layout">
       <!-- Content -->
       <div class="content">
         <router-view/>

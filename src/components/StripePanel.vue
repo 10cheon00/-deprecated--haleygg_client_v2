@@ -1,13 +1,13 @@
 <template>
   <div>
     <!-- Stripe -->
-    <div id="header-stripe" :style="stripeStyle"/>
+    <div id="header-stripe" :style="stripeStyle" />
 
     <!-- Header -->
     <div id="header">
       <div class="flex justify-content-between align-items-center">
         <div>{{ header }}</div>
-        <div id="header-right-items" class="flex">
+        <div class="flex">
           <slot name="header-right"></slot>
         </div>
       </div>
@@ -21,29 +21,30 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue';
-import { getColor } from '@/css/color-config.js';
+import { defineComponent } from "vue";
+
+import { getColor } from "@/css/color-config.js";
 
 export default defineComponent({
   props: {
     header: {
       required: false,
-      type: String
+      type: String,
     },
     stripeColor: {
       required: false,
-      type: String
-    }
+      type: String,
+    },
   },
   setup(props) {
     const stripeStyle = {
-      'background-color': getColor(props.stripeColor)
-    }
+      "background-color": getColor(props.stripeColor),
+    };
     return {
-      stripeStyle
-    }
+      stripeStyle,
+    };
   },
-})
+});
 </script>
 
 <style scoped>
@@ -63,11 +64,11 @@ export default defineComponent({
   height: auto;
 }
 
-#content:empty{
+#content:empty {
   display: none;
 }
 
-#header-right{
+#header-right {
   vertical-align: middle;
 }
 </style>
