@@ -37,7 +37,7 @@ export default defineComponent({
 }
 .app{
   min-height:1000px;
-  background-color: var(--surface-600);
+  background-color: var(--surface-100);
 }
 .content{
   background-color: white;

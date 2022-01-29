@@ -1,17 +1,9 @@
 <template>
   <div>
-    <!-- Form needed -->
-
     <!-- Statistics -->
     <div v-if="mapStatistics">
       <div v-for="(mapData, index) in mapStatistics" :key="index">
-        <div
-          class="grid grid-nogutter"
-          id="statistics"
-          :style="{
-            // 'border-bottom': (index !== data.length - 1) ? '1px solid #dee2e6' : 'none',
-          }"
-        >
+        <div class="grid grid-nogutter" id="statistics">
           <div
             class="pt-3 pb-3"
             id="map-information"

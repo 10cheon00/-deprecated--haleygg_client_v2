@@ -68,6 +68,8 @@ export default defineComponent({
 
 <style scoped>
 .p-menubar {
+  background: linear-gradient(120deg, #fea29a, #fe62d4);
+  border: none;
   border-radius: 0px;
 }
 </style>
