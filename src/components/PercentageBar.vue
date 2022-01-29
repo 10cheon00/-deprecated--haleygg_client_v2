@@ -24,11 +24,13 @@ export default defineComponent({
   },
   setup(props) {
     const barStyle = {
-      'background-color': `
-        rgb(
-          ${props.data.color[0]}, 
-          ${props.data.color[1]}, 
-          ${props.data.color[2]}
+      'background': `
+        repeating-linear-gradient(
+          45deg,
+          rgb(${props.data.color[0]},${props.data.color[1]},${props.data.color[2]}),
+          rgb(${props.data.color[0]},${props.data.color[1]},${props.data.color[2]}) 10px,
+          rgb(${props.data.color[0]*0.85},${props.data.color[1]*0.85},${props.data.color[2]*0.85}) 10px,
+          rgb(${props.data.color[0]*0.85},${props.data.color[1]*0.85},${props.data.color[2]*0.85}) 20px
         )`,
       'border-radius': '0.25rem',
       'color': 'white',
