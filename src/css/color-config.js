@@ -10,7 +10,7 @@ const colorConfig = {
   
   // Custom colors
   light: '#f8f9fa',
-  protoss: '#ecd039',
+  protoss: '#ffc400',
   terran: '#1d73dd',
   zerg: '#7424ae',
 };
