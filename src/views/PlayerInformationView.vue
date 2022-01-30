@@ -9,31 +9,26 @@
         'background-attachment': 'fixed',
         'background-image':
           `linear-gradient(90deg, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0)),
-                url('${playerInformation.profile.favorate_race_wallpaperUrl}')`,
+                      url('${playerInformation.profile.favorate_race_wallpaperUrl}')`,
         'background-position': 'center',
         'background-repeat': 'no-repeat',
         'background-size': 'cover'
       }"
     >
-      <div class="text-4xl font-bold mb-3" id="player-name">
-        {{ playerInformation.profile.name }}
-      </div>
-      <small class="text-sm" id="signup-date">
-        {{ playerInformation.profile.joined_date }} 가입
-      </small>
+      <div class="text-4xl font-bold mb-3" id="player-name">{{ playerInformation.profile.name }}</div>
+      <small class="text-sm" id="signup-date">{{ playerInformation.profile.joined_date }} 가입</small>
     </div>
 
     <div class="grid grid-nogutter">
-      <div class="col-12 md:col-4 grid grid-nogutter">
-        <!-- Career -->
-        <div class="col-12 p-3">
-          <StripePanel header="Career" :stripeColor="playerInformation.profile.favorate_race">
-            <div class="p-3">{{ playerInformation.profile.career }}</div>
-          </StripePanel>
-        </div>
-
+      <!-- Career -->
+      <div class="col-12 p-3 pb-0">
+        <StripePanel header="Career" :stripeColor="playerInformation.profile.favorate_race">
+          <div class="p-3">{{ playerInformation.profile.career }}</div>
+        </StripePanel>
+      </div>
+      <div class="col-12 grid grid-nogutter">
         <!-- Statistics -->
-        <div class="col-12 p-3 pt-0">
+        <div class="col-12 md:col-4 p-3">
           <StripePanel header="Statistics" :stripeColor="playerInformation.favorate_race">
             <div
               class="flex justify-content-between p-2"
@@ -46,24 +41,23 @@
             </div>
           </StripePanel>
         </div>
+
+        <!-- Elo chart -->
+        <div class="col-12 md:col-8 p-3" id="elo-chart">
+          <StripePanel header="Elo Chart" :stripeColor="playerInformation.favorate_race">
+            <Chart
+              type="line"
+              :data="playerInformation.eloChartData" 
+              :options="playerInformation.eloChartOptions"
+            />
+          </StripePanel>
+        </div>
       </div>
 
-      <!-- Elo chart -->
-      <div class="col-12 md:col-8 p-3">
-        <StripePanel header="Elo Chart" :stripeColor="playerInformation.favorate_race">
-          ChartChartChartChartChartChartChartChartChartChart
-          ChartChartChartChartChartChartChartChartChartChart
-          ChartChartChartChartChartChartChartChartChartChart
-          ChartChartChartChartChartChartChartChartChartChart
-          ChartChartChartChartChartChartChartChartChartChart
-          ChartChartChartChartChartChartChartChartChartChart
-          ChartChartChartChartChartChartChartChartChartChart
-        </StripePanel>
-      </div>
     </div>
 
     <!-- List of Matches -->
-    <div class="col-12 p-3" id="match-result-list">
+    <div class="col-12 p-3 pt-0" id="match-result-list">
       <StripePanel
         class="pb-1"
         header="Recent Matches"
@@ -83,6 +77,7 @@
 </template>
 <script>
 import { defineComponent, ref, computed, onMounted } from "vue";
+import Chart from "primevue/chart";
 import CheckBox from "primevue/checkbox";
 
 import MatchResultList from "@/components/MatchResultList.vue";
@@ -90,6 +85,7 @@ import StripePanel from "@/components/StripePanel.vue";
 
 export default defineComponent({
   components: {
+    Chart,
     CheckBox,
     MatchResultList,
     StripePanel,
@@ -372,21 +368,65 @@ export default defineComponent({
       };
 
       const raceWallpaperUrls = {
-        'P': "https://bnetcmsus-a.akamaihd.net/cms/gallery/JHXVBPP04GHH1498587636883.jpg",
-        'T': "https://bnetcmsus-a.akamaihd.net/cms/gallery/7EKSWN98V7M91498587613057.jpg",
-        'Z': "https://bnetcmsus-a.akamaihd.net/cms/gallery/lt/LTHPT2MPAS8P1502725038501.jpg"
+        'P': "https://bnetcmsus-a.akamaihd.net/cms/gallery/7EKSWN98V7M91498587613057.jpg",
+        'T': "https://bnetcmsus-a.akamaihd.net/cms/gallery/lt/LTHPT2MPAS8P1502725038501.jpg",
+        'Z': "https://bnetcmsus-a.akamaihd.net/cms/gallery/JHXVBPP04GHH1498587636883.jpg"
       };
 
       playerInformation.value.profile.favorate_race_wallpaperUrl = raceWallpaperUrls[playerInformation.value.profile.favorate_race];
 
       // create statistics from match result list
       playerInformation.value.statistics = [
-        { label: "개인", value: "1-5" },
-        { label: "팀플", value: "3-3" },
-        { label: "프로토스 승률", value: "14-11, 35%" },
-        { label: "테란 승률", value: "13-13, 35%" },
-        { label: "저그 승률", value: "21-31, 35%" },
+        { label: "개인 승률", value: "1-5 / 34%" },
+        { label: "팀플 승률", value: "3-3 / 10%" },
+        { label: "프로토스 승률", value: "14-11 / 35%" },
+        { label: "테란 승률", value: "13-13 / 35%" },
+        { label: "저그 승률", value: "21-31 / 35%" },
       ];
+
+      playerInformation.value.eloList = [
+        { date: '2022-01-22', elo: 1001 },
+        { date: '2022-01-23', elo: 1006 },
+        { date: '2022-01-25', elo: 1003 },
+        { date: '2022-01-27', elo: 1020 },
+        { date: '2022-01-29', elo: 1031 },
+        { date: '2022-01-31', elo: 1018 },
+        { date: '2022-02-02', elo: 1004 },
+        { date: '2022-02-25', elo: 983 }
+      ];
+
+      playerInformation.value.eloChartData = {
+        datasets: [{
+          data: playerInformation.value.eloList,
+          pointBackgroundColor: "#546e71",
+          pointBorderColor: "#222c31"
+        }]
+      };
+
+      playerInformation.value.eloChartOptions = {
+        maintainAspectRatio: false,
+        responsive: true,
+        aspectRatio: 3,
+        parsing: {
+          xAxisKey: 'date',
+          yAxisKey: 'elo'
+        },
+        plugins: {
+          datalabels: {
+            anchor: 'end',
+            align: 'top',
+            backgroundColor: "#222c31",
+            color: "white",
+            borderRadius: '5',
+            formatter: (value) => {
+              return value.elo;
+            }
+          },
+          legend:{
+            display: false
+          }
+        },
+      }
     });
 
     const matchResultList = computed(() => {
@@ -427,5 +467,11 @@ export default defineComponent({
 
 #signup-date {
   color: #767676;
+}
+
+.p-chart{
+  width: 100%;
+  min-height:185px;
+  max-height:185px;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div>
-    <!-- Header -->
-    <div class="p-3 text-white" id="header">
+    <!-- Explanation -->
+    <div class="p-8 text-white" id="header">
       <p>Elo 산출 방식은 위키백과와 같습니다.</p>
       <br />
       <p class="text-xl font-bold">After = Before + K * (W - R)</p>
@@ -15,8 +15,7 @@
 
     <div class="p-3" v-if="eloList !== null">
       <StripePanel header="ELO Rank">
-        <!-- Explanation -->
-        
+
         <!-- Elo rank table -->
         <table class="p-3" id="elo-rank-table">
           <colgroup>
@@ -82,14 +81,14 @@ export default defineComponent({
         { user: { name: "asdf", favorate_race: "T" }, elo: 1027 },
         { user: { name: "asdf", favorate_race: "Z" }, elo: 1018 },
       ];
-  
+
       eloList.value.sort((a, b) => {
         return b.elo - a.elo;
       });
-  
+
       const colorCodeStart = [0, 6, 36];
       const colorCodeEnd = [74, 201, 227];
-  
+
       eloList.value.forEach((value, index, array) => {
         value.value = value.elo;
         value.percentage = value.elo / array[0].elo;
@@ -109,9 +108,14 @@ export default defineComponent({
 </script>
 
 <style scoped>
-#header{
-  background-color: black;
-  /* image.. */
+#header {
+  background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.8)),
+    url('https://i.imgur.com/SK3Kyyf.jpeg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  width: 100%;
+  min-height: 194px;
 }
 
 #elo-rank-table {
@@ -145,8 +149,7 @@ tr:last-child td {
   border-bottom: none;
 }
 
-tbody tr:first-child td{
+tbody tr:first-child td {
   border-top: none;
 }
-
 </style>
