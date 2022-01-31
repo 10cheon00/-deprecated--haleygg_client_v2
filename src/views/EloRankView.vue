@@ -13,7 +13,7 @@
       </div>
     </div>
 
-    <div class="p-3" v-if="eloList !== null">
+    <div v-if="eloList" class="p-3" >
       <StripePanel header="ELO Rank">
 
         <!-- Elo rank table -->

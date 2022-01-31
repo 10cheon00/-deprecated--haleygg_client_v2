@@ -1,5 +1,5 @@
 <template>
-  <div id="view" v-if="playerInformation">
+  <div v-if="playerInformation">
     <!-- Profile -->
     <div
       class="p-8"
@@ -31,10 +31,10 @@
         <div class="col-12 md:col-4 p-3">
           <StripePanel header="Statistics" :stripeColor="playerInformation.favorate_race">
             <div
-              class="flex justify-content-between p-2"
-              id="content-item"
               v-for="(item, index) in playerInformation.statistics"
               :key="index"
+              class="flex justify-content-between p-2"
+              id="content-item"
             >
               <span>{{ item.label }}</span>
               <span>{{ item.value }}</span>
@@ -404,9 +404,8 @@ export default defineComponent({
       };
 
       playerInformation.value.eloChartOptions = {
+        animation: false,
         maintainAspectRatio: false,
-        responsive: true,
-        aspectRatio: 3,
         parsing: {
           xAxisKey: 'date',
           yAxisKey: 'elo'

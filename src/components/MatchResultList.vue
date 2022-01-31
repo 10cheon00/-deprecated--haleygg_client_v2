@@ -2,14 +2,14 @@
   <div>
     <!-- Match result list -->
     <div
+      v-for="(matchResult, index) in matchResultList"
+      :key="index"
       class="
         align-content-center align-items-center
         grid grid-nogutter
         text-center
       "
       id="match-result"
-      v-for="(matchResult, index) in matchResultList"
-      :key="index"
       :style="{
         'background-color': (() => {
           if(matchResult.isWonMatch !== undefined){

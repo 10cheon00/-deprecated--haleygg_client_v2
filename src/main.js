@@ -16,6 +16,6 @@ import "@/css/font.css";
 Chart.register(ChartDatalabels)
 
 const app = createApp(App)
-app.use(PrimeVue, { ripple: true, inputStyle: 'filled' })
+app.use(PrimeVue, { inputStyle: 'filled' })
 app.use(VueRouter)
 app.mount('#app')

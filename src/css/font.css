@@ -6,6 +6,6 @@
 }
 
 body{
-  font-family: "SUIT-Medium";
+  font-family: "SUIT-Medium" !important;
   line-height: 1.25rem;
 }

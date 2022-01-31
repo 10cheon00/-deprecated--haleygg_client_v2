@@ -22,6 +22,11 @@ const routes = [
     path: '/map/',
     component: () => import("@/views/MapStatisticsView.vue")
   },
+  {
+    name: 'MatchResultFormView',
+    path: '/add-result/',
+    component: () => import("@/views/MatchResultFormView.vue")
+  }
 ];
 
 export default createRouter({
