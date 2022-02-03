@@ -52,7 +52,7 @@ export default defineComponent({
   height: 4px;
 }
 #header {
-  /* background-color: #f8efb9; */
+  background-color: white;
   border: solid 1px #dee2e6;
   border-top: none;
   font-weight: bold;
