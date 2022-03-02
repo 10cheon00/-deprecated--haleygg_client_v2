@@ -5,16 +5,19 @@
     </template>
     <template #end>
       <form @submit.prevent="search()">
-        <div class="p-input-icon-right">
-          <i class="pi pi-search" @click="search()" />
-          <InputText
-            class="p-inputtext-sm"
-            placeholder="검색"
-            type="text"
-            v-model="playerName"
-          />
+        <div class="flex align-items-center">
+          <div class="p-input-icon-right">
+            <i class="pi pi-search" @click="search()" />
+            <InputText
+              class="p-inputtext-sm"
+              placeholder="검색"
+              type="text"
+              v-model="playerName"
+            />
+          </div>
         </div>
       </form>
+      <LoginModal />
     </template>
   </MenuBar>
 </template>
@@ -27,8 +30,8 @@ import InputText from "primevue/inputtext";
 
 export default defineComponent({
   components: {
-    MenuBar,
     InputText,
+    MenuBar,
   },
   setup() {
     const router = useRouter();
@@ -41,6 +44,7 @@ export default defineComponent({
       });
     };
     const playerName = ref("");
+
     return {
       items: [
         {
@@ -59,8 +63,8 @@ export default defineComponent({
           to: "/map/",
         },
       ],
-      search,
       playerName,
+      search,
     };
   },
 });
