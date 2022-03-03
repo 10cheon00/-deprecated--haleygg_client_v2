@@ -1,35 +1,44 @@
 <template>
-  <div v-if="playerInformation">
+  <div v-if="playerInformation.isFetched">
     <!-- Profile -->
     <div
       class="p-8"
       :style="{
         'min-height': '200px',
-        'width': '100%',
+        width: '100%',
         'background-attachment': 'fixed',
-        'background-image':
-          `linear-gradient(90deg, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0)),
+        'background-image': `linear-gradient(90deg, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0)),
                       url('${playerInformation.profile.favorate_race_wallpaperUrl}')`,
         'background-position': 'center',
         'background-repeat': 'no-repeat',
-        'background-size': 'cover'
+        'background-size': 'cover',
       }"
     >
-      <div class="text-4xl font-bold mb-3" id="player-name">{{ playerInformation.profile.name }}</div>
-      <small class="text-sm" id="signup-date">{{ playerInformation.profile.joined_date }} 가입</small>
+      <div class="text-4xl font-bold mb-3" id="player-name">
+        {{ playerInformation.profile.name }}
+      </div>
+      <small class="text-sm" id="signup-date"
+        >{{ playerInformation.profile.joined_date }} 가입</small
+      >
     </div>
 
     <div class="grid grid-nogutter">
       <!-- Career -->
       <div class="col-12 p-3 pb-0">
-        <StripePanel header="Career" :stripeColor="playerInformation.profile.favorate_race">
+        <StripePanel
+          header="Career"
+          :stripeColor="playerInformation.profile.favorate_race"
+        >
           <div class="p-3">{{ playerInformation.profile.career }}</div>
         </StripePanel>
       </div>
       <div class="col-12 grid grid-nogutter">
         <!-- Statistics -->
         <div class="col-12 md:col-4 p-3">
-          <StripePanel header="Statistics" :stripeColor="playerInformation.favorate_race">
+          <StripePanel
+            header="Statistics"
+            :stripeColor="playerInformation.favorate_race"
+          >
             <div
               v-for="(item, index) in playerInformation.statistics"
               :key="index"
@@ -44,16 +53,27 @@
 
         <!-- Elo chart -->
         <div class="col-12 md:col-8 p-3" id="elo-chart">
-          <StripePanel header="Elo Chart" :stripeColor="playerInformation.favorate_race">
+          <StripePanel
+            header="Elo Chart"
+            :stripeColor="playerInformation.favorate_race"
+          >
+            <template #header-right>
+              <DropDown
+                v-model="selectedLeague"
+                :options="leagueList"
+                optionLabel="name"
+                optionValue="id"
+                @change="getPlayerStatisticsRelatedWithLeague()"
+              />
+            </template>
             <Chart
               type="line"
-              :data="playerInformation.eloChartData" 
+              :data="playerInformation.eloChartData"
               :options="playerInformation.eloChartOptions"
             />
           </StripePanel>
         </div>
       </div>
-
     </div>
 
     <!-- List of Matches -->
@@ -64,14 +84,25 @@
         :stripeColor="playerInformation.favorate_race"
       >
         <template #header-right>
-          <CheckBox name="밀리 전적" v-model="isMeleeMatchResultShown" :binary="true" />
+          <CheckBox
+            name="밀리 전적"
+            v-model="isMeleeMatchResultShown"
+            :binary="true"
+          />
           <label class="ml-1 mr-3">밀리</label>
-          <CheckBox name="팀플 전적" v-model="isTopAndBottomMatchResultShown" :binary="true" />
+          <CheckBox
+            name="팀플 전적"
+            v-model="isTopAndBottomMatchResultShown"
+            :binary="true"
+          />
           <label class="ml-1">팀플</label>
         </template>
       </StripePanel>
 
-      <MatchResultList :matchResultList="matchResultList" resultListOwnerName="zzz--33f" />
+      <MatchResultList
+        :matchResultList="matchResultList"
+        :resultListOwnerName="playerName"
+      />
     </div>
   </div>
 </template>
@@ -79,7 +110,9 @@
 import { defineComponent, ref, computed, onMounted } from "vue";
 import Chart from "primevue/chart";
 import CheckBox from "primevue/checkbox";
+import DropDown from "primevue/dropdown";
 
+import ServerApi from "@/apis/server-api.js";
 import MatchResultList from "@/components/MatchResultList.vue";
 import StripePanel from "@/components/StripePanel.vue";
 
@@ -87,6 +120,7 @@ export default defineComponent({
   components: {
     Chart,
     CheckBox,
+    DropDown,
     MatchResultList,
     StripePanel,
   },
@@ -97,341 +131,50 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const playerInformation = ref(null);
+    const player = ref(null);
+    const playerInformation = ref({ isFetched: false });
     const rawMatchResultList = ref([]);
 
     const isMeleeMatchResultShown = ref(true);
     const isTopAndBottomMatchResultShown = ref(true);
 
-    onMounted(() => {
-      // fetch.
-      rawMatchResultList.value = [
-        {
-          league: "dasf",
-          date: "2022-01-24",
-          title: "41341",
-          map: "투혼",
-          winners: [
-            {
-              name: "asdf",
-              race: "T",
-            },
-          ],
-          losers: [
-            {
-              name: "fasdfdf",
-              race: "Z",
-            },
-          ],
-          miscellaneous: "",
-        },
-        {
-          league: "dasf",
-          date: "2022-01-24",
-          title: "41341",
-          map: "투혼",
-          winners: [
-            {
-              name: "asdf",
-              race: "T",
-            },
-          ],
-          losers: [
-            {
-              name: "fasdfdf",
-              race: "Z",
-            },
-          ],
-          miscellaneous: "",
-        },
-        {
-          league: "das31f",
-          date: "2022-12-24",
-          title: "41341314",
-          map: "헌트리스",
-          winners: [
-            {
-              name: "r13r1r",
-              race: "P",
-            },
-            {
-              name: "zzz--33f",
-              race: "T",
-            },
-          ],
-          losers: [
-            {
-              name: "fasdfdf",
-              race: "Z",
-            },
-            {
-              name: "asdf",
-              race: "T",
-            },
-          ],
-          miscellaneous: "기권패",
-        },
-        {
-          league: "das31f",
-          date: "2022-12-24",
-          title: "41341314",
-          map: "헌트리스",
-          winners: [
-            {
-              name: "r13r1r",
-              race: "P",
-            },
-            {
-              name: "zzz--33f",
-              race: "T",
-            },
-          ],
-          losers: [
-            {
-              name: "fasdfdf",
-              race: "Z",
-            },
-            {
-              name: "asdf",
-              race: "T",
-            },
-          ],
-          miscellaneous: "기권패",
-        },
-        {
-          league: "das31f",
-          date: "2022-12-24",
-          title: "41341314",
-          map: "헌트리스",
-          winners: [
-            {
-              name: "r13r1r",
-              race: "P",
-            },
-            {
-              name: "zzz--33f",
-              race: "T",
-            },
-          ],
-          losers: [
-            {
-              name: "fasdfdf",
-              race: "Z",
-            },
-            {
-              name: "asdf",
-              race: "T",
-            },
-          ],
-          miscellaneous: "기권패",
-        },
-        {
-          league: "dasf",
-          date: "2022-01-24",
-          title: "41341",
-          map: "투혼",
-          winners: [
-            {
-              name: "asdf",
-              race: "T",
-            },
-          ],
-          losers: [
-            {
-              name: "fasdfdf",
-              race: "Z",
-            },
-          ],
-          miscellaneous: "",
-        },
-        {
-          league: "dasf",
-          date: "2022-01-24",
-          title: "41341",
-          map: "투혼",
-          winners: [
-            {
-              name: "asdf",
-              race: "T",
-            },
-          ],
-          losers: [
-            {
-              name: "fasdfdf",
-              race: "Z",
-            },
-          ],
-          miscellaneous: "",
-        },
-        {
-          league: "dasf",
-          date: "2022-01-24",
-          title: "41341",
-          map: "투혼",
-          winners: [
-            {
-              name: "asdf",
-              race: "T",
-            },
-          ],
-          losers: [
-            {
-              name: "fasdfdf",
-              race: "Z",
-            },
-          ],
-          miscellaneous: "",
-        },
-        {
-          league: "dasf",
-          date: "2022-01-24",
-          title: "41341",
-          map: "투혼",
-          winners: [
-            {
-              name: "asdf",
-              race: "T",
-            },
-          ],
-          losers: [
-            {
-              name: "fasdfdf",
-              race: "Z",
-            },
-          ],
-          miscellaneous: "",
-        },
-        {
-          league: "das31f",
-          date: "2022-12-24",
-          title: "41341314",
-          map: "헌트리스",
-          winners: [
-            {
-              name: "r13r1r",
-              race: "P",
-            },
-            {
-              name: "zzz--33f",
-              race: "T",
-            },
-          ],
-          losers: [
-            {
-              name: "fasdfdf",
-              race: "Z",
-            },
-            {
-              name: "asdf",
-              race: "T",
-            },
-          ],
-          miscellaneous: "기권패",
-        },
-        {
-          league: "das31f",
-          date: "2022-12-24",
-          title: "41341314",
-          map: "헌트리스",
-          winners: [
-            {
-              name: "r13r1r",
-              race: "P",
-            },
-            {
-              name: "zzz--33f",
-              race: "T",
-            },
-          ],
-          losers: [
-            {
-              name: "fasdfdf",
-              race: "Z",
-            },
-            {
-              name: "asdf",
-              race: "T",
-            },
-          ],
-          miscellaneous: "기권패",
-        },
-      ];
+    const leagueList = ref(null);
+    const selectedLeague = ref(null);
 
-      playerInformation.value = {};
+    const raceWallpaperUrls = {
+      P: "https://bnetcmsus-a.akamaihd.net/cms/gallery/7EKSWN98V7M91498587613057.jpg",
+      T: "https://bnetcmsus-a.akamaihd.net/cms/gallery/lt/LTHPT2MPAS8P1502725038501.jpg",
+      Z: "https://bnetcmsus-a.akamaihd.net/cms/gallery/JHXVBPP04GHH1498587636883.jpg",
+    };
 
-      // fetch profile
-      playerInformation.value.profile = {
-        'name': props.playerName,
-        'joined_date': '2022-1-14',
-        'favorate_race': 'T',
-        'career': '아직 힘을 감추고 있습니다...'
-      };
+    onMounted(async () => {
+      // Fetch profile.
+      let response = await ServerApi.fetchPlayerDetail(props.playerName);
+      playerInformation.value.profile = response.data;
+      player.value = response.data;
 
-      const raceWallpaperUrls = {
-        'P': "https://bnetcmsus-a.akamaihd.net/cms/gallery/7EKSWN98V7M91498587613057.jpg",
-        'T': "https://bnetcmsus-a.akamaihd.net/cms/gallery/lt/LTHPT2MPAS8P1502725038501.jpg",
-        'Z': "https://bnetcmsus-a.akamaihd.net/cms/gallery/JHXVBPP04GHH1498587636883.jpg"
-      };
+      playerInformation.value.profile.favorate_race_wallpaperUrl =
+        raceWallpaperUrls[player.value.favorate_race];
 
-      playerInformation.value.profile.favorate_race_wallpaperUrl = raceWallpaperUrls[playerInformation.value.profile.favorate_race];
+      // Fetch leagueList first to request only for specific league.
+      response = await ServerApi.fetchLeagueList();
+      leagueList.value = response.data;
+      selectedLeague.value = leagueList.value[0].id;
 
-      // create statistics from match result list
-      playerInformation.value.statistics = [
-        { label: "개인 승률", value: "1-5 / 34%" },
-        { label: "팀플 승률", value: "3-3 / 10%" },
-        { label: "프로토스 승률", value: "14-11 / 35%" },
-        { label: "테란 승률", value: "13-13 / 35%" },
-        { label: "저그 승률", value: "21-31 / 35%" },
-      ];
+      // Fetch statistics and Elo and matches
+      await getPlayerStatisticsRelatedWithLeague();
 
-      playerInformation.value.eloList = [
-        { date: '2022-01-22', elo: 1001 },
-        { date: '2022-01-23', elo: 1006 },
-        { date: '2022-01-25', elo: 1003 },
-        { date: '2022-01-27', elo: 1020 },
-        { date: '2022-01-29', elo: 1031 },
-        { date: '2022-01-31', elo: 1018 },
-        { date: '2022-02-02', elo: 1004 },
-        { date: '2022-02-25', elo: 983 }
-      ];
-
-      playerInformation.value.eloChartData = {
-        datasets: [{
-          data: playerInformation.value.eloList,
-          pointBackgroundColor: "#546e71",
-          pointBorderColor: "#222c31"
-        }]
-      };
-
-      playerInformation.value.eloChartOptions = {
-        animation: false,
-        maintainAspectRatio: false,
-        parsing: {
-          xAxisKey: 'date',
-          yAxisKey: 'elo'
-        },
-        plugins: {
-          datalabels: {
-            anchor: 'end',
-            align: 'top',
-            backgroundColor: "#222c31",
-            color: "white",
-            borderRadius: '5',
-            formatter: (value) => {
-              return value.elo;
-            }
-          },
-          legend:{
-            display: false
-          }
-        },
-      }
+      playerInformation.value.isFetched = true;
     });
 
     const matchResultList = computed(() => {
-      return rawMatchResultList.value.filter(matchResult => {
-        const matchType = matchResult.winners.length > 1 ? "topAndBottom" : "melee";
-        if (matchType == "topAndBottom" && isTopAndBottomMatchResultShown.value) {
+      return rawMatchResultList.value.filter((matchResult) => {
+        const matchType =
+          matchResult.player_tuples.length > 1 ? "topAndBottom" : "melee";
+        if (
+          matchType == "topAndBottom" &&
+          isTopAndBottomMatchResultShown.value
+        ) {
           return true;
         }
         if (matchType == "melee" && isMeleeMatchResultShown.value) {
@@ -441,11 +184,190 @@ export default defineComponent({
       });
     });
 
+    const aggregateStatistics = (data) => {
+      const percentage = (winning_count, losing_count) => {
+        if (losing_count + winning_count <= 0) {
+          return 0.0;
+        }
+
+        return (
+          Math.round((winning_count / (winning_count + losing_count)) * 1000) /
+          10
+        );
+      };
+
+      const list = [
+        {
+          label: "개인",
+          value: `${data.winning_melee_matches_count}-${
+            data.losing_melee_matches_count
+          } / ${percentage(
+            data.winning_melee_matches_count,
+            data.losing_melee_matches_count
+          )}%`,
+        },
+        {
+          label: "팀플",
+          value: `${data.winning_top_and_bottom_matches_count}-${
+            data.losing_top_and_bottom_matches_count
+          } / ${percentage(
+            data.winning_top_and_bottom_matches_count,
+            data.losing_top_and_bottom_matches_count
+          )}%`,
+        },
+        {
+          label: "프로토스 vs 테란",
+          value: `${data.protoss_wins_to_terran_count}-${
+            data.protoss_loses_to_terran_count
+          } / ${percentage(
+            data.protoss_wins_to_terran_count,
+            data.protoss_loses_to_terran_count
+          )}%`,
+        },
+        {
+          label: "프로토스 vs 저그",
+          value: `${data.protoss_wins_to_zerg_count}-${
+            data.protoss_loses_to_zerg_count
+          } / ${percentage(
+            data.protoss_wins_to_zerg_count,
+            data.protoss_loses_to_zerg_count
+          )}%`,
+        },
+        {
+          label: "테란 vs 프로토스",
+          value: `${data.terran_wins_to_protoss_count}-${
+            data.terran_loses_to_protoss_count
+          } / ${percentage(
+            data.terran_wins_to_protoss_count,
+            data.terran_loses_to_protoss_count
+          )}%`,
+        },
+        {
+          label: "테란 vs 저그",
+          value: `${data.terran_wins_to_zerg_count}-${
+            data.terran_loses_to_zerg_count
+          } / ${percentage(
+            data.terran_wins_to_zerg_count,
+            data.terran_loses_to_zerg_count
+          )}%`,
+        },
+        {
+          label: "저그 vs 프로토스",
+          value: `${data.zerg_wins_to_protoss_count}-${
+            data.zerg_loses_to_protoss_count
+          } / ${percentage(
+            data.zerg_wins_to_protoss_count,
+            data.zerg_loses_to_protoss_count
+          )}%`,
+        },
+        {
+          label: "저그 vs 테란",
+          value: `${data.zerg_wins_to_terran_count}-${
+            data.zerg_loses_to_terran_count
+          } / ${percentage(
+            data.zerg_wins_to_terran_count,
+            data.zerg_loses_to_terran_count
+          )}%`,
+        },
+      ];
+
+      return list;
+    };
+
+    const getPlayerStatisticsRelatedWithLeague = async () => {
+      // Fetch statistics
+      let response = await ServerApi.fetchPlayerStatistics(
+        player.value.id,
+        selectedLeague.value
+      );
+      playerInformation.value.statistics = aggregateStatistics(response.data);
+
+      // Fetch matches
+      response = await ServerApi.fetchPlayerMatches(
+        player.value.id,
+        selectedLeague.value
+      );
+      rawMatchResultList.value = response.data;
+
+      // Fetch elo history
+      response = await ServerApi.fetchPlayerEloHistory(
+        player.value.id,
+        selectedLeague.value
+      );
+
+      // manage chart options
+      if (response.data.length == 0) {
+        playerInformation.value.eloList = null;
+        playerInformation.value.eloChartData = null;
+        playerInformation.value.eloChartOptions = null;
+        return;
+      }
+      playerInformation.value.eloList = response.data;
+
+      playerInformation.value.eloChartData = {
+        datasets: [
+          {
+            data: playerInformation.value.eloList,
+            pointBackgroundColor: "#546e71",
+            pointBorderColor: "#222c31",
+          },
+        ],
+      };
+
+      playerInformation.value.eloChartOptions = {
+        animation: false,
+        maintainAspectRatio: false,
+        parsing: {
+          xAxisKey: "date",
+          yAxisKey: "elo",
+        },
+        plugins: {
+          datalabels: {
+            anchor: "end",
+            align: "top",
+            backgroundColor: "#222c31",
+            clamp: true,
+            color: "white",
+            borderRadius: "5",
+            formatter: (value) => {
+              return value.elo;
+            },
+          },
+          legend: {
+            display: false,
+          },
+        },
+        scales: {
+          y: {
+            suggestedMin:
+              parseFloat(
+                playerInformation.value.eloList.reduce((previous, current) => {
+                  return parseFloat(previous.elo) < parseFloat(current.elo)
+                    ? previous
+                    : current;
+                }).elo
+              ) - 20,
+            suggestedMax:
+              parseFloat(
+                playerInformation.value.eloList.reduce((previous, current) => {
+                  return parseFloat(previous.elo) > parseFloat(current.elo)
+                    ? previous
+                    : current;
+                }).elo
+              ) + 20,
+          },
+        },
+      };
+    };
+
     return {
       isMeleeMatchResultShown,
       isTopAndBottomMatchResultShown,
+      leagueList,
       matchResultList,
       playerInformation,
+      selectedLeague,
+      getPlayerStatisticsRelatedWithLeague,
     };
   },
 });
@@ -468,9 +390,9 @@ export default defineComponent({
   color: #767676;
 }
 
-.p-chart{
+.p-chart {
   width: 100%;
-  min-height:185px;
-  max-height:185px;
+  min-height: 280px;
+  max-height: 280px;
 }
 </style>

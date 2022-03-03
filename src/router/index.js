@@ -26,6 +26,11 @@ const routes = [
         name: 'MatchResultFormView',
         path: '/add-result/',
         component: () => import("@/views/MatchResultFormView.vue")
+    },
+    {
+        name: '404RedirectView',
+        path: '/404/',
+        component: () => import("@/views/App/404RedirectView.vue")
     }
 ];
 

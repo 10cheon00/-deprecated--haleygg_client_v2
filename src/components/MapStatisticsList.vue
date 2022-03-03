@@ -8,7 +8,7 @@
             class="pt-3 pb-3"
             id="map-information"
             :style="{
-              'background-image': `linear-gradient(180deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 1)),url(${mapData.image_url})`,
+              'background-image': `linear-gradient(180deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 1)),url(${mapData.image})`,
               'background-repeat': 'no-repeat',
               'background-size': 'cover',
               'background-position': 'center',
@@ -18,7 +18,7 @@
             <div class="text-center p-3">
               <p class="p-1 text-3xl text-white">{{ mapData.name }}</p>
               <p class="p-1 text-xl text-100">
-                총 게임 수 : {{ mapData.total_matches_count }}
+                총 게임 수 : {{ mapData.aggregated_result.total_matches_count }}
               </p>
             </div>
 
@@ -34,7 +34,7 @@
                       mapData.aggregated_result.protoss_wins_to_terran_count
                     }}승
                     {{
-                      mapData.aggregated_result.protoss_loses_to_terran_count
+                      mapData.aggregated_result.terran_wins_to_protoss_count
                     }}패</label
                   >
                   <PercentageBar
@@ -45,7 +45,7 @@
                     >VS 저그 /
                     {{ mapData.aggregated_result.protoss_wins_to_zerg_count }}승
                     {{
-                      mapData.aggregated_result.protoss_loses_to_zerg_count
+                      mapData.aggregated_result.zerg_wins_to_protoss_count
                     }}패</label
                   >
                   <PercentageBar
@@ -64,7 +64,7 @@
                       mapData.aggregated_result.terran_wins_to_protoss_count
                     }}승
                     {{
-                      mapData.aggregated_result.terran_loses_to_protoss_count
+                      mapData.aggregated_result.protoss_wins_to_terran_count
                     }}패</label
                   >
                   <PercentageBar
@@ -75,7 +75,7 @@
                     >VS 저그 /
                     {{ mapData.aggregated_result.terran_wins_to_zerg_count }}승
                     {{
-                      mapData.aggregated_result.terran_loses_to_zerg_count
+                      mapData.aggregated_result.zerg_wins_to_terran_count
                     }}패</label
                   >
                   <PercentageBar
@@ -92,7 +92,7 @@
                     >VS 프로토스 /
                     {{ mapData.aggregated_result.zerg_wins_to_protoss_count }}승
                     {{
-                      mapData.aggregated_result.zerg_loses_to_protoss_count
+                      mapData.aggregated_result.protoss_wins_to_zerg_count
                     }}패</label
                   >
                   <PercentageBar
@@ -103,7 +103,7 @@
                     >VS 테란 /
                     {{ mapData.aggregated_result.zerg_wins_to_terran_count }}승
                     {{
-                      mapData.aggregated_result.zerg_loses_to_terran_count
+                      mapData.aggregated_result.terran_wins_to_zerg_count
                     }}패</label
                   >
                   <PercentageBar
@@ -137,40 +137,44 @@ export default defineComponent({
     const terranColor = [29, 115, 221];
     const zergColor = [116, 36, 174];
 
-    const calculatePercentage = (wins, loses) => {
-      return ((wins / (wins + loses)) * 100).toFixed(2);
+    const percentage = (winning_count, losing_count) => {
+      if (losing_count + winning_count <= 0) {
+        return 0.0;
+      }
+
+      return (
+        Math.round((winning_count / (winning_count + losing_count)) * 1000) / 10
+      );
     };
 
     const mapStatistics = ref(null);
 
     onMounted(() => {
-      mapStatistics.value = props.data;
-
-      mapStatistics.value.forEach((mapData) => {
+      props.data.forEach((mapData) => {
         const raceRelativity = {
-          pvt: calculatePercentage(
+          pvt: percentage(
             mapData.aggregated_result.protoss_wins_to_terran_count,
-            mapData.aggregated_result.protoss_loses_to_terran_count
+            mapData.aggregated_result.terran_wins_to_protoss_count
           ),
-          pvz: calculatePercentage(
+          pvz: percentage(
             mapData.aggregated_result.protoss_wins_to_zerg_count,
-            mapData.aggregated_result.protoss_loses_to_zerg_count
+            mapData.aggregated_result.zerg_wins_to_protoss_count
           ),
-          tvp: calculatePercentage(
+          tvp: percentage(
             mapData.aggregated_result.terran_wins_to_protoss_count,
-            mapData.aggregated_result.terran_loses_to_protoss_count
+            mapData.aggregated_result.protoss_wins_to_terran_count
           ),
-          tvz: calculatePercentage(
+          tvz: percentage(
             mapData.aggregated_result.terran_wins_to_zerg_count,
-            mapData.aggregated_result.terran_loses_to_zerg_count
+            mapData.aggregated_result.zerg_wins_to_terran_count
           ),
-          zvp: calculatePercentage(
+          zvp: percentage(
             mapData.aggregated_result.zerg_wins_to_protoss_count,
-            mapData.aggregated_result.zerg_loses_to_protoss_count
+            mapData.aggregated_result.protoss_wins_to_zerg_count
           ),
-          zvt: calculatePercentage(
+          zvt: percentage(
             mapData.aggregated_result.zerg_wins_to_terran_count,
-            mapData.aggregated_result.zerg_loses_to_terran_count
+            mapData.aggregated_result.terran_wins_to_zerg_count
           ),
         };
         mapData.winningRate = {};
@@ -212,6 +216,7 @@ export default defineComponent({
           },
         };
       });
+      mapStatistics.value = props.data;
     });
 
     return {

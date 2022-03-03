@@ -48,11 +48,6 @@ export default defineComponent({
     return {
       items: [
         {
-          label: "유저 정보",
-          icon: "pi pi-fw pi-users",
-          to: "/user/unknown",
-        },
-        {
           label: "Elo 랭킹",
           icon: "pi pi-fw pi-chart-line",
           to: "/elo-rank/",
