@@ -42,11 +42,19 @@
             <div
               v-for="(item, index) in playerInformation.statistics"
               :key="index"
-              class="flex justify-content-between p-2"
+              class="grid grid-nogutter p-2"
               id="content-item"
             >
-              <span>{{ item.label }}</span>
-              <span>{{ item.value }}</span>
+              <div class="col-4">{{ item.label }}</div>
+              <div
+                class="col-6 text-right"
+                style="border-right: dashed 1px lightgray; padding-right: 10px"
+              >
+                {{ item.value }}
+              </div>
+              <div class="col-2 text-right" style="color: gray">
+                {{ item.percentage }}
+              </div>
             </div>
           </StripePanel>
         </div>
@@ -162,7 +170,7 @@ export default defineComponent({
       selectedLeague.value = leagueList.value[0].id;
 
       // Fetch statistics and Elo and matches
-      await getPlayerStatisticsRelatedWithLeague();
+      await fetchPlayerStatisticsRelatedWithLeague();
 
       playerInformation.value.isFetched = true;
     });
@@ -199,72 +207,64 @@ export default defineComponent({
       const list = [
         {
           label: "개인",
-          value: `${data.winning_melee_matches_count}-${
-            data.losing_melee_matches_count
-          } / ${percentage(
+          value: `${data.winning_melee_matches_count}-${data.losing_melee_matches_count}`,
+          percentage: `${percentage(
             data.winning_melee_matches_count,
             data.losing_melee_matches_count
           )}%`,
         },
         {
           label: "팀플",
-          value: `${data.winning_top_and_bottom_matches_count}-${
-            data.losing_top_and_bottom_matches_count
-          } / ${percentage(
+          value: `${data.winning_top_and_bottom_matches_count}-${data.losing_top_and_bottom_matches_count}`,
+          percentage: `${percentage(
             data.winning_top_and_bottom_matches_count,
             data.losing_top_and_bottom_matches_count
           )}%`,
         },
         {
           label: "프로토스 vs 테란",
-          value: `${data.protoss_wins_to_terran_count}-${
-            data.protoss_loses_to_terran_count
-          } / ${percentage(
+          value: `${data.protoss_wins_to_terran_count}-${data.protoss_loses_to_terran_count}`,
+          percentage: `${percentage(
             data.protoss_wins_to_terran_count,
             data.protoss_loses_to_terran_count
           )}%`,
         },
         {
           label: "프로토스 vs 저그",
-          value: `${data.protoss_wins_to_zerg_count}-${
-            data.protoss_loses_to_zerg_count
-          } / ${percentage(
+          value: `${data.protoss_wins_to_zerg_count}-${data.protoss_loses_to_zerg_count}`,
+          percentage: `${percentage(
             data.protoss_wins_to_zerg_count,
             data.protoss_loses_to_zerg_count
           )}%`,
         },
         {
           label: "테란 vs 프로토스",
-          value: `${data.terran_wins_to_protoss_count}-${
-            data.terran_loses_to_protoss_count
-          } / ${percentage(
+          value: `${data.terran_wins_to_protoss_count}-${data.terran_loses_to_protoss_count}`,
+          percentage: `${percentage(
             data.terran_wins_to_protoss_count,
             data.terran_loses_to_protoss_count
           )}%`,
         },
         {
           label: "테란 vs 저그",
-          value: `${data.terran_wins_to_zerg_count}-${
-            data.terran_loses_to_zerg_count
-          } / ${percentage(
+          value: `${data.terran_wins_to_zerg_count}-${data.terran_loses_to_zerg_count}`,
+          percentage: `${percentage(
             data.terran_wins_to_zerg_count,
             data.terran_loses_to_zerg_count
           )}%`,
         },
         {
           label: "저그 vs 프로토스",
-          value: `${data.zerg_wins_to_protoss_count}-${
-            data.zerg_loses_to_protoss_count
-          } / ${percentage(
+          value: `${data.zerg_wins_to_protoss_count}-${data.zerg_loses_to_protoss_count}`,
+          percentage: `${percentage(
             data.zerg_wins_to_protoss_count,
             data.zerg_loses_to_protoss_count
           )}%`,
         },
         {
           label: "저그 vs 테란",
-          value: `${data.zerg_wins_to_terran_count}-${
-            data.zerg_loses_to_terran_count
-          } / ${percentage(
+          value: `${data.zerg_wins_to_terran_count}-${data.zerg_loses_to_terran_count}`,
+          percentage: `${percentage(
             data.zerg_wins_to_terran_count,
             data.zerg_loses_to_terran_count
           )}%`,
@@ -274,7 +274,7 @@ export default defineComponent({
       return list;
     };
 
-    const getPlayerStatisticsRelatedWithLeague = async () => {
+    const fetchPlayerStatisticsRelatedWithLeague = async () => {
       // Fetch statistics
       let response = await ServerApi.fetchPlayerStatistics(
         player.value.id,
@@ -367,7 +367,7 @@ export default defineComponent({
       matchResultList,
       playerInformation,
       selectedLeague,
-      getPlayerStatisticsRelatedWithLeague,
+      fetchPlayerStatisticsRelatedWithLeague,
     };
   },
 });

@@ -1,39 +1,55 @@
 <template>
   <MenuBar class="tabmenu" :model="items">
     <template #start>
-      <div class="text-4xl mr-4">Haley.GG</div>
+      <div class="text-4xl mr-4" @click="routeToHome()">Haley.GG</div>
     </template>
     <template #end>
-      <form @submit.prevent="search()">
-        <div class="flex align-items-center">
-          <div class="p-input-icon-right">
-            <i class="pi pi-search" @click="search()" />
-            <InputText
-              class="p-inputtext-sm"
-              placeholder="검색"
-              type="text"
-              v-model="playerName"
-            />
+      <div class="flex align-items-center">
+        <!-- login status -->
+        <div class="pi pi-cog pr-3" @click="loginButtonClicked()"></div>
+
+        <form @submit.prevent="search()">
+          <div class="flex align-items-center">
+            <div class="p-input-icon-right">
+              <i class="pi pi-search" @click="search()" />
+              <InputText
+                class="p-inputtext-sm"
+                placeholder="검색"
+                type="text"
+                v-model="playerName"
+              />
+            </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </div>
       <LoginModal />
     </template>
   </MenuBar>
 </template>
 
 <script>
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, provide } from "vue";
 import { useRouter } from "vue-router";
-import MenuBar from "primevue/menubar";
 import InputText from "primevue/inputtext";
+import MenuBar from "primevue/menubar";
+
+import LoginModal from "@/components/LoginModal.vue";
 
 export default defineComponent({
   components: {
     InputText,
+    LoginModal,
     MenuBar,
   },
   setup() {
+    const isLoginButtonClicked = ref(false);
+    provide("isLoginButtonClicked", isLoginButtonClicked);
+    const loginButtonClicked = () => {
+      if (isLoginButtonClicked.value == false)
+        isLoginButtonClicked.value = true;
+    };
+
+    const playerName = ref("");
     const router = useRouter();
     const search = () => {
       router.push({
@@ -43,7 +59,12 @@ export default defineComponent({
         },
       });
     };
-    const playerName = ref("");
+
+    const routeToHome = () => {
+      router.push({
+        name: "HomeView",
+      });
+    };
 
     return {
       items: [
@@ -60,6 +81,8 @@ export default defineComponent({
       ],
       playerName,
       search,
+      routeToHome,
+      loginButtonClicked,
     };
   },
 });

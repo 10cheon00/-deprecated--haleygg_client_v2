@@ -31,15 +31,22 @@
         </div>
         <div class="mt-1" id="match-result-date">{{ matchResult.date }}</div>
       </div>
+
       <div class="col-6">
         <div
           v-for="player_tuple in matchResult.player_tuples"
           :key="player_tuple"
+          class="grid grid-nogutter"
         >
-          {{ player_tuple.winner }} ( {{ player_tuple.winner_race }} ) |
-          {{ player_tuple.loser }} ( {{ player_tuple.loser_race }} )
+          <div class="col-6">
+            {{ player_tuple.winner }} ( {{ player_tuple.winner_race }} )
+          </div>
+          <div class="col-6">
+            {{ player_tuple.loser }} ( {{ player_tuple.loser_race }} )
+          </div>
         </div>
       </div>
+
       <div class="col-1 text-lg font-bold" id="match-result-map">
         {{ matchResult.map }}
       </div>
@@ -94,7 +101,7 @@ export default defineComponent({
 
 <style scoped>
 #match-result {
-  height: 4rem;
+  height: 5rem;
 }
 #match-result-date {
   font-size: 0.5rem;

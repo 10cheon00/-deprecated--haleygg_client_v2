@@ -29,10 +29,10 @@ export default defineComponent({
     const mapDataList = ref(null);
     onMounted(async () => {
       //fetch map statistics
-      const response = await ServerApi.getMapList();
+      const response = await ServerApi.fetchMapList();
       const mapList = response.data;
       for (let key in mapList) {
-        let response = await ServerApi.getMapStatistics(mapList[key].id);
+        let response = await ServerApi.fetchMapStatistics(mapList[key].id);
         mapList[key].aggregated_result = response.data;
       }
       mapDataList.value = mapList;
