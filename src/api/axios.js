@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import VuexStore from "@/store/store.js";
+import vuexStore from "@/store/store.js";
 import router from "@/router/index.js";
 
 const serverUrl = "/server";
@@ -18,18 +18,18 @@ axiosInstance.interceptors.request.use(
   config => {
     if (config.url == 'api/auth/token/refresh/') {
       config.data = {
-        refresh: VuexStore.getters["tokenStore/getRefreshToken"]
+        refresh: vuexStore.getters["tokenStore/getRefreshToken"]
       }
     }
     else if (config.url == 'api/auth/token/verify/') {
       config.data = {
-        token: VuexStore.getters["tokenStore/getAccessToken"]
+        token: vuexStore.getters["tokenStore/getAccessToken"]
       }
     }
-    else if (VuexStore.getters["tokenStore/isTokenExists"]) {
+    else if (vuexStore.getters["tokenStore/isTokenExists"]) {
       config.headers = {
         "Content-Type": "application/json; charset=utf-8",
-        "Authorization": `Bearer ${VuexStore.getters["tokenStore/getAccessToken"]}`
+        "Authorization": `Bearer ${vuexStore.getters["tokenStore/getAccessToken"]}`
       };
     }
 
@@ -39,8 +39,12 @@ axiosInstance.interceptors.request.use(
   }
 )
 
-axiosInstance.interceptors.response.use(config => {
-  return config;
+axiosInstance.interceptors.response.use(response => {
+  if (response.config.url == "api/auth/token/refresh/") {
+    // get username from payload.
+    vuexStore.commit("tokenStore/setUserNameFromResponse", response);
+  }
+  return response;
 }, async error => {
   if (error.response.status == 404) {
     router.push({
@@ -53,7 +57,7 @@ axiosInstance.interceptors.response.use(config => {
     if (error.config.url == "api/auth/token/") {
       return Promise.reject(error);
     }
-    else if (VuexStore.getters["tokenStore/isTokenExists"] == false) {
+    else if (vuexStore.getters["tokenStore/isTokenExists"] == false) {
       // Wrong access
       router.push({
         name: "401UnauthorizedAccessView"
@@ -70,7 +74,7 @@ axiosInstance.interceptors.response.use(config => {
 
       if (response.error) {
         // refresh token expired.
-        VuexStore.commit("tokenStore/flushToken");
+        vuexStore.commit("tokenStore/flushToken");
         router.push({
           name: "401UnauthorizedAccessView"
         });
@@ -78,7 +82,7 @@ axiosInstance.interceptors.response.use(config => {
       }
       else {
         // retry with new access token.
-        VuexStore.commit("tokenStore/setAccessToken", response.data.access);
+        vuexStore.commit("tokenStore/setAccessToken", response.data.access);
         return await axiosInstance.request(error.config);
       }
     }

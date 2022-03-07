@@ -1,14 +1,31 @@
 <template>
   <MenuBar class="tabmenu" :model="items">
     <template #start>
-      <div class="text-4xl mr-4" @click="routeToHome()">Haley.GG</div>
+      <Button
+        class="p-button-text p-button-secondary text-4xl mr-4"
+        label="Haley.GG"
+        @click="routeToHome()"
+      />
     </template>
     <template #end>
       <div class="flex align-items-center">
         <!-- login status -->
         <div class="pr-3">
-          <div v-if="isAuthenticated">로그인됨</div>
-          <div v-else class="pi pi-cog" @click="loginButtonClicked()"></div>
+          <div v-if="userName.length > 0" class="flex align-items-center">
+            <span>{{ userName }}</span>
+            <Button
+              class="ml-3"
+              id="credential-button"
+              icon="pi pi-sign-out"
+              @click="logoutButtonClicked()"
+            />
+          </div>
+          <Button
+            v-else
+            icon="pi pi-cog"
+            id="credential-button"
+            @click="loginButtonClicked()"
+          />
         </div>
 
         <form @submit.prevent="search()">
@@ -31,32 +48,36 @@
 </template>
 
 <script>
-import { defineComponent, ref, provide, onMounted } from "vue";
+import { defineComponent, ref, provide, computed } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
+import Button from "primevue/button";
 import InputText from "primevue/inputtext";
 import MenuBar from "primevue/menubar";
 
 import LoginModal from "@/components/LoginModal.vue";
-import ServerApi from "@/api/server/module.js";
 
 export default defineComponent({
   components: {
+    Button,
     InputText,
     LoginModal,
     MenuBar,
   },
   setup() {
+    const router = useRouter();
+    const vuexStore = useStore();
+
     const isLoginButtonClicked = ref(false);
     provide("isLoginButtonClicked", isLoginButtonClicked);
     const loginButtonClicked = () => {
       if (isLoginButtonClicked.value == false)
         isLoginButtonClicked.value = true;
     };
-    const isAuthenticated = ref(false);
+    const logoutButtonClicked = () => {
+      vuexStore.commit("tokenStore/flushToken");
+    };
 
-    const router = useRouter();
-    const vuexStore = useStore();
     const playerName = ref("");
     const search = () => {
       router.push({
@@ -73,39 +94,11 @@ export default defineComponent({
       });
     };
 
-    onMounted(() => {
-      if (vuexStore.getters["tokenStore/isTokenExists"]) {
-        ServerApi.requestVerifyToken()
-          .then((response) => {
-            console.log(response);
-            isAuthenticated.value = true;
-          })
-          .catch((error) => {
-            console.log(error);
-            isAuthenticated.value = false;
-          });
-
-        /*
-          
-[06/Mar/2022 12:58:58] "POST /api/auth/token/verify/ HTTP/1.1" 401 65
-[06/Mar/2022 12:58:58] "POST /api/auth/token/refresh/ HTTP/1.1" 200 21
-Unauthorized: /api/players/Hehe/
-[06/Mar/2022 12:58:58] "GET /api/players/Hehe/ HTTP/1.1" 401 183
-[06/Mar/2022 12:58:58] "POST /api/auth/token/verify/ HTTP/1.1" 200 2
-[06/Mar/2022 12:58:58] "POST /api/auth/token/refresh/ HTTP/1.1" 200 218
-verify가 가장 먼저 요청됨. 이게 실패하니까 refresh가 요청됨.
-이와중에 player detail을 요청함. refresh가 끝나지 않아 토큰이 올바르지 않음.
-player detail이 실패하여 다시 refresh를 요청함. 이 때는 verify-refresh가 성공한 상태. verify 재요청
-player detail-refresh가 성공함. player detail재요청.
-
-verify말고 refresh할 때 유저명을 반환받는 방법을 찾아야겠다. 
-
-          */
-      }
+    const userName = computed(() => {
+      return vuexStore.getters["tokenStore/getUserName"];
     });
 
     return {
-      isAuthenticated,
       items: [
         {
           label: "Elo 랭킹",
@@ -119,15 +112,22 @@ verify말고 refresh할 때 유저명을 반환받는 방법을 찾아야겠다.
         },
       ],
       playerName,
+      userName,
       search,
       routeToHome,
       loginButtonClicked,
+      logoutButtonClicked,
     };
   },
 });
 </script>
 
 <style scoped>
+#credential-button {
+  background-color: #dd0ea6;
+  border-color: #dd0ea6;
+  border-radius: 50%;
+}
 .p-menubar {
   background: linear-gradient(120deg, #fea29a, #fe62d4);
   border: none;

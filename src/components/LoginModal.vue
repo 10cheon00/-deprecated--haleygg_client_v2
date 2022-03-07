@@ -54,9 +54,11 @@ export default defineComponent({
               "tokenStore/setRefreshToken",
               response.data.refresh
             );
+            vuexStore.commit("tokenStore/setUserNameFromResponse", response);
             closeModal();
           })
           .catch((error) => {
+            console.log(error);
             if (error.response.status == 401) {
               error_message.value = "아이디나 비밀번호가 잘못 입력되었습니다.";
             }
