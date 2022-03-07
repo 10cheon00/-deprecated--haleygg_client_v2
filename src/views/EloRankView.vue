@@ -57,7 +57,7 @@
 import { defineComponent, onMounted, ref } from "vue";
 import DropDown from "primevue/dropdown";
 
-import ServerApi from "@/apis/server-api.js";
+import ServerApi from "@/api/server/module.js";
 import PercentageBar from "@/components/PercentageBar.vue";
 import StripePanel from "@/components/StripePanel.vue";
 
@@ -105,7 +105,6 @@ export default defineComponent({
         ];
       });
       eloList.value = response.data;
-      console.log(eloList.value);
     };
 
     return {

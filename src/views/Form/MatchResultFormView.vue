@@ -29,10 +29,10 @@
             <!-- Title -->
             <div class="col-12 flex align-items-center my-2">
               <label id="form-label">게임 제목</label>
-              <InputText 
-                v-model="matchResultForm.title" 
-                class="flex-grow-1 flex" 
-                type="text" 
+              <InputText
+                v-model="matchResultForm.title"
+                class="flex-grow-1 flex"
+                type="text"
               />
             </div>
 
@@ -60,16 +60,20 @@
           </div>
 
           <!-- Players -->
-          <div class="col-12 lg:col-6 grid grid-nogutter align-content-start p-3">
-            <div class="col-12 text-xl mb-3" id="form-header">플레이어 정보</div>
+          <div
+            class="col-12 lg:col-6 grid grid-nogutter align-content-start p-3"
+          >
+            <div class="col-12 text-xl mb-3" id="form-header">
+              플레이어 정보
+            </div>
             <div
-              v-for="(player, playerIndex) in matchResultForm.playerList"
+              v-for="(player, playerIndex) in matchResultForm.player_tuples"
               :key="playerIndex"
               class="col-12 flex my-2 align-items-center"
             >
               <label id="form-label">이름</label>
               <DropDown
-                v-model="matchResultForm.playerList[playerIndex].id"
+                v-model="matchResultForm.player_tuples[playerIndex].id"
                 class="flex-grow-1 flex mx-3"
                 optionLabel="name"
                 optionValue="id"
@@ -77,24 +81,26 @@
               />
               <div class="flex-none flex align-items-center">
                 <CheckBox
-                  v-model="matchResultForm.playerList[playerIndex].isWin"
+                  v-model="matchResultForm.player_tuples[playerIndex].isWin"
                   class="mx-1"
                   :binary="true"
                 />
                 <label>승리</label>
               </div>
               <Button
-                @click="deletePlayerFromList(
-                  playerIndex,
-                  matchResultForm.playerList
-                )"
+                @click="
+                  deletePlayerFromList(
+                    playerIndex,
+                    matchResultForm.player_tuples
+                  )
+                "
                 class="flex-none flex p-button-danger mx-1"
                 icon="pi pi-trash"
               ></Button>
             </div>
             <div class="col-12">
               <Button
-                @click="addPlayerToPlayerList(matchResultForm.playerList)"
+                @click="addPlayerToPlayerList(matchResultForm.player_tuples)"
                 class="w-full flex justify-content-center"
               >
                 <i class="pi pi-plus"></i>
@@ -131,7 +137,7 @@
         <i class="pi pi-plus"></i>
         <span>&nbsp;새 전적 추가</span>
       </Button>
-      <Button class="p-button-success" @click="save()">
+      <Button class="p-button-success" @click="createMatch()">
         <i class="pi pi-save"></i>
         <span>&nbsp;저장</span>
       </Button>
@@ -140,13 +146,14 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, ref } from 'vue';
-import Button from 'primevue/button';
-import Calendar from 'primevue/calendar';
-import CheckBox from 'primevue/checkbox';
-import DropDown from 'primevue/dropdown';
-import InputText from 'primevue/inputtext';
+import { defineComponent, onMounted, ref } from "vue";
+import Button from "primevue/button";
+import Calendar from "primevue/calendar";
+import CheckBox from "primevue/checkbox";
+import DropDown from "primevue/dropdown";
+import InputText from "primevue/inputtext";
 
+import ServerApi from "@/api/server/module.js";
 import StripePanel from "@/components/StripePanel.vue";
 
 export default defineComponent({
@@ -156,7 +163,7 @@ export default defineComponent({
     CheckBox,
     DropDown,
     InputText,
-    StripePanel
+    StripePanel,
   },
   setup() {
     const clanData = ref(null);
@@ -164,59 +171,58 @@ export default defineComponent({
 
     const addNewMatchResultForm = () => {
       matchResultFormList.value.push({
-        league: '',
-        title: '',
+        league: "",
+        title: "",
         date: new Date(),
-        map: '',
-        playerList: [],
-        miscellaneous: ''
+        map: "",
+        player_tuples: [],
+        miscellaneous: "",
       });
     };
 
     const deleteMatchResultFormFromList = (indexOfTargetMatchResultForm) => {
-      matchResultFormList.value.splice(indexOfTargetMatchResultForm, 1)
-    }
+      matchResultFormList.value.splice(indexOfTargetMatchResultForm, 1);
+    };
 
-    const addPlayerToPlayerList = (playerList) => {
-      playerList.push({
-        id: '',
-        isWin: false
+    const addPlayerToPlayerList = (player_tuples) => {
+      player_tuples.push({
+        id: "",
+        isWin: false,
       });
     };
 
-    const deletePlayerFromList = (indexOfTargetPlayer, playerList) => {
-      playerList.splice(indexOfTargetPlayer, 1);
+    const deletePlayerFromList = (indexOfTargetPlayer, player_tuples) => {
+      player_tuples.splice(indexOfTargetPlayer, 1);
     };
 
-    onMounted(() => {
+    const createMatch = async () => {
+      const response = await ServerApi.createMatch();
+      console.log(response.data);
+    };
+
+    onMounted(async () => {
       clanData.value = {};
-      clanData.value.leagueList = [
-        { id: 0, name: 'HPL 1' },
-        { id: 1, name: 'HSL 1' },
-        { id: 2, name: '종족최강전' }
-      ];
-      clanData.value.mapList = [
-        { id: 0, name: 'ㅌ투혼1' },
-        { id: 1, name: 'H서킷' },
-        { id: 2, name: 'ㅁㄴㅇㄻㄴㅇㄹㄴㅁㄹ' }
-      ];
-      clanData.value.playerList = [
-        { id: 0, name: 'asdfadf' },
-        { id: 1, name: '34134' },
-        { id: 2, name: 'adfasdfasf' },
-        { id: 3, name: 'z989f0' }
-      ];
+
+      let response = await ServerApi.fetchLeagueList();
+      clanData.value.leagueList = response.data;
+
+      response = await ServerApi.fetchMapList();
+      clanData.value.mapList = response.data;
+
+      response = await ServerApi.fetchPlayerList();
+      clanData.value.playerList = response.data;
     });
     return {
       clanData,
       matchResultFormList,
       addNewMatchResultForm,
       addPlayerToPlayerList,
+      createMatch,
       deleteMatchResultFormFromList,
       deletePlayerFromList,
-    }
-  }
-})
+    };
+  },
+});
 </script>
 
 <style>

@@ -6,7 +6,10 @@
     <template #end>
       <div class="flex align-items-center">
         <!-- login status -->
-        <div class="pi pi-cog pr-3" @click="loginButtonClicked()"></div>
+        <div class="pr-3">
+          <div v-if="isAuthenticated">로그인됨</div>
+          <div v-else class="pi pi-cog" @click="loginButtonClicked()"></div>
+        </div>
 
         <form @submit.prevent="search()">
           <div class="flex align-items-center">
@@ -28,12 +31,14 @@
 </template>
 
 <script>
-import { defineComponent, ref, provide } from "vue";
+import { defineComponent, ref, provide, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { useStore } from "vuex";
 import InputText from "primevue/inputtext";
 import MenuBar from "primevue/menubar";
 
 import LoginModal from "@/components/LoginModal.vue";
+import ServerApi from "@/api/server/module.js";
 
 export default defineComponent({
   components: {
@@ -48,9 +53,11 @@ export default defineComponent({
       if (isLoginButtonClicked.value == false)
         isLoginButtonClicked.value = true;
     };
+    const isAuthenticated = ref(false);
 
-    const playerName = ref("");
     const router = useRouter();
+    const vuexStore = useStore();
+    const playerName = ref("");
     const search = () => {
       router.push({
         name: "UserInformationView",
@@ -66,7 +73,39 @@ export default defineComponent({
       });
     };
 
+    onMounted(() => {
+      if (vuexStore.getters["tokenStore/isTokenExists"]) {
+        ServerApi.requestVerifyToken()
+          .then((response) => {
+            console.log(response);
+            isAuthenticated.value = true;
+          })
+          .catch((error) => {
+            console.log(error);
+            isAuthenticated.value = false;
+          });
+
+        /*
+          
+[06/Mar/2022 12:58:58] "POST /api/auth/token/verify/ HTTP/1.1" 401 65
+[06/Mar/2022 12:58:58] "POST /api/auth/token/refresh/ HTTP/1.1" 200 21
+Unauthorized: /api/players/Hehe/
+[06/Mar/2022 12:58:58] "GET /api/players/Hehe/ HTTP/1.1" 401 183
+[06/Mar/2022 12:58:58] "POST /api/auth/token/verify/ HTTP/1.1" 200 2
+[06/Mar/2022 12:58:58] "POST /api/auth/token/refresh/ HTTP/1.1" 200 218
+verify가 가장 먼저 요청됨. 이게 실패하니까 refresh가 요청됨.
+이와중에 player detail을 요청함. refresh가 끝나지 않아 토큰이 올바르지 않음.
+player detail이 실패하여 다시 refresh를 요청함. 이 때는 verify-refresh가 성공한 상태. verify 재요청
+player detail-refresh가 성공함. player detail재요청.
+
+verify말고 refresh할 때 유저명을 반환받는 방법을 찾아야겠다. 
+
+          */
+      }
+    });
+
     return {
+      isAuthenticated,
       items: [
         {
           label: "Elo 랭킹",

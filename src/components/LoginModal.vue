@@ -10,6 +10,7 @@
         <label class="mx-3" id="form-label">Password</label>
         <InputText class="w-full" v-model="password" type="password" />
       </div>
+      {{ error_message }}
       <Button class="w-full" type="submit" color="success">
         <div class="w-full">로그인</div>
       </Button>
@@ -19,9 +20,12 @@
 
 <script>
 import { defineComponent, inject, ref } from "vue";
+import { useStore } from "vuex";
 import Button from "primevue/button";
 import Dialog from "primevue/dialog";
 import InputText from "primevue/inputtext";
+
+import ServerApi from "@/api/server/module.js";
 
 export default defineComponent({
   components: {
@@ -30,17 +34,38 @@ export default defineComponent({
     InputText,
   },
   setup() {
+    const visible = inject("isLoginButtonClicked");
+
     const id = ref("");
     const password = ref("");
-    const visible = inject("isLoginButtonClicked");
+    const error_message = ref("");
+    const vuexStore = useStore();
 
     const closeModal = () => {
       visible.value = false;
     };
+
     const login = () => {
-      if (id.value.length > 0 && password.value.length > 0) alert("fasdf");
+      if (id.value.length > 0 && password.value.length > 0) {
+        ServerApi.requestLogin(id.value, password.value)
+          .then((response) => {
+            vuexStore.commit("tokenStore/setAccessToken", response.data.access);
+            vuexStore.commit(
+              "tokenStore/setRefreshToken",
+              response.data.refresh
+            );
+            closeModal();
+          })
+          .catch((error) => {
+            if (error.response.status == 401) {
+              error_message.value = "아이디나 비밀번호가 잘못 입력되었습니다.";
+            }
+          });
+      }
     };
+
     return {
+      error_message,
       id,
       password,
       visible,

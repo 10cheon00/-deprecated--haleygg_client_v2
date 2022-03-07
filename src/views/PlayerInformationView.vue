@@ -60,7 +60,7 @@
         </div>
 
         <!-- Elo chart -->
-        <div class="col-12 md:col-8 p-3" id="elo-chart">
+        <div class="col-12 md:col-8 p-3">
           <StripePanel
             header="Elo Chart"
             :stripeColor="playerInformation.favorate_race"
@@ -71,14 +71,16 @@
                 :options="leagueList"
                 optionLabel="name"
                 optionValue="id"
-                @change="getPlayerStatisticsRelatedWithLeague()"
+                @change="fetchPlayerStatisticsRelatedWithLeague()"
               />
             </template>
-            <Chart
-              type="line"
-              :data="playerInformation.eloChartData"
-              :options="playerInformation.eloChartOptions"
-            />
+            <div id="elo-chart">
+              <Chart
+                type="line"
+                :data="playerInformation.eloChartData"
+                :options="playerInformation.eloChartOptions"
+              />
+            </div>
           </StripePanel>
         </div>
       </div>
@@ -120,7 +122,7 @@ import Chart from "primevue/chart";
 import CheckBox from "primevue/checkbox";
 import DropDown from "primevue/dropdown";
 
-import ServerApi from "@/apis/server-api.js";
+import ServerApi from "@/api/server/module.js";
 import MatchResultList from "@/components/MatchResultList.vue";
 import StripePanel from "@/components/StripePanel.vue";
 
@@ -280,6 +282,7 @@ export default defineComponent({
         player.value.id,
         selectedLeague.value
       );
+
       playerInformation.value.statistics = aggregateStatistics(response.data);
 
       // Fetch matches
@@ -392,6 +395,7 @@ export default defineComponent({
 
 .p-chart {
   width: 100%;
+  height: 280px;
   min-height: 280px;
   max-height: 280px;
 }

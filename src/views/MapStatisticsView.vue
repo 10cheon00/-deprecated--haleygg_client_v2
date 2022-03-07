@@ -16,7 +16,7 @@
 <script>
 import { defineComponent, onMounted, ref } from "vue";
 
-import ServerApi from "@/apis/server-api.js";
+import ServerApi from "@/api/server/module.js";
 import StripePanel from "@/components/StripePanel.vue";
 import MapStatisticsList from "@/components/MapStatisticsList.vue";
 

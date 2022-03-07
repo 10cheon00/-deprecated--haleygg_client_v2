@@ -25,13 +25,18 @@ const routes = [
     {
         name: 'MatchResultFormView',
         path: '/add-result/',
-        component: () => import("@/views/MatchResultFormView.vue")
+        component: () => import("@/views/Form/MatchResultFormView.vue")
+    },
+    {
+        name: '401UnauthorizedAccessView',
+        path: '/401/',
+        component: () => import("@/views/App/401UnauthorizedAccessView.vue")
     },
     {
         name: '404RedirectView',
         path: '/404/',
         component: () => import("@/views/App/404RedirectView.vue")
-    }
+    },
 ];
 
 export default createRouter({
