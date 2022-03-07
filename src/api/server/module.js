@@ -41,7 +41,7 @@ server.requestLogin = (id, password) => {
 server.requestVerifyToken = () => {
   return axiosInstance.request({
     method: "POST",
-    url: `api/auth/token/verify/`,
+    url: `api/auth/token/verify/`
   })
 }
 

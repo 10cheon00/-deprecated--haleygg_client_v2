@@ -35,7 +35,6 @@ const tokenStore = {
       const payload = response.data.access.split(".")[1];
       const decodedPayload = JSON.parse(window.atob(payload));
       state.username = decodedPayload.username;
-      console.log(decodedPayload.username)
     }
   }
 }

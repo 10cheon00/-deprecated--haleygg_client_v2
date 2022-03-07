@@ -76,6 +76,7 @@ export default defineComponent({
     };
     const logoutButtonClicked = () => {
       vuexStore.commit("tokenStore/flushToken");
+      router.go();
     };
 
     const playerName = ref("");
@@ -98,8 +99,8 @@ export default defineComponent({
       return vuexStore.getters["tokenStore/getUserName"];
     });
 
-    return {
-      items: [
+    const items = computed(() => {
+      const list = [
         {
           label: "Elo 랭킹",
           icon: "pi pi-fw pi-chart-line",
@@ -110,7 +111,20 @@ export default defineComponent({
           icon: "pi pi-fw pi-eye",
           to: "/map/",
         },
-      ],
+      ];
+
+      if (userName.value.length > 0) {
+        list.push({
+          label: "결과 입력",
+          icon: "pi pi-fw pi-cloud-upload",
+          to: "/add-result/",
+        });
+      }
+      return list;
+    });
+
+    return {
+      items,
       playerName,
       userName,
       search,

@@ -1,5 +1,19 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
+import ServerApi from "@/api/server/module.js";
+
+
+const routeOnlyAuthenticatedUser = async (to, from, next) => {
+    const response = await ServerApi.requestVerifyToken() || false;
+    const isAuthenticated = (response.status == 200)
+    if (isAuthenticated) {
+        next();
+    }
+    else {
+        next({ name: "401UnauthorizedAccessView" })
+    }
+}
+
 const routes = [
     {
         name: 'HomeView',
@@ -25,7 +39,8 @@ const routes = [
     {
         name: 'MatchResultFormView',
         path: '/add-result/',
-        component: () => import("@/views/Form/MatchResultFormView.vue")
+        component: () => import("@/views/Form/MatchResultFormView.vue"),
+        beforeEnter: [routeOnlyAuthenticatedUser]
     },
     {
         name: '401UnauthorizedAccessView',
@@ -37,6 +52,10 @@ const routes = [
         path: '/404/',
         component: () => import("@/views/App/404RedirectView.vue")
     },
+    {
+        path: '/:pathMatch(.*)*',
+        redirect: { name: '404RedirectView' }
+    }
 ];
 
 export default createRouter({
