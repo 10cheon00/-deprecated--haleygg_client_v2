@@ -67,15 +67,14 @@ axiosInstance.interceptors.response.use(response => {
     else {
       if (error.config.isRetried === undefined) {
         // Request to refresh token.
-        axiosInstance.request({
+        const response = await axiosInstance.request({
           method: "POST",
           url: `api/auth/token/refresh/`,
           isRetried: true
-        }).then(response => {
-          // retry with new token.
-          vuexStore.commit("tokenStore/setAccessToken", response.data.access);
-          return axiosInstance.request(error.config);
-        })
+        });
+        // retry with new token.
+        vuexStore.commit("tokenStore/setAccessToken", response.data.access);
+        return axiosInstance.request(error.config);
       }
       else {
         // failed to refresh token.
