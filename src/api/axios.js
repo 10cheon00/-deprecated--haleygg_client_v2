@@ -64,31 +64,28 @@ axiosInstance.interceptors.response.use(response => {
       });
       return Promise.reject(error)
     }
-    else if (error.config.isRetried === undefined) {
-      // Request to refresh token
-      error.config.isRetried = true;
-      const response = await axiosInstance.request({
-        method: "POST",
-        url: `api/auth/token/refresh/`
-      })
-
-      if (response.error) {
-        // refresh token expired.
+    else {
+      if (error.config.isRetried === undefined) {
+        // Request to refresh token.
+        axiosInstance.request({
+          method: "POST",
+          url: `api/auth/token/refresh/`,
+          isRetried: true
+        }).then(response => {
+          // retry with new token.
+          vuexStore.commit("tokenStore/setAccessToken", response.data.access);
+          return axiosInstance.request(error.config);
+        })
+      }
+      else {
+        // failed to refresh token.
         vuexStore.commit("tokenStore/flushToken");
         router.push({
           name: "401UnauthorizedAccessView"
         });
-        return Promise.reject(response.error)
-      }
-      else {
-        // retry with new access token.
-        vuexStore.commit("tokenStore/setAccessToken", response.data.access);
-        return await axiosInstance.request(error.config);
       }
     }
-    else {
-      return Promise.reject(error)
-    }
+    return Promise.reject(error);
   }
 })
 
