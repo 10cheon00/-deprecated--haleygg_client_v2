@@ -24,7 +24,7 @@
 
     <div class="grid grid-nogutter">
       <!-- Career -->
-      <div class="col-12 p-3 pb-0">
+      <div class="col-12 p-3">
         <StripePanel
           header="Career"
           :stripeColor="playerInformation.profile.favorate_race"
@@ -32,6 +32,10 @@
           <div class="p-3">{{ playerInformation.profile.career }}</div>
         </StripePanel>
       </div>
+
+      <!-- League selector -->
+      <LeagueSelector class="col-12 mt-5" :leagueList="leagueList" />
+
       <div class="col-12 grid grid-nogutter">
         <!-- Statistics -->
         <div class="col-12 md:col-4 p-3">
@@ -65,15 +69,6 @@
             header="Elo Chart"
             :stripeColor="playerInformation.favorate_race"
           >
-            <template #header-right>
-              <DropDown
-                v-model="selectedLeague"
-                :options="leagueList"
-                optionLabel="name"
-                optionValue="id"
-                @change="fetchPlayerStatisticsRelatedWithLeague()"
-              />
-            </template>
             <div id="elo-chart">
               <Chart
                 type="line"
@@ -113,24 +108,39 @@
         :matchResultList="matchResultList"
         :resultListOwnerName="playerName"
       />
+      <div
+        v-if="nextURL"
+        class="
+          flex
+          align-items-center
+          justify-content-center
+          w-full
+          text-center
+          mt-1
+        "
+        style="height: 5rem; background-color: #fee2e6; color: gray"
+        @click="fetchPlayerNextMatches()"
+      >
+        <i class="pi pi-refresh"></i>&nbsp;더 보기
+      </div>
     </div>
   </div>
 </template>
 <script>
-import { defineComponent, ref, computed, onMounted } from "vue";
+import { defineComponent, ref, computed, onMounted, watch, provide } from "vue";
 import Chart from "primevue/chart";
 import CheckBox from "primevue/checkbox";
-import DropDown from "primevue/dropdown";
 
-import ServerApi from "@/api/server/module.js";
+import LeagueSelector from "@/components/LeagueSelector.vue";
 import MatchResultList from "@/components/MatchResultList.vue";
+import ServerApi from "@/api/server/module.js";
 import StripePanel from "@/components/StripePanel.vue";
 
 export default defineComponent({
   components: {
     Chart,
     CheckBox,
-    DropDown,
+    LeagueSelector,
     MatchResultList,
     StripePanel,
   },
@@ -144,12 +154,14 @@ export default defineComponent({
     const player = ref(null);
     const playerInformation = ref({ isFetched: false });
     const rawMatchResultList = ref([]);
+    const nextURL = ref(null);
 
     const isMeleeMatchResultShown = ref(true);
     const isTopAndBottomMatchResultShown = ref(true);
 
     const leagueList = ref(null);
     const selectedLeague = ref(null);
+    provide("selectedLeague", selectedLeague);
 
     const raceWallpaperUrls = {
       P: "https://bnetcmsus-a.akamaihd.net/cms/gallery/7EKSWN98V7M91498587613057.jpg",
@@ -173,6 +185,10 @@ export default defineComponent({
 
       // Fetch statistics and Elo and matches
       await fetchPlayerStatisticsRelatedWithLeague();
+
+      watch(selectedLeague, async () => {
+        await fetchPlayerStatisticsRelatedWithLeague();
+      });
 
       playerInformation.value.isFetched = true;
     });
@@ -276,6 +292,19 @@ export default defineComponent({
       return list;
     };
 
+    const addMatchResultsToList = (data) => {
+      rawMatchResultList.value = rawMatchResultList.value.concat(data.results);
+      nextURL.value = data.next;
+    };
+
+    const fetchPlayerNextMatches = async () => {
+      if (nextURL.value) {
+        const url = "api" + nextURL.value.match(/(?<=api).+/);
+        const response = await ServerApi.fetchPlayerNextMatches(url);
+        addMatchResultsToList(response.data);
+      }
+    };
+
     const fetchPlayerStatisticsRelatedWithLeague = async () => {
       // Fetch statistics
       let response = await ServerApi.fetchPlayerStatistics(
@@ -290,7 +319,8 @@ export default defineComponent({
         player.value.id,
         selectedLeague.value
       );
-      rawMatchResultList.value = response.data;
+      rawMatchResultList.value = [];
+      addMatchResultsToList(response.data);
 
       // Fetch elo history
       response = await ServerApi.fetchPlayerEloHistory(
@@ -368,8 +398,10 @@ export default defineComponent({
       isTopAndBottomMatchResultShown,
       leagueList,
       matchResultList,
+      nextURL,
       playerInformation,
       selectedLeague,
+      fetchPlayerNextMatches,
       fetchPlayerStatisticsRelatedWithLeague,
     };
   },
@@ -395,8 +427,7 @@ export default defineComponent({
 
 .p-chart {
   width: 100%;
-  height: 280px;
-  min-height: 280px;
-  max-height: 280px;
+  min-height: 295px;
+  max-height: 295px;
 }
 </style>

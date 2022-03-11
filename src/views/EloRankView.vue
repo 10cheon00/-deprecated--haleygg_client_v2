@@ -14,17 +14,10 @@
     </div>
 
     <div v-if="eloList" class="p-3">
+      <LeagueSelector class="my-2" :leagueList="leagueList" />
+
       <StripePanel header="ELO Rank">
         <!-- Elo rank table -->
-        <template #header-right>
-          <DropDown
-            v-model="selectedLeague"
-            :options="leagueList"
-            optionLabel="name"
-            optionValue="id"
-            @change="fetchEloRanking()"
-          />
-        </template>
         <table class="p-3" id="elo-rank-table">
           <colgroup>
             <col width="10%" />
@@ -54,16 +47,16 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, ref } from "vue";
-import DropDown from "primevue/dropdown";
+import { defineComponent, onMounted, ref, provide, watch } from "vue";
 
-import ServerApi from "@/api/server/module.js";
+import LeagueSelector from "@/components/LeagueSelector.vue";
 import PercentageBar from "@/components/PercentageBar.vue";
+import ServerApi from "@/api/server/module.js";
 import StripePanel from "@/components/StripePanel.vue";
 
 export default defineComponent({
   components: {
-    DropDown,
+    LeagueSelector,
     PercentageBar,
     StripePanel,
   },
@@ -71,6 +64,7 @@ export default defineComponent({
     const eloList = ref(null);
     const leagueList = ref(null);
     const selectedLeague = ref(null);
+    provide("selectedLeague", selectedLeague);
 
     onMounted(async () => {
       // fetch elo list.
@@ -78,6 +72,10 @@ export default defineComponent({
       leagueList.value = response.data;
       selectedLeague.value = leagueList.value[0].id;
       await fetchEloRanking();
+
+      watch(selectedLeague, async () => {
+        await fetchEloRanking();
+      });
     });
 
     const fetchEloRanking = async () => {

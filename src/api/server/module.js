@@ -6,6 +6,7 @@ import {
   fetchPlayerEloHistory,
   fetchPlayerList,
   fetchPlayerMatches,
+  fetchPlayerNextMatches,
   fetchPlayerStatistics
 } from "@/api/server/player.js";
 import { fetchEloRanking } from "@/api/server/elo.js"
@@ -21,6 +22,7 @@ const server = {
   fetchPlayerEloHistory,
   fetchPlayerList,
   fetchPlayerMatches,
+  fetchPlayerNextMatches,
   fetchPlayerStatistics,
 
   fetchEloRanking,

@@ -80,7 +80,7 @@ axiosInstance.interceptors.response.use(response => {
         // failed to refresh token.
         vuexStore.commit("tokenStore/flushToken");
         router.push({
-          name: "401UnauthorizedAccessView"
+          name: "HomeView"
         });
       }
     }

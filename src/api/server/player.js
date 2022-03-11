@@ -26,6 +26,13 @@ const fetchPlayerMatches = (playerId, leagueId) => {
   });
 }
 
+const fetchPlayerNextMatches = (url) => {
+  return axiosInstance.request({
+    method: "GET",
+    url: url
+  });
+}
+
 const fetchPlayerStatistics = (playerId, leagueId) => {
   return axiosInstance.request({
     method: "GET",
@@ -53,5 +60,6 @@ export {
   fetchPlayerEloHistory,
   fetchPlayerList,
   fetchPlayerMatches,
+  fetchPlayerNextMatches,
   fetchPlayerStatistics
 }
