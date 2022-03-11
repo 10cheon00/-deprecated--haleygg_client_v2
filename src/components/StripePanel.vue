@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Stripe -->
-    <div id="header-stripe" :style="stripeStyle" />
+    <!-- <div id="header-stripe" :style="stripeStyle" /> -->
 
     <!-- Header -->
     <div id="header">
@@ -54,7 +54,7 @@ export default defineComponent({
 #header {
   background-color: white;
   border: solid 1px #dee2e6;
-  border-top: none;
+  /* border-top: none; */
   font-weight: bold;
   padding: 1rem 1.25rem;
 }

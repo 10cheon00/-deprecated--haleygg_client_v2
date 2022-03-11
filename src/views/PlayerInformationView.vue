@@ -45,9 +45,9 @@
               class="grid grid-nogutter p-2"
               id="content-item"
             >
-              <div class="col-4">{{ item.label }}</div>
+              <div class="col-6">{{ item.label }}</div>
               <div
-                class="col-6 text-right"
+                class="col-4 text-right"
                 style="border-right: dashed 1px lightgray; padding-right: 10px"
               >
                 {{ item.value }}

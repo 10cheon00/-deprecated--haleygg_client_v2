@@ -1,180 +1,184 @@
 <template>
   <div v-if="clanData" class="p-3">
-    <div
-      v-for="(matchResultForm, matchResultFormIndex) in matchResultFormList"
-      :key="matchResultFormIndex"
-      class="pb-3"
-    >
-      <StripePanel header="New Match Result">
-        <div class="grid grid-nogutter">
-          <!-- League information -->
-          <div
-            class="col-12 lg:col-4 grid grid-nogutter align-content-start p-3"
-            id="match-information"
-          >
-            <div class="col-12 text-xl mb-3" id="form-header">게임 정보</div>
+    <StripePanel header="New Match Result">
+      <div class="grid grid-nogutter align-content-start">
+        <!-- League information -->
+        <div class="col-12 p-3" id="match-information">
+          <div class="w-full text-xl mb-3" id="form-header">게임 정보</div>
 
-            <!-- League -->
-            <div class="col-12 flex align-items-center my-2">
-              <label id="form-label">리그</label>
-              <DropDown
-                v-model="matchResultForm.league"
-                class="flex-grow-1 flex"
-                optionLabel="name"
-                optionValue="name"
-                :options="clanData.leagueList"
-              />
-            </div>
-
-            <!-- Title -->
-            <div class="col-12 flex align-items-center my-2">
-              <label id="form-label">게임 제목</label>
-              <InputText
-                v-model="matchResultForm.title"
-                class="flex-grow-1 flex"
-                type="text"
-              />
-            </div>
-
-            <!-- Date -->
-            <div class="col-12 flex align-items-center my-2">
-              <label id="form-label">날짜</label>
-              <Calendar
-                v-model="matchResultForm.date"
-                class="flex-grow-1 flex"
-                dateFormat="yy-mm-dd"
-              />
-            </div>
-
-            <!-- Map -->
-            <div class="col-12 flex align-items-center my-2">
-              <label id="form-label">맵</label>
-              <DropDown
-                v-model="matchResultForm.map"
-                class="flex-grow-1 flex"
-                optionLabel="name"
-                optionValue="name"
-                :options="clanData.mapList"
-              />
-            </div>
+          <!-- League -->
+          <div class="flex align-items-center my-2">
+            <label id="form-label">리그</label>
+            <DropDown
+              v-model="matchResultForm.league"
+              class="w-full"
+              :options="clanData.leagueList"
+              optionLabel="name"
+              optionValue="name"
+            />
           </div>
+          <ValidationErrorMessage :obj="v$.state.league" />
 
-          <!-- Players -->
+          <!-- Title -->
+          <div class="flex align-items-center my-2">
+            <label id="form-label">게임 제목</label>
+            <InputText
+              v-model="matchResultForm.title"
+              class="w-full"
+              type="text"
+            />
+          </div>
+          <ValidationErrorMessage :obj="v$.state.title" />
+
+          <!-- Date -->
+          <div class="flex align-items-center my-2">
+            <label id="form-label">날짜</label>
+            <Calendar
+              v-model="matchResultForm.date"
+              class="w-full"
+              dateFormat="yy-mm-dd"
+            />
+          </div>
+          <ValidationErrorMessage :obj="v$.state.date" />
+
+          <!-- Map -->
+          <div class="flex align-items-center my-2">
+            <label id="form-label">맵</label>
+            <DropDown
+              v-model="matchResultForm.map"
+              class="w-full"
+              optionLabel="name"
+              optionValue="name"
+              :options="clanData.mapList"
+            />
+          </div>
+          <ValidationErrorMessage :obj="v$.state.map" />
+        </div>
+
+        <!-- Players -->
+        <div class="col-12 p-3">
+          <div class="w-full text-xl mb-3" id="form-header">플레이어 정보</div>
           <div
-            class="col-12 lg:col-8 grid grid-nogutter align-content-start p-3"
+            v-for="(
+              playerTuples, playerTupleIndex
+            ) in matchResultForm.player_tuples"
+            :key="playerTupleIndex"
+            class="flex"
           >
-            <div class="col-12 text-xl mb-3" id="form-header">
-              플레이어 정보
-            </div>
-            <div
-              v-for="(
-                player_tuples, playerIndex
-              ) in matchResultForm.player_tuples"
-              :key="playerIndex"
-              class="col-12 flex"
-            >
-              <div class="flex flex-grow-1 grid grid-nogutter">
-                <div class="col-12 flex">
-                  <div class="flex flex-grow-1 align-items-center my-2">
-                    <label id="form-label">승리자</label>
-                    <DropDown
-                      v-model="player_tuples.winner"
-                      class="mx-3 w-full"
-                      optionLabel="name"
-                      optionValue="name"
-                      :options="clanData.playerList"
-                    />
-                  </div>
-                  <div class="flex justify-content-center my-2">
-                    <SelectButton
-                      v-model="player_tuples.winner_race"
-                      optionLabel="race"
-                      optionValue="value"
-                      :options="raceList"
-                    />
-                  </div>
+            <div class="flex-grow-1 grid-grid-nogutter">
+              <div class="col-12 flex p-0 my-2">
+                <!-- Winner -->
+                <div class="flex-grow-1 flex align-items-center">
+                  <label id="form-label">승자</label>
+                  <DropDown
+                    v-model="playerTuples.winner"
+                    class="w-full"
+                    optionLabel="name"
+                    optionValue="name"
+                    :options="clanData.playerList"
+                  />
                 </div>
-                <div class="col-12 flex">
-                  <div class="flex flex-grow-1 align-items-center my-2">
-                    <label id="form-label">패배자</label>
-                    <DropDown
-                      v-model="player_tuples.loser"
-                      class="mx-3 w-full"
-                      optionLabel="name"
-                      optionValue="name"
-                      :options="clanData.playerList"
-                    />
-                  </div>
-                  <div class="flex justify-content-center my-2">
-                    <SelectButton
-                      v-model="player_tuples.loser_race"
-                      optionLabel="race"
-                      optionValue="value"
-                      :options="raceList"
-                    />
-                  </div>
-                </div>
-              </div>
+                <ValidationErrorMessage
+                  :obj="v$.state.player_tuples[playerTupleIndex].winner"
+                />
 
-              <div
-                class="
-                  flex flex-none
-                  justify-content-center
-                  align-items-center
-                  ml-3
-                "
-              >
-                <Button
-                  @click="
-                    deletePlayerFromList(
-                      playerIndex,
-                      matchResultForm.player_tuples
-                    )
-                  "
-                  class="p-button-danger"
-                  icon="pi pi-trash"
+                <!-- Winner's race -->
+                <div class="flex-none flex align-items-center">
+                  <label id="form-label">승자 종족</label>
+                  <SelectButton
+                    v-model="playerTuples.winner_race"
+                    optionLabel="race"
+                    optionValue="value"
+                    :options="raceList"
+                  />
+                </div>
+                <ValidationErrorMessage
+                  :obj="v$.state.player_tuples[playerTupleIndex].winner_race"
                 />
               </div>
+
+              <div class="col-12 flex p-0 my-2">
+                <!-- Loser -->
+                <div class="flex-grow-1 flex align-items-center">
+                  <label id="form-label">패자</label>
+                  <DropDown
+                    v-model="playerTuples.loser"
+                    class="w-full"
+                    optionLabel="name"
+                    optionValue="name"
+                    :options="clanData.playerList"
+                  />
+                </div>
+                <ValidationErrorMessage
+                  :obj="v$.state.player_tuples[playerTupleIndex].loser"
+                />
+
+                <!-- Loser's race -->
+                <div class="flex-none flex align-items-center">
+                  <label id="form-label">패자 종족</label>
+                  <SelectButton
+                    v-model="playerTuples.loser_race"
+                    optionLabel="race"
+                    optionValue="value"
+                    :options="raceList"
+                  />
+                </div>
+                <ValidationErrorMessage
+                  :obj="v$.state.player_tuples[playerTupleIndex].loser_race"
+                />
+              </div>
+              <ValidationErrorMessage :obj="v$.state.extra" />
             </div>
-            <div class="col-12">
+
+            <!-- Delete player tuple -->
+            <div
+              class="
+                flex flex-none
+                justify-content-center
+                align-items-center
+                mx-3
+              "
+            >
               <Button
-                @click="addNewPlayerTuple(matchResultForm.player_tuples)"
-                class="w-full flex justify-content-center"
-              >
-                <i class="pi pi-plus"></i>
-                <span>&nbsp;새 플레이어 추가</span>
-              </Button>
+                @click="
+                  deletePlayerTuple(
+                    playerTupleIndex,
+                    matchResultForm.player_tuples
+                  )
+                "
+                class="p-button-danger"
+                icon="pi pi-trash"
+              />
             </div>
           </div>
-
-          <!-- Miscellaneous -->
-          <div
-            class="col-12 p-3 flex justify-content-between align-items-center"
-            id="miscellaneous"
-          >
-            <label id="form-label">비고</label>
-            <InputText
-              class="flex-grow-1 flex"
-              type="text"
-              v-model="matchResultForm.miscellaneous"
-            />
+          <!-- Add new player tuple -->
+          <div class="w-full">
             <Button
-              class="flex-none flex p-button-danger ml-3"
-              @click="deleteMatchResultFormFromList(matchResultFormIndex)"
+              @click="addPlayerTuple(matchResultForm.player_tuples)"
+              class="flex justify-content-center w-full mt-2"
             >
-              <i class="pi pi-trash"></i>
-              <span>&nbsp;전적 삭제</span>
+              <i class="pi pi-plus"></i>
+              <span>&nbsp;새 플레이어 추가</span>
             </Button>
           </div>
         </div>
-      </StripePanel>
-    </div>
+
+        <!-- Miscellaneous -->
+        <div
+          class="col-12 p-3 flex justify-content-between align-items-center"
+          id="miscellaneous"
+        >
+          <label id="form-label">비고</label>
+          <InputText
+            class="flex-grow-1 flex"
+            type="text"
+            v-model="matchResultForm.miscellaneous"
+          />
+        </div>
+      </div>
+    </StripePanel>
     <!-- Controller -->
-    <div class="flex justify-content-between">
-      <Button @click="addNewMatchResultForm()">
-        <i class="pi pi-plus"></i>
-        <span>&nbsp;새 전적 추가</span>
-      </Button>
+    <div class="flex justify-content-end mt-3">
       <Button class="p-button-success" @click="createMatch()">
         <i class="pi pi-save"></i>
         <span>&nbsp;저장</span>
@@ -184,16 +188,18 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, ref } from "vue";
-import router from "@/router/index.js";
+import { defineComponent, onMounted, ref, reactive } from "vue";
 import Button from "primevue/button";
-import SelectButton from "primevue/selectbutton";
 import Calendar from "primevue/calendar";
 import DropDown from "primevue/dropdown";
 import InputText from "primevue/inputtext";
+import SelectButton from "primevue/selectbutton";
+import router from "@/router/index.js";
 
 import ServerApi from "@/api/server/module.js";
 import StripePanel from "@/components/StripePanel.vue";
+import ValidationErrorMessage from "@/components/ValidationErrorMessage.vue";
+import { useValidator } from "@/utils/validator.js";
 
 export default defineComponent({
   components: {
@@ -203,41 +209,77 @@ export default defineComponent({
     InputText,
     SelectButton,
     StripePanel,
+    ValidationErrorMessage,
   },
   setup() {
     const clanData = ref(null);
-    const matchResultFormList = ref([]);
+    const matchResultForm = reactive({
+      league: "",
+      title: "",
+      date: new Date(),
+      map: "",
+      player_tuples: [],
+      miscellaneous: "",
+    });
+
+    const rules = {
+      league: { required: true },
+      date: { required: true },
+      title: { required: true },
+      map: { required: true },
+      miscellaneous: { required: false },
+      player_tuples: {
+        winner: { required: true },
+        winner_race: { required: true },
+        loser: { required: true },
+        loser_race: { required: true },
+      },
+    };
+
+    const extraValidations = {
+      player_tuples: (objs) => {
+        const errorObj = {
+          isError: false,
+          errorMessage: "",
+        };
+        const players = objs.reduce((acc, cur) => {
+          if (cur.winner != "") {
+            acc.push(cur.winner);
+          }
+          if (cur.loser != "") {
+            acc.push(cur.loser);
+          }
+          return acc;
+        }, new Array());
+        const duplicatedPlayers = players.filter((player, index) => {
+          return players.indexOf(player) !== index;
+        });
+        if (duplicatedPlayers.length > 0) {
+          errorObj.isError = true;
+          errorObj.errorMessage = `중복된 플레이어가 존재합니다. "${duplicatedPlayers.toString()}"`;
+        }
+        return errorObj;
+      },
+    };
+
+    const v$ = useValidator(matchResultForm, rules, extraValidations);
+
     const raceList = [
       {
-        race: "프로토스",
+        race: "P",
         value: "P",
       },
       {
-        race: "테란",
+        race: "T",
         value: "T",
       },
       {
-        race: "저그",
+        race: "Z",
         value: "Z",
       },
     ];
 
-    const addNewMatchResultForm = () => {
-      matchResultFormList.value.push({
-        league: "",
-        title: "",
-        date: new Date(),
-        map: "",
-        player_tuples: [],
-        miscellaneous: "",
-      });
-    };
-
-    const deleteMatchResultFormFromList = (indexOfTargetMatchResultForm) => {
-      matchResultFormList.value.splice(indexOfTargetMatchResultForm, 1);
-    };
-
-    const addNewPlayerTuple = (player_tuples) => {
+    const addPlayerTuple = (player_tuples) => {
       player_tuples.push({
         winner: "",
         winner_race: "",
@@ -246,28 +288,28 @@ export default defineComponent({
       });
     };
 
-    const deletePlayerFromList = (indexOfTargetPlayer, player_tuples) => {
+    const deletePlayerTuple = (indexOfTargetPlayer, player_tuples) => {
       player_tuples.splice(indexOfTargetPlayer, 1);
     };
 
     const createMatch = () => {
-      transformDateToString();
-      console.log(matchResultFormList.value);
-      ServerApi.createMatch(matchResultFormList.value)
-        .then(() => {
-          router.push({ name: "HomeView" });
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      if (v$.isErrorExists() == false) {
+        transformDateToString();
+        ServerApi.createMatch(matchResultForm)
+          .then((response) => {
+            console.log(response);
+            router.push({ name: "HomeView" });
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
     };
 
     const transformDateToString = () => {
-      matchResultFormList.value.forEach((form, index) => {
-        matchResultFormList.value[index].date = form.date
-          .toISOString()
-          .substring(0, 10);
-      });
+      matchResultForm.date = matchResultForm.date
+        .toISOString()
+        .substring(0, 10);
     };
 
     onMounted(async () => {
@@ -282,15 +324,15 @@ export default defineComponent({
       response = await ServerApi.fetchPlayerList();
       clanData.value.playerList = response.data;
     });
+
     return {
       clanData,
-      matchResultFormList,
+      matchResultForm,
       raceList,
-      addNewMatchResultForm,
-      addNewPlayerTuple,
+      v$,
+      addPlayerTuple,
       createMatch,
-      deleteMatchResultFormFromList,
-      deletePlayerFromList,
+      deletePlayerTuple,
     };
   },
 });
@@ -301,17 +343,11 @@ export default defineComponent({
   border-right: none;
   border-bottom: 1px dashed #dee2e6;
 }
-@media (min-width: 992px) {
-  #match-information {
-    border-right: 1px dashed #dee2e6;
-    border-bottom: none;
-  }
-}
 #form-header {
   font-weight: bold;
 }
 #form-label {
-  min-width: 64px;
+  min-width: 6rem;
   margin-left: 1rem;
   margin-right: 1rem;
   flex: none;
