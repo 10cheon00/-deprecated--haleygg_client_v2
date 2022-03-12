@@ -21,7 +21,7 @@ const routes = [
     component: () => import("@/views/HomeView.vue")
   },
   {
-    name: 'UserInformationView',
+    name: 'PlayerInformationView',
     path: '/user/:playerName',
     component: () => import("@/views/PlayerInformationView.vue"),
     props: true

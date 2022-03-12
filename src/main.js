@@ -8,7 +8,6 @@ import "primeicons/primeicons.css";
 import "primeflex/primeflex.css";
 
 import "@/css/reset.css";
-import "@/css/responsive-layout.css";
 import "@/css/font.css";
 import App from './App.vue';
 import VueRouter from '@/router/index.js';

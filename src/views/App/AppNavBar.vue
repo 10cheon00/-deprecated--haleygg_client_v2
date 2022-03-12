@@ -28,19 +28,7 @@
           />
         </div>
 
-        <form @submit.prevent="search()">
-          <div class="flex align-items-center">
-            <div class="p-input-icon-right">
-              <i class="pi pi-search" @click="search()" />
-              <InputText
-                class="p-inputtext-sm"
-                placeholder="검색"
-                type="text"
-                v-model="playerName"
-              />
-            </div>
-          </div>
-        </form>
+        <PlayerSearchBar />
       </div>
       <LoginModal />
     </template>
@@ -52,17 +40,17 @@ import { defineComponent, ref, provide, computed } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import Button from "primevue/button";
-import InputText from "primevue/inputtext";
 import MenuBar from "primevue/menubar";
 
 import LoginModal from "@/components/LoginModal.vue";
+import PlayerSearchBar from "@/components/PlayerSearchBar.vue";
 
 export default defineComponent({
   components: {
     Button,
-    InputText,
     LoginModal,
     MenuBar,
+    PlayerSearchBar,
   },
   setup() {
     const router = useRouter();
@@ -77,16 +65,6 @@ export default defineComponent({
     const logoutButtonClicked = () => {
       vuexStore.commit("tokenStore/flushToken");
       router.go();
-    };
-
-    const playerName = ref("");
-    const search = () => {
-      router.push({
-        name: "UserInformationView",
-        params: {
-          playerName: playerName.value,
-        },
-      });
     };
 
     const routeToHome = () => {
@@ -125,9 +103,7 @@ export default defineComponent({
 
     return {
       items,
-      playerName,
       userName,
-      search,
       routeToHome,
       loginButtonClicked,
       logoutButtonClicked,

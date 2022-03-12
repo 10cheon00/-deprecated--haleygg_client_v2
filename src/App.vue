@@ -3,20 +3,23 @@
     <!-- Navigation bar -->
     <AppNavBar />
 
-    <div class="flex justify-content-center" id="layout">
-      <!-- Content -->
-      <div class="content">
-        <router-view :key="$route.fullPath" />
-      </div>
+    <!-- Content -->
+    <div id="content">
+      <router-view :key="$route.fullPath" />
     </div>
+
     <!-- Footer -->
-    <div class="footer flex justify-content-center mt-3">footer</div>
+    <div class="container p-3 text-sm" id="footer">
+      <p>할리클랜 전적검색기</p>
+      <p>made by 10cheon00</p>
+    </div>
   </div>
 </template>
 
 <script>
 import { defineComponent } from "vue";
 import AppNavBar from "@/views/App/AppNavBar.vue";
+import "@/css/responsive-layout.css";
 
 export default defineComponent({
   name: "app",
@@ -28,14 +31,16 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.title {
-  min-height: 100px;
+#content {
+  background-color: white;
 }
 .app {
-  min-height: 1000px;
+  min-height: 100vh;
   background-color: var(--surface-100);
+  background-color: #ffdad6;
 }
-.content {
-  background-color: white;
+.footer {
+  margin-left: auto;
+  margin-right: auto;
 }
 </style>

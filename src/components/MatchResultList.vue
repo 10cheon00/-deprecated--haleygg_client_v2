@@ -39,10 +39,14 @@
           class="grid grid-nogutter"
         >
           <div class="col-6">
-            {{ player_tuple.winner }} ( {{ player_tuple.winner_race }} )
+            <span @click="routeToPlayerInformation(router, player_tuple.winner)"
+              >{{ player_tuple.winner }}( {{ player_tuple.winner_race }} )</span
+            >
           </div>
           <div class="col-6">
-            {{ player_tuple.loser }} ( {{ player_tuple.loser_race }} )
+            <span @click="routeToPlayerInformation(router, player_tuple.loser)"
+              >{{ player_tuple.loser }} ( {{ player_tuple.loser_race }} )</span
+            >
           </div>
         </div>
       </div>
@@ -60,6 +64,9 @@
 <script>
 import { defineComponent, computed } from "vue";
 
+import { routeToPlayerInformation } from "@/utils/utils.js";
+import { useRouter } from "vue-router";
+
 export default defineComponent({
   props: {
     matchResultList: {
@@ -72,6 +79,8 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const router = useRouter();
+
     const matchResultListRef = computed(() => {
       if (props.resultListOwnerName == undefined) {
         return props.matchResultList;
@@ -93,7 +102,9 @@ export default defineComponent({
     });
 
     return {
+      router,
       matchResultListRef,
+      routeToPlayerInformation,
     };
   },
 });

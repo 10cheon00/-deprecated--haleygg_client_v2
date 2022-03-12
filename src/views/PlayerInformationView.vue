@@ -1,10 +1,8 @@
 <template>
   <div v-if="playerInformation.isFetched">
     <!-- Profile -->
-    <div
-      class="p-8"
+    <PageHeader
       :style="{
-        'min-height': '200px',
         width: '100%',
         'background-attachment': 'fixed',
         'background-image': `linear-gradient(90deg, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0)),
@@ -20,108 +18,113 @@
       <small class="text-sm" id="signup-date"
         >{{ playerInformation.profile.joined_date }} 가입</small
       >
-    </div>
+    </PageHeader>
 
-    <div class="grid grid-nogutter">
-      <!-- Career -->
-      <div class="col-12 p-3">
-        <StripePanel
-          header="Career"
-          :stripeColor="playerInformation.profile.favorate_race"
-        >
-          <div class="p-3">{{ playerInformation.profile.career }}</div>
-        </StripePanel>
-      </div>
-
-      <!-- League selector -->
-      <LeagueSelector class="col-12 mt-5" :leagueList="leagueList" />
-
-      <div class="col-12 grid grid-nogutter">
-        <!-- Statistics -->
-        <div class="col-12 md:col-4 p-3">
+    <div class="container">
+      <div class="grid grid-nogutter p-3">
+        <!-- Career -->
+        <div class="col-12">
           <StripePanel
-            header="Statistics"
-            :stripeColor="playerInformation.favorate_race"
+            header="Career"
+            :stripeColor="playerInformation.profile.favorate_race"
           >
-            <div
-              v-for="(item, index) in playerInformation.statistics"
-              :key="index"
-              class="grid grid-nogutter p-2"
-              id="content-item"
+            <div class="p-3">{{ playerInformation.profile.career }}</div>
+          </StripePanel>
+        </div>
+
+        <!-- League selector -->
+        <LeagueSelector class="col-12" :leagueList="leagueList" />
+
+        <div class="col-12 grid grid-nogutter">
+          <!-- Statistics -->
+          <div class="col-12 md:col-4 pr-2">
+            <StripePanel
+              header="Statistics"
+              :stripeColor="playerInformation.favorate_race"
             >
-              <div class="col-6">{{ item.label }}</div>
               <div
-                class="col-4 text-right"
-                style="border-right: dashed 1px lightgray; padding-right: 10px"
+                v-for="(item, index) in playerInformation.statistics"
+                :key="index"
+                class="grid grid-nogutter p-2"
+                id="content-item"
               >
-                {{ item.value }}
+                <div class="col-6">{{ item.label }}</div>
+                <div
+                  class="col-4 text-right"
+                  style="
+                    border-right: dashed 1px lightgray;
+                    padding-right: 10px;
+                  "
+                >
+                  {{ item.value }}
+                </div>
+                <div class="col-2 text-right" style="color: gray">
+                  {{ item.percentage }}
+                </div>
               </div>
-              <div class="col-2 text-right" style="color: gray">
-                {{ item.percentage }}
+            </StripePanel>
+          </div>
+
+          <!-- Elo chart -->
+          <div class="col-12 md:col-8">
+            <StripePanel
+              header="Elo Chart"
+              :stripeColor="playerInformation.favorate_race"
+            >
+              <div id="elo-chart">
+                <Chart
+                  type="line"
+                  :data="playerInformation.eloChartData"
+                  :options="playerInformation.eloChartOptions"
+                />
               </div>
-            </div>
-          </StripePanel>
+            </StripePanel>
+          </div>
         </div>
 
-        <!-- Elo chart -->
-        <div class="col-12 md:col-8 p-3">
+        <!-- List of Matches -->
+        <div class="col-12 pt-2" id="match-result-list">
           <StripePanel
-            header="Elo Chart"
+            class="pb-1"
+            header="Recent Matches"
             :stripeColor="playerInformation.favorate_race"
           >
-            <div id="elo-chart">
-              <Chart
-                type="line"
-                :data="playerInformation.eloChartData"
-                :options="playerInformation.eloChartOptions"
+            <template #header-right>
+              <CheckBox
+                name="밀리 전적"
+                v-model="isMeleeMatchResultShown"
+                :binary="true"
               />
-            </div>
+              <label class="ml-1 mr-3">밀리</label>
+              <CheckBox
+                name="팀플 전적"
+                v-model="isTopAndBottomMatchResultShown"
+                :binary="true"
+              />
+              <label class="ml-1">팀플</label>
+            </template>
           </StripePanel>
+
+          <MatchResultList
+            :matchResultList="matchResultList"
+            :resultListOwnerName="playerName"
+          />
+          <div
+            v-if="nextURL"
+            class="
+              flex
+              align-items-center
+              justify-content-center
+              w-full
+              text-center
+              mt-1
+            "
+            style="height: 5rem; background-color: #fee2e6; color: gray"
+            @click="fetchPlayerNextMatches()"
+          >
+            <i class="pi pi-refresh"></i>&nbsp;더 보기
+          </div>
         </div>
-      </div>
-    </div>
-
-    <!-- List of Matches -->
-    <div class="col-12 p-3 pt-0" id="match-result-list">
-      <StripePanel
-        class="pb-1"
-        header="Recent Matches"
-        :stripeColor="playerInformation.favorate_race"
-      >
-        <template #header-right>
-          <CheckBox
-            name="밀리 전적"
-            v-model="isMeleeMatchResultShown"
-            :binary="true"
-          />
-          <label class="ml-1 mr-3">밀리</label>
-          <CheckBox
-            name="팀플 전적"
-            v-model="isTopAndBottomMatchResultShown"
-            :binary="true"
-          />
-          <label class="ml-1">팀플</label>
-        </template>
-      </StripePanel>
-
-      <MatchResultList
-        :matchResultList="matchResultList"
-        :resultListOwnerName="playerName"
-      />
-      <div
-        v-if="nextURL"
-        class="
-          flex
-          align-items-center
-          justify-content-center
-          w-full
-          text-center
-          mt-1
-        "
-        style="height: 5rem; background-color: #fee2e6; color: gray"
-        @click="fetchPlayerNextMatches()"
-      >
-        <i class="pi pi-refresh"></i>&nbsp;더 보기
       </div>
     </div>
   </div>
@@ -133,6 +136,7 @@ import CheckBox from "primevue/checkbox";
 
 import LeagueSelector from "@/components/LeagueSelector.vue";
 import MatchResultList from "@/components/MatchResultList.vue";
+import PageHeader from "@/components/PageHeader.vue";
 import ServerApi from "@/api/server/module.js";
 import StripePanel from "@/components/StripePanel.vue";
 
@@ -142,6 +146,7 @@ export default defineComponent({
     CheckBox,
     LeagueSelector,
     MatchResultList,
+    PageHeader,
     StripePanel,
   },
   props: {

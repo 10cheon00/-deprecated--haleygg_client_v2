@@ -1,7 +1,8 @@
 <template>
   <div>
     <!-- Explanation -->
-    <div class="p-8 text-white" id="header">
+    <PageHeader>
+      <p class="text-4xl m-4 font-bold">Elo 랭킹</p>
       <p>Elo 산출 방식은 위키백과와 같습니다.</p>
       <br />
       <p class="text-xl font-bold">After = Before + K * (W - R)</p>
@@ -11,37 +12,32 @@
         <p>- W(승리 여부) = 승리 시 1, 무승부 시 0.5, 패배 시 0</p>
         <p>- R = 승리할 확률</p>
       </div>
-    </div>
+    </PageHeader>
 
-    <div v-if="eloList" class="p-3">
-      <LeagueSelector class="my-2" :leagueList="leagueList" />
+    <div v-if="eloList" class="container p-3">
+      <StripePanel header="ELO Rank" />
 
-      <StripePanel header="ELO Rank">
-        <!-- Elo rank table -->
-        <table class="p-3" id="elo-rank-table">
-          <colgroup>
-            <col width="10%" />
-            <col width="20%" />
-            <col width="70%" />
-          </colgroup>
-          <thead>
-            <tr>
-              <th>순위</th>
-              <th>유저</th>
-              <th>Elo</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(row, index) in eloList" :key="index">
-              <td>{{ index + 1 }}</td>
-              <td>{{ row.name }}</td>
-              <td class="pr-1">
-                <PercentageBar id="eloBar" :data="row" />
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </StripePanel>
+      <LeagueSelector :leagueList="leagueList" />
+
+      <!-- Elo rank table -->
+      <table class="p-3" id="elo-rank-table">
+        <colgroup>
+          <col width="10%" />
+          <col width="20%" />
+          <col width="70%" />
+        </colgroup>
+        <tbody>
+          <tr v-for="(row, index) in eloList" :key="index">
+            <td>{{ index + 1 }}</td>
+            <td @click="routeToPlayerInformation(router, row.name)">
+              {{ row.name }}
+            </td>
+            <td class="pr-1">
+              <PercentageBar id="eloBar" :data="row" />
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </template>
@@ -50,13 +46,18 @@
 import { defineComponent, onMounted, ref, provide, watch } from "vue";
 
 import LeagueSelector from "@/components/LeagueSelector.vue";
+import PageHeader from "@/components/PageHeader.vue";
 import PercentageBar from "@/components/PercentageBar.vue";
 import ServerApi from "@/api/server/module.js";
 import StripePanel from "@/components/StripePanel.vue";
+import { useRouter } from "vue-router";
+
+import { routeToPlayerInformation } from "@/utils/utils.js";
 
 export default defineComponent({
   components: {
     LeagueSelector,
+    PageHeader,
     PercentageBar,
     StripePanel,
   },
@@ -65,10 +66,11 @@ export default defineComponent({
     const leagueList = ref(null);
     const selectedLeague = ref(null);
     provide("selectedLeague", selectedLeague);
+    const router = useRouter();
 
     onMounted(async () => {
       // fetch elo list.
-      const response = await ServerApi.fetchLeagueList();
+      const response = await ServerApi.fetchEloRatingActiveLeagueList();
       leagueList.value = response.data;
       selectedLeague.value = leagueList.value[0].id;
       await fetchEloRanking();
@@ -109,7 +111,9 @@ export default defineComponent({
       eloList,
       leagueList,
       selectedLeague,
+      router,
       fetchEloRanking,
+      routeToPlayerInformation,
     };
   },
 });
@@ -126,8 +130,7 @@ export default defineComponent({
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
-  width: 100%;
-  min-height: 194px;
+  color: white;
 }
 
 #elo-rank-table {
@@ -135,8 +138,7 @@ export default defineComponent({
   width: 100%;
 }
 
-td,
-th {
+td {
   border-collapse: collapse;
   border: 1px solid #dee2e6;
   border-right: none;
@@ -144,24 +146,16 @@ th {
   vertical-align: middle;
 }
 
-th {
-  background-color: #c8c8c8;
-  border-top: none;
-  height: 3rem;
-  font-weight: bold;
-  vertical-align: middle;
+tr td:first-child {
+  border-left: 1px solid #dee2e6;
+}
+
+tr td:last-child {
+  border-right: 1px solid #dee2e6;
 }
 
 td {
   height: 2rem;
   vertical-align: middle;
-}
-
-tr:last-child td {
-  border-bottom: none;
-}
-
-tbody tr:first-child td {
-  border-top: none;
 }
 </style>

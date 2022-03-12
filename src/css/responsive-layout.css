@@ -11,13 +11,17 @@
   --responsive-xl: 1200px;
 }
 
-.content {
+.container {
   width: 100%;
+  margin:auto;
 }
 
 @media (min-width: 1200px){
-  .content{
+  .container{
     width: var(--responsive-xl);
   }
 }
 
+#header{
+  width: 100%;
+}
