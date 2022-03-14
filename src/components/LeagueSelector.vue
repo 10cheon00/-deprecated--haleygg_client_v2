@@ -1,7 +1,7 @@
 <template>
   <div class="flex justify-content-between" id="selector">
     <div class="font-bold mt-auto mb-auto ml-3">League</div>
-    <div>
+    <div id="selector-buttons">
       <Button
         v-for="league in leagueList"
         :key="league"
@@ -48,14 +48,14 @@ export default defineComponent({
 
 <style scoped>
 #selector {
-  flex-wrap: nowrap;
-  overflow: auto;
   background-color: #f0f0f0;
   border: 1px solid #dee2e6;
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
   padding: 0.5rem;
   width: 100%;
+}
+#selector-buttons {
+  overflow-y: auto;
+  white-space: nowrap;
 }
 #selector-title {
   border-right: 1px solid #dee2e6;

@@ -16,13 +16,54 @@
       </div>
     </PageHeader>
 
-    <div v-if="eloList" class="container p-3">
-      <Panel header="ELO Rank" />
+    <div class="container p-3">
+      <LeagueSelector v-if="leagueList" class="mb-2" :leagueList="leagueList" />
 
-      <LeagueSelector :leagueList="leagueList" />
+      <Panel header="ELO Rank" class="my-2">
+        <div
+          v-if="top3Player"
+          class="grid grid-nogutter text-center"
+          id="top3-players"
+        >
+          <div class="col-12 elo-podium">
+            <div class="text-4xl my-3">
+              <span
+                class="cursor-pointer"
+                @click="routeToPlayerInformation(router, top3Player[0].name)"
+              >
+                🥇 {{ top3Player[0].name }}
+              </span>
+            </div>
+            <div class="text-xl">Elo : {{ top3Player[0].current_elo }}</div>
+          </div>
+          <div class="col-12 lg:col-6 elo-podium">
+            <div class="text-2xl my-3">
+              <span
+                class="cursor-pointer"
+                @click="routeToPlayerInformation(router, top3Player[1].name)"
+              >
+                🥈 {{ top3Player[1].name }}
+              </span>
+            </div>
+            <div class="text-md">Elo : {{ top3Player[1].current_elo }}</div>
+          </div>
+          <div class="col-12 lg:col-6 elo-podium">
+            <div class="text-2xl my-3">
+              <span
+                class="cursor-pointer"
+                @click="routeToPlayerInformation(router, top3Player[2].name)"
+              >
+                🥉 {{ top3Player[2].name }}
+              </span>
+            </div>
+            <div class="text-md">Elo : {{ top3Player[2].current_elo }}</div>
+          </div>
+        </div>
+        <div v-else class="p-8 text-center text-300">데이터가 없습니다.</div>
+      </Panel>
 
       <!-- Elo rank table -->
-      <table class="p-3" id="elo-rank-table">
+      <table v-if="eloList" class="p-3" id="elo-rank-table">
         <colgroup>
           <col width="10%" />
           <col width="20%" />
@@ -30,13 +71,13 @@
         </colgroup>
         <tbody>
           <tr v-for="(row, index) in eloList" :key="index">
-            <td>{{ index + 1 }}</td>
+            <td>{{ index + 4 }}</td>
             <td>
               <span
                 style="cursor: pointer"
                 @click="routeToPlayerInformation(router, row.name)"
               >
-                {{ row.name }}
+                {{ row.name }} ( {{ row.favorate_race }} )
               </span>
             </td>
             <td class="pr-1">
@@ -70,6 +111,7 @@ export default defineComponent({
   },
   setup() {
     const eloList = ref(null);
+    const top3Player = ref(null);
     const leagueList = ref(null);
     const selectedLeague = ref(null);
     provide("selectedLeague", selectedLeague);
@@ -89,9 +131,11 @@ export default defineComponent({
 
     const fetchEloRanking = async () => {
       const response = await ServerApi.fetchEloRanking(selectedLeague.value);
+      top3Player.value = undefined;
+      top3Player.value = popTop3Player(response.data);
 
-      const colorCodeStart = [0, 6, 36];
-      const colorCodeEnd = [74, 201, 227];
+      const colorCodeStart = [102, 255, 189];
+      const colorCodeEnd = [100, 206, 160];
 
       response.data.forEach((value, index, array) => {
         value.value = value.current_elo;
@@ -114,11 +158,28 @@ export default defineComponent({
       eloList.value = response.data;
     };
 
+    const popTop3Player = (data) => {
+      if (data.length == 0) {
+        return undefined;
+      }
+      const list = [];
+      for (let i = 0; i < 3; ++i) {
+        const value = data.shift();
+        if (value !== undefined) {
+          list.push(value);
+        } else {
+          break;
+        }
+      }
+      return list;
+    };
+
     return {
       eloList,
       leagueList,
-      selectedLeague,
       router,
+      selectedLeague,
+      top3Player,
       fetchEloRanking,
       routeToPlayerInformation,
     };
@@ -130,6 +191,33 @@ export default defineComponent({
 #elo-rank-table {
   text-align: center;
   width: 100%;
+}
+
+.elo-podium {
+  padding: 1rem;
+}
+
+#top3-players .elo-podium:first-child {
+  border-bottom: 1px #dee2e6 solid;
+  border-right: none;
+}
+
+#top3-players .elo-podium {
+  border-right: 1px #dee2e6 solid;
+}
+
+#top3-players .elo-podium:last-child {
+  border-right: none;
+}
+
+@media (max-width: 992px) {
+  #top3-players .elo-podium {
+    border-bottom: 1px #dee2e6 solid;
+    border-right: none;
+  }
+  #top3-players .elo-podium:last-child {
+    border-bottom: none;
+  }
 }
 
 td {

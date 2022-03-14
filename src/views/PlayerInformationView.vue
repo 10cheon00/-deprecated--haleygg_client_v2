@@ -33,7 +33,7 @@
         </div>
 
         <!-- League selector -->
-        <LeagueSelector class="col-12" :leagueList="leagueList" />
+        <LeagueSelector class="col-12 my-2" :leagueList="leagueList" />
 
         <div class="col-12 grid grid-nogutter">
           <!-- Statistics -->
@@ -186,6 +186,10 @@ export default defineComponent({
       // Fetch leagueList first to request only for specific league.
       response = await ServerApi.fetchLeagueList();
       leagueList.value = response.data;
+      leagueList.value.push({
+        id: undefined,
+        name: "Total",
+      });
       selectedLeague.value = leagueList.value[0].id;
 
       // Fetch statistics and Elo and matches

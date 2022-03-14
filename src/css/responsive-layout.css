@@ -11,9 +11,13 @@
   --responsive-xl: 1200px;
 }
 
+body{
+  min-width: 400px;
+}
+
 .container {
   width: 100%;
-  margin:auto;
+  margin:0 auto;
 }
 
 @media (min-width: 1200px){

@@ -46,13 +46,21 @@ axiosInstance.interceptors.response.use(response => {
   }
   return response;
 }, async error => {
+  if (error.response.status == 400) {
+    if (error.config.url == 'api/auth/token/verify/') {
+      router.replace({
+        name: "401UnauthorizedAccessView"
+      });
+      return Promise.reject(error);
+    }
+  }
   if (error.response.status == 404) {
     router.replace({
       name: "404RedirectView"
     });
     return Promise.reject(error)
   }
-  else if (error.response.status == 401) {
+  if (error.response.status == 401) {
     // exception on login request.
     if (error.config.url == "api/auth/token/") {
       return Promise.reject(error);
