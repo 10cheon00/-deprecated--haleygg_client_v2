@@ -9,7 +9,7 @@
     </div>
 
     <!-- Footer -->
-    <div class="container p-3 text-sm" id="footer">
+    <div class="container p-3 text-sm text-center" id="footer">
       <p>할리클랜 전적검색기</p>
       <p>made by 10cheon00</p>
     </div>

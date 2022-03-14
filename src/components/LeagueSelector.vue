@@ -1,6 +1,6 @@
 <template>
   <div class="flex justify-content-between" id="selector">
-    <div class="font-bold mt-auto mb-auto ml-2">League</div>
+    <div class="font-bold mt-auto mb-auto ml-3">League</div>
     <div>
       <Button
         v-for="league in leagueList"

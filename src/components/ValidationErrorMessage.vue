@@ -1,6 +1,10 @@
 <template>
   <div>
-    <div v-if="obj && obj.isError && obj.isTouched" id="form-error">
+    <div
+      v-if="obj && obj.isError && obj.isTouched"
+      class="mt-2"
+      id="form-error"
+    >
       {{ obj.errorMessage }}
     </div>
     <div v-if="hasSlot()">

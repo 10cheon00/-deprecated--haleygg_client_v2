@@ -39,12 +39,16 @@
           class="grid grid-nogutter"
         >
           <div class="col-6">
-            <span @click="routeToPlayerInformation(router, player_tuple.winner)"
+            <span
+              style="cursor: pointer"
+              @click="routeToPlayerInformation(router, player_tuple.winner)"
               >{{ player_tuple.winner }}( {{ player_tuple.winner_race }} )</span
             >
           </div>
           <div class="col-6">
-            <span @click="routeToPlayerInformation(router, player_tuple.loser)"
+            <span
+              style="cursor: pointer"
+              @click="routeToPlayerInformation(router, player_tuple.loser)"
               >{{ player_tuple.loser }} ( {{ player_tuple.loser_race }} )</span
             >
           </div>

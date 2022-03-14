@@ -24,12 +24,12 @@
       <div class="grid grid-nogutter p-3">
         <!-- Career -->
         <div class="col-12">
-          <StripePanel
+          <Panel
             header="Career"
             :stripeColor="playerInformation.profile.favorate_race"
           >
             <div class="p-3">{{ playerInformation.profile.career }}</div>
-          </StripePanel>
+          </Panel>
         </div>
 
         <!-- League selector -->
@@ -37,8 +37,8 @@
 
         <div class="col-12 grid grid-nogutter">
           <!-- Statistics -->
-          <div class="col-12 md:col-4 pr-2">
-            <StripePanel
+          <div class="col-12 md:col-4 pr-0 md:pr-2 pb-2 md:pb-0">
+            <Panel
               header="Statistics"
               :stripeColor="playerInformation.favorate_race"
             >
@@ -62,12 +62,12 @@
                   {{ item.percentage }}
                 </div>
               </div>
-            </StripePanel>
+            </Panel>
           </div>
 
           <!-- Elo chart -->
           <div class="col-12 md:col-8">
-            <StripePanel
+            <Panel
               header="Elo Chart"
               :stripeColor="playerInformation.favorate_race"
             >
@@ -78,18 +78,18 @@
                   :options="playerInformation.eloChartOptions"
                 />
               </div>
-            </StripePanel>
+            </Panel>
           </div>
         </div>
 
         <!-- List of Matches -->
         <div class="col-12 pt-2" id="match-result-list">
-          <StripePanel
+          <Panel
             class="pb-1"
             header="Recent Matches"
             :stripeColor="playerInformation.favorate_race"
           >
-            <template #header-right>
+            <template #panel-header-right>
               <CheckBox
                 name="밀리 전적"
                 v-model="isMeleeMatchResultShown"
@@ -103,7 +103,7 @@
               />
               <label class="ml-1">팀플</label>
             </template>
-          </StripePanel>
+          </Panel>
 
           <MatchResultList
             :matchResultList="matchResultList"
@@ -138,7 +138,7 @@ import LeagueSelector from "@/components/LeagueSelector.vue";
 import MatchResultList from "@/components/MatchResultList.vue";
 import PageHeader from "@/components/PageHeader.vue";
 import ServerApi from "@/api/server/module.js";
-import StripePanel from "@/components/StripePanel.vue";
+import Panel from "@/components/Panel.vue";
 
 export default defineComponent({
   components: {
@@ -147,7 +147,7 @@ export default defineComponent({
     LeagueSelector,
     MatchResultList,
     PageHeader,
-    StripePanel,
+    Panel,
   },
   props: {
     playerName: {

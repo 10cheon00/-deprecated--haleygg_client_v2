@@ -1,10 +1,11 @@
 <template>
   <MenuBar class="tabmenu" :model="items">
     <template #start>
-      <Button
-        class="p-button-text p-button-secondary text-4xl mr-4"
-        label="Haley.GG"
+      <img
+        src="/logo.png"
+        class="px-3 pt-2 pb-0"
         @click="routeToHome()"
+        style="cursor: pointer"
       />
     </template>
     <template #end>
@@ -14,7 +15,6 @@
           <div v-if="userName.length > 0" class="flex align-items-center">
             <span>{{ userName }}</span>
             <Button
-              class="ml-3"
               id="credential-button"
               icon="pi pi-sign-out"
               @click="logoutButtonClicked()"
@@ -93,7 +93,7 @@ export default defineComponent({
 
       if (userName.value.length > 0) {
         list.push({
-          label: "결과 입력",
+          label: "전적 입력",
           icon: "pi pi-fw pi-cloud-upload",
           to: "/add-result/",
         });

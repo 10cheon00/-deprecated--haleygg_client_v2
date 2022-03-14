@@ -47,7 +47,7 @@ axiosInstance.interceptors.response.use(response => {
   return response;
 }, async error => {
   if (error.response.status == 404) {
-    router.push({
+    router.replace({
       name: "404RedirectView"
     });
     return Promise.reject(error)
@@ -59,10 +59,10 @@ axiosInstance.interceptors.response.use(response => {
     }
     else if (vuexStore.getters["tokenStore/isTokenExists"] == false) {
       // Wrong access
-      router.push({
+      router.replace({
         name: "401UnauthorizedAccessView"
       });
-      return Promise.reject(error)
+      return Promise.reject(error);
     }
     else {
       if (error.config.isRetried === undefined) {
@@ -79,13 +79,14 @@ axiosInstance.interceptors.response.use(response => {
       else {
         // failed to refresh token.
         vuexStore.commit("tokenStore/flushToken");
-        router.push({
+        router.replace({
           name: "HomeView"
         });
       }
+      return Promise.reject(error);
     }
-    return Promise.reject(error);
   }
+  return Promise.reject(error);
 })
 
 export default axiosInstance

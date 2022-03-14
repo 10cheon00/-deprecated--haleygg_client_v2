@@ -1,8 +1,5 @@
 <template>
   <div>
-    <!-- Stripe -->
-    <!-- <div id="header-stripe" :style="stripeStyle" /> -->
-
     <!-- Header -->
     <div id="panel-header">
       <div class="flex justify-content-between align-items-center">
@@ -13,7 +10,7 @@
       </div>
     </div>
 
-    <!-- panel-content -->
+    <!-- Panel content -->
     <div id="panel-content">
       <slot></slot>
     </div>
@@ -23,27 +20,14 @@
 <script>
 import { defineComponent } from "vue";
 
-import { getColor } from "@/css/color-config.js";
-
 export default defineComponent({
   props: {
     header: {
       required: false,
       type: String,
     },
-    stripeColor: {
-      required: false,
-      type: String,
-    },
   },
-  setup(props) {
-    const stripeStyle = {
-      "background-color": getColor(props.stripeColor),
-    };
-    return {
-      stripeStyle,
-    };
-  },
+  setup() {},
 });
 </script>
 

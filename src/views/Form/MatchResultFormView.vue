@@ -1,8 +1,18 @@
 <template>
-  <div v-if="clanData" class="p-3">
-    <StripePanel header="New Match Result">
+  <div v-if="clanData">
+    <PageHeader>
+      <p class="text-4xl m-4 font-bold">전적 입력</p>
+      <p class="text-300">
+        개인전의 경우 승자와 패자를 각각 한 명씩만 추가해 입력하시고, 팀전의
+        경우 인원수에 맞게 추가해 입력하시면 됩니다.
+      </p>
+      <p class="text-300">
+        기권승, 패 등 기타 사항은 비고란에 입력하시면 됩니다.
+      </p>
+    </PageHeader>
+    <Panel class="container p-3" header="New Match Result">
       <div class="grid grid-nogutter align-content-start">
-        <!-- League information -->
+        <!-- Game information -->
         <div class="col-12 p-3" id="match-information">
           <div class="w-full text-xl mb-3" id="form-header">게임 정보</div>
 
@@ -55,7 +65,7 @@
           <ValidationErrorMessage :obj="v$.state.map" />
         </div>
 
-        <!-- Players -->
+        <!-- Player tuples -->
         <div class="col-12 p-3">
           <div class="w-full text-xl mb-3" id="form-header">플레이어 정보</div>
           <div
@@ -64,70 +74,83 @@
             ) in matchResultForm.player_tuples"
             :key="playerTupleIndex"
             class="flex"
+            :style="{
+              'border-bottom':
+                playerTupleIndex < matchResultForm.player_tuples.length - 1
+                  ? '1px dashed #dee2e6'
+                  : 'none',
+            }"
           >
             <div class="flex-grow-1 grid-grid-nogutter">
               <div class="col-12 flex p-0 my-2">
                 <!-- Winner -->
-                <div class="flex-grow-1 flex align-items-center">
-                  <label id="form-label">승자</label>
-                  <DropDown
-                    v-model="playerTuples.winner"
-                    class="w-full"
-                    optionLabel="name"
-                    optionValue="name"
-                    :options="clanData.playerList"
+                <div class="flex-grow-1">
+                  <div class="flex align-items-center">
+                    <label id="form-label">승자</label>
+                    <DropDown
+                      v-model="playerTuples.winner"
+                      class="w-full"
+                      optionLabel="name"
+                      optionValue="name"
+                      :options="clanData.playerList"
+                    />
+                  </div>
+                  <ValidationErrorMessage
+                    :obj="v$.state.player_tuples[playerTupleIndex].winner"
                   />
                 </div>
-                <ValidationErrorMessage
-                  :obj="v$.state.player_tuples[playerTupleIndex].winner"
-                />
 
                 <!-- Winner's race -->
-                <div class="flex-none flex align-items-center">
-                  <label id="form-label">승자 종족</label>
-                  <SelectButton
-                    v-model="playerTuples.winner_race"
-                    optionLabel="race"
-                    optionValue="value"
-                    :options="raceList"
+                <div class="flex-none ml-2">
+                  <div class="flex align-items-center">
+                    <label id="form-label">승자 종족</label>
+                    <SelectButton
+                      v-model="playerTuples.winner_race"
+                      optionLabel="race"
+                      optionValue="value"
+                      :options="raceList"
+                    />
+                  </div>
+                  <ValidationErrorMessage
+                    :obj="v$.state.player_tuples[playerTupleIndex].winner_race"
                   />
                 </div>
-                <ValidationErrorMessage
-                  :obj="v$.state.player_tuples[playerTupleIndex].winner_race"
-                />
               </div>
 
               <div class="col-12 flex p-0 my-2">
                 <!-- Loser -->
-                <div class="flex-grow-1 flex align-items-center">
-                  <label id="form-label">패자</label>
-                  <DropDown
-                    v-model="playerTuples.loser"
-                    class="w-full"
-                    optionLabel="name"
-                    optionValue="name"
-                    :options="clanData.playerList"
+                <div class="flex-grow-1">
+                  <div class="flex align-items-center">
+                    <label id="form-label">패자</label>
+                    <DropDown
+                      v-model="playerTuples.loser"
+                      class="w-full"
+                      optionLabel="name"
+                      optionValue="name"
+                      :options="clanData.playerList"
+                    />
+                  </div>
+                  <ValidationErrorMessage
+                    :obj="v$.state.player_tuples[playerTupleIndex].loser"
                   />
                 </div>
-                <ValidationErrorMessage
-                  :obj="v$.state.player_tuples[playerTupleIndex].loser"
-                />
 
                 <!-- Loser's race -->
-                <div class="flex-none flex align-items-center">
-                  <label id="form-label">패자 종족</label>
-                  <SelectButton
-                    v-model="playerTuples.loser_race"
-                    optionLabel="race"
-                    optionValue="value"
-                    :options="raceList"
+                <div class="flex-none ml-2">
+                  <div class="flex align-items-center">
+                    <label id="form-label">패자 종족</label>
+                    <SelectButton
+                      v-model="playerTuples.loser_race"
+                      optionLabel="race"
+                      optionValue="value"
+                      :options="raceList"
+                    />
+                  </div>
+                  <ValidationErrorMessage
+                    :obj="v$.state.player_tuples[playerTupleIndex].loser_race"
                   />
                 </div>
-                <ValidationErrorMessage
-                  :obj="v$.state.player_tuples[playerTupleIndex].loser_race"
-                />
               </div>
-              <ValidationErrorMessage :obj="v$.state.extra" />
             </div>
 
             <!-- Delete player tuple -->
@@ -151,6 +174,10 @@
               />
             </div>
           </div>
+
+          <!-- Extra error message -->
+          <ValidationErrorMessage :obj="v$.state.extra" />
+
           <!-- Add new player tuple -->
           <div class="w-full">
             <Button
@@ -160,6 +187,16 @@
               <i class="pi pi-plus"></i>
               <span>&nbsp;새 플레이어 추가</span>
             </Button>
+          </div>
+          <!-- Error messages from server -->
+
+          <div v-if="errorMessagesFromServer.length > 0">
+            <div
+              v-for="errorMessage in errorMessagesFromServer"
+              :key="errorMessage"
+            >
+              <ValidationErrorMessage class="pt-2" :obj="errorMessage" />
+            </div>
           </div>
         </div>
 
@@ -174,16 +211,16 @@
             type="text"
             v-model="matchResultForm.miscellaneous"
           />
+          <!-- Controller -->
+          <div class="flex justify-content-end ml-3">
+            <Button class="p-button-success" @click="createMatch()">
+              <i class="pi pi-save"></i>
+              <span>&nbsp;저장</span>
+            </Button>
+          </div>
         </div>
       </div>
-    </StripePanel>
-    <!-- Controller -->
-    <div class="flex justify-content-end mt-3">
-      <Button class="p-button-success" @click="createMatch()">
-        <i class="pi pi-save"></i>
-        <span>&nbsp;저장</span>
-      </Button>
-    </div>
+    </Panel>
   </div>
 </template>
 
@@ -197,7 +234,8 @@ import SelectButton from "primevue/selectbutton";
 import router from "@/router/index.js";
 
 import ServerApi from "@/api/server/module.js";
-import StripePanel from "@/components/StripePanel.vue";
+import PageHeader from "@/components/PageHeader.vue";
+import Panel from "@/components/Panel.vue";
 import ValidationErrorMessage from "@/components/ValidationErrorMessage.vue";
 import { useValidator } from "@/utils/validator.js";
 
@@ -208,18 +246,20 @@ export default defineComponent({
     DropDown,
     InputText,
     SelectButton,
-    StripePanel,
+    PageHeader,
+    Panel,
     ValidationErrorMessage,
   },
   setup() {
     const clanData = ref(null);
+    const errorMessagesFromServer = reactive([]);
     const matchResultForm = reactive({
       league: "",
-      title: "",
       date: new Date(),
+      title: "",
       map: "",
-      player_tuples: [],
       miscellaneous: "",
+      player_tuples: [],
     });
 
     const rules = {
@@ -301,15 +341,41 @@ export default defineComponent({
             router.push({ name: "HomeView" });
           })
           .catch((error) => {
-            console.log(error);
+            if (error.response.status == 400) {
+              errorMessagesFromServer.splice(0, errorMessagesFromServer.length);
+              parseErrorMessageFromServer(error.response.data);
+            } else {
+              router.push({ name: "ErrorView" });
+            }
           });
       }
     };
 
     const transformDateToString = () => {
+      if (!(matchResultForm.date instanceof Date)) {
+        matchResultForm.date = new Date(matchResultForm.date);
+      }
       matchResultForm.date = matchResultForm.date
         .toISOString()
         .substring(0, 10);
+    };
+
+    const parseErrorMessageFromServer = (data) => {
+      Object.keys(data).forEach((key) => {
+        if (data[key] instanceof Object) {
+          parseErrorMessageFromServer(data[key]);
+        } else if (Array.isArray(data[key])) {
+          data[key].forEach((item) => {
+            parseErrorMessageFromServer(item);
+          });
+        } else {
+          errorMessagesFromServer.push({
+            isError: true,
+            isTouched: true,
+            errorMessage: data[key],
+          });
+        }
+      });
     };
 
     onMounted(async () => {
@@ -327,6 +393,7 @@ export default defineComponent({
 
     return {
       clanData,
+      errorMessagesFromServer,
       matchResultForm,
       raceList,
       v$,

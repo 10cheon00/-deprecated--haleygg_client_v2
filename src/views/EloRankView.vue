@@ -4,18 +4,20 @@
     <PageHeader>
       <p class="text-4xl m-4 font-bold">Elo 랭킹</p>
       <p>Elo 산출 방식은 위키백과와 같습니다.</p>
-      <br />
       <p class="text-xl font-bold">After = Before + K * (W - R)</p>
       <br />
       <div class="text-300">
-        <p>- K(가중치) = 32</p>
-        <p>- W(승리 여부) = 승리 시 1, 무승부 시 0.5, 패배 시 0</p>
-        <p>- R = 승리할 확률</p>
+        <p>K<small class="text-xs">(=가중치)</small> 기본값 32</p>
+        <p>
+          W<small class="text-xs">(=승리여부)</small> 승리 시 1, 무승부 시 0.5,
+          패배 시 0
+        </p>
+        <p>R<small class="text-xs">(=승리할 확률)</small></p>
       </div>
     </PageHeader>
 
     <div v-if="eloList" class="container p-3">
-      <StripePanel header="ELO Rank" />
+      <Panel header="ELO Rank" />
 
       <LeagueSelector :leagueList="leagueList" />
 
@@ -29,8 +31,13 @@
         <tbody>
           <tr v-for="(row, index) in eloList" :key="index">
             <td>{{ index + 1 }}</td>
-            <td @click="routeToPlayerInformation(router, row.name)">
-              {{ row.name }}
+            <td>
+              <span
+                style="cursor: pointer"
+                @click="routeToPlayerInformation(router, row.name)"
+              >
+                {{ row.name }}
+              </span>
             </td>
             <td class="pr-1">
               <PercentageBar id="eloBar" :data="row" />
@@ -49,7 +56,7 @@ import LeagueSelector from "@/components/LeagueSelector.vue";
 import PageHeader from "@/components/PageHeader.vue";
 import PercentageBar from "@/components/PercentageBar.vue";
 import ServerApi from "@/api/server/module.js";
-import StripePanel from "@/components/StripePanel.vue";
+import Panel from "@/components/Panel.vue";
 import { useRouter } from "vue-router";
 
 import { routeToPlayerInformation } from "@/utils/utils.js";
@@ -59,7 +66,7 @@ export default defineComponent({
     LeagueSelector,
     PageHeader,
     PercentageBar,
-    StripePanel,
+    Panel,
   },
   setup() {
     const eloList = ref(null);
@@ -120,19 +127,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-#header {
-  background-image: linear-gradient(
-      180deg,
-      rgba(0, 0, 0, 0.2),
-      rgba(0, 0, 0, 0.8)
-    ),
-    url("https://i.imgur.com/SK3Kyyf.jpeg");
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-  color: white;
-}
-
 #elo-rank-table {
   text-align: center;
   width: 100%;

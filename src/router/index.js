@@ -45,16 +45,21 @@ const routes = [
   {
     name: '401UnauthorizedAccessView',
     path: '/401/',
-    component: () => import("@/views/App/401UnauthorizedAccessView.vue")
+    component: () => import("@/views/App/App401UnauthorizedAccessView.vue")
   },
   {
     name: '404RedirectView',
     path: '/404/',
-    component: () => import("@/views/App/404RedirectView.vue")
+    component: () => import("@/views/App/App404RedirectView.vue")
+  },
+  {
+    name: 'ErrorView',
+    path: '/error/',
+    component: () => import("@/views/App/AppErrorView.vue")
   },
   {
     path: '/:pathMatch(.*)*',
-    redirect: { name: '404RedirectView' }
+    component: () => import("@/views/App/App404RedirectView.vue")
   }
 ];
 

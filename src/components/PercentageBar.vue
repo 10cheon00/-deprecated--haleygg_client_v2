@@ -6,7 +6,6 @@
     <div :style="barStyle">
       <span id="value">{{ data.value }}</span>
     </div>
-    <div id="background" />
   </div>
 </template>
 
@@ -69,7 +68,7 @@ export default defineComponent({
 }
 
 #background {
-  background-color: #4e4e4e;
+  background-color: #4e4e4e00;
   border-radius: 0.25rem;
 }
 </style>

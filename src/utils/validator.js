@@ -23,8 +23,13 @@ const createErrorObj = (obj, rules) => {
     if (extraValidations !== undefined) {
       if (Object.keys(extraValidations).includes(key)) {
         // extra validation execute.
-        if (obj[key])
+        if (Array.isArray(obj[key]) && obj[key].length > 0) {
           acc['extra'] = extraValidations[key](obj[key]);
+          console.log(acc.extra)
+        }
+        else if (obj[key]) {
+          acc['extra'] = extraValidations[key](obj[key]);
+        }
       }
     }
     return acc;
@@ -36,13 +41,13 @@ const getError = (obj) => {
   v$.isTouched = true;
   return Object.keys(obj).reduce((acc, key) => {
     if (Array.isArray(obj[key])) {
-      acc = (obj[key].reduce((_acc, _obj) => {
-        _acc = (getError(_obj) || _acc);
-        return _acc
-      }, new Boolean(false)) || acc);
+      acc = obj[key].reduce((_acc, _obj) => {
+        _acc = (getError(_obj) == true || _acc == true);
+        return _acc;
+      }, new Boolean(false)) == true || acc == true;
     } else {
       obj[key].isTouched = v$.isTouched;
-      acc = (obj[key].isError || acc);
+      acc = obj[key].isError == true || acc == true;
     }
     return acc;
   }, new Boolean(false));
@@ -63,7 +68,6 @@ const useValidator = (state, rules, extra) => {
   }
   v$.isTouched = false;
   v$.state = createErrorObj(state, rules);
-
   watch(state, () => {
     v$.state = createErrorObj(state, rules);
   });
