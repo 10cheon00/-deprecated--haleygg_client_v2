@@ -1,26 +1,46 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="app">
+    <!-- Navigation bar -->
+    <AppNavBar />
+
+    <!-- Content -->
+    <div id="content">
+      <router-view :key="$route.fullPath" />
+    </div>
+
+    <!-- Footer -->
+    <div class="container p-3 text-sm text-center" id="footer">
+      <p>할리클랜 전적검색기</p>
+      <p>made by 10cheon00</p>
+    </div>
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import { defineComponent } from "vue";
+import AppNavBar from "@/views/App/AppNavBar.vue";
+import "@/css/responsive-layout.css";
 
-export default {
-  name: 'App',
+export default defineComponent({
+  name: "app",
   components: {
-    HelloWorld
-  }
-}
+    AppNavBar,
+  },
+  setup() {},
+});
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+<style scoped>
+#content {
+  background-color: white;
+}
+.app {
+  min-height: 100vh;
+  background-color: var(--surface-100);
+  background-color: #ffdad6;
+}
+.footer {
+  margin-left: auto;
+  margin-right: auto;
 }
 </style>

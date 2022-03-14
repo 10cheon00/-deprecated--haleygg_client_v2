@@ -1,0 +1,243 @@
+<template>
+  <div>
+    <!-- Explanation -->
+    <PageHeader>
+      <p class="text-4xl m-4 font-bold">Elo 랭킹</p>
+      <p>Elo 산출 방식은 위키백과와 같습니다.</p>
+      <p class="text-xl font-bold">After = Before + K * (W - R)</p>
+      <br />
+      <div class="text-300">
+        <p>K<small class="text-xs">(=가중치)</small> 기본값 32</p>
+        <p>
+          W<small class="text-xs">(=승리여부)</small> 승리 시 1, 무승부 시 0.5,
+          패배 시 0
+        </p>
+        <p>R<small class="text-xs">(=승리할 확률)</small></p>
+      </div>
+    </PageHeader>
+
+    <div class="container p-3">
+      <LeagueSelector v-if="leagueList" class="mb-2" :leagueList="leagueList" />
+
+      <Panel header="ELO Rank" class="my-2">
+        <div
+          v-if="top3Player"
+          class="grid grid-nogutter text-center"
+          id="top3-players"
+        >
+          <div class="col-12 elo-podium">
+            <div class="text-4xl my-3">
+              <span
+                class="cursor-pointer"
+                @click="routeToPlayerInformation(router, top3Player[0].name)"
+              >
+                🥇 {{ top3Player[0].name }}
+              </span>
+            </div>
+            <div class="text-xl">Elo : {{ top3Player[0].current_elo }}</div>
+          </div>
+          <div class="col-12 lg:col-6 elo-podium">
+            <div class="text-2xl my-3">
+              <span
+                class="cursor-pointer"
+                @click="routeToPlayerInformation(router, top3Player[1].name)"
+              >
+                🥈 {{ top3Player[1].name }}
+              </span>
+            </div>
+            <div class="text-md">Elo : {{ top3Player[1].current_elo }}</div>
+          </div>
+          <div class="col-12 lg:col-6 elo-podium">
+            <div class="text-2xl my-3">
+              <span
+                class="cursor-pointer"
+                @click="routeToPlayerInformation(router, top3Player[2].name)"
+              >
+                🥉 {{ top3Player[2].name }}
+              </span>
+            </div>
+            <div class="text-md">Elo : {{ top3Player[2].current_elo }}</div>
+          </div>
+        </div>
+        <div v-else class="p-8 text-center text-300">데이터가 없습니다.</div>
+      </Panel>
+
+      <!-- Elo rank table -->
+      <table v-if="eloList" class="p-3" id="elo-rank-table">
+        <colgroup>
+          <col width="10%" />
+          <col width="20%" />
+          <col width="70%" />
+        </colgroup>
+        <tbody>
+          <tr v-for="(row, index) in eloList" :key="index">
+            <td>{{ index + 4 }}</td>
+            <td>
+              <span
+                style="cursor: pointer"
+                @click="routeToPlayerInformation(router, row.name)"
+              >
+                {{ row.name }} ( {{ row.favorate_race }} )
+              </span>
+            </td>
+            <td class="pr-1">
+              <PercentageBar id="eloBar" :data="row" />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</template>
+
+<script>
+import { defineComponent, onMounted, ref, provide, watch } from "vue";
+
+import LeagueSelector from "@/components/LeagueSelector.vue";
+import PageHeader from "@/components/PageHeader.vue";
+import PercentageBar from "@/components/PercentageBar.vue";
+import ServerApi from "@/api/server/module.js";
+import Panel from "@/components/Panel.vue";
+import { useRouter } from "vue-router";
+
+import { routeToPlayerInformation } from "@/utils/utils.js";
+
+export default defineComponent({
+  components: {
+    LeagueSelector,
+    PageHeader,
+    PercentageBar,
+    Panel,
+  },
+  setup() {
+    const eloList = ref(null);
+    const top3Player = ref(null);
+    const leagueList = ref(null);
+    const selectedLeague = ref(null);
+    provide("selectedLeague", selectedLeague);
+    const router = useRouter();
+
+    onMounted(async () => {
+      // fetch elo list.
+      const response = await ServerApi.fetchEloRatingActiveLeagueList();
+      leagueList.value = response.data;
+      selectedLeague.value = leagueList.value[0].id;
+      await fetchEloRanking();
+
+      watch(selectedLeague, async () => {
+        await fetchEloRanking();
+      });
+    });
+
+    const fetchEloRanking = async () => {
+      const response = await ServerApi.fetchEloRanking(selectedLeague.value);
+      top3Player.value = undefined;
+      top3Player.value = popTop3Player(response.data);
+
+      const colorCodeStart = [102, 255, 189];
+      const colorCodeEnd = [100, 206, 160];
+
+      response.data.forEach((value, index, array) => {
+        value.value = value.current_elo;
+        value.percentage = value.current_elo / array[0].current_elo;
+        value.color = [
+          Math.floor(
+            colorCodeStart[0] +
+              value.percentage * (colorCodeEnd[0] - colorCodeStart[0])
+          ),
+          Math.floor(
+            colorCodeStart[1] +
+              value.percentage * (colorCodeEnd[1] - colorCodeStart[1])
+          ),
+          Math.floor(
+            colorCodeStart[2] +
+              value.percentage * (colorCodeEnd[2] - colorCodeStart[2])
+          ),
+        ];
+      });
+      eloList.value = response.data;
+    };
+
+    const popTop3Player = (data) => {
+      if (data.length == 0) {
+        return undefined;
+      }
+      const list = [];
+      for (let i = 0; i < 3; ++i) {
+        const value = data.shift();
+        if (value !== undefined) {
+          list.push(value);
+        } else {
+          break;
+        }
+      }
+      return list;
+    };
+
+    return {
+      eloList,
+      leagueList,
+      router,
+      selectedLeague,
+      top3Player,
+      fetchEloRanking,
+      routeToPlayerInformation,
+    };
+  },
+});
+</script>
+
+<style scoped>
+#elo-rank-table {
+  text-align: center;
+  width: 100%;
+}
+
+.elo-podium {
+  padding: 1rem;
+}
+
+#top3-players .elo-podium:first-child {
+  border-bottom: 1px #dee2e6 solid;
+  border-right: none;
+}
+
+#top3-players .elo-podium {
+  border-right: 1px #dee2e6 solid;
+}
+
+#top3-players .elo-podium:last-child {
+  border-right: none;
+}
+
+@media (max-width: 992px) {
+  #top3-players .elo-podium {
+    border-bottom: 1px #dee2e6 solid;
+    border-right: none;
+  }
+  #top3-players .elo-podium:last-child {
+    border-bottom: none;
+  }
+}
+
+td {
+  border-collapse: collapse;
+  border: 1px solid #dee2e6;
+  border-right: none;
+  border-left: none;
+  vertical-align: middle;
+}
+
+tr td:first-child {
+  border-left: 1px solid #dee2e6;
+}
+
+tr td:last-child {
+  border-right: 1px solid #dee2e6;
+}
+
+td {
+  height: 2rem;
+  vertical-align: middle;
+}
+</style>

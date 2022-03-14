@@ -1,0 +1,126 @@
+<template>
+  <MenuBar class="tabmenu" :model="items">
+    <template #start>
+      <img
+        src="/logo.png"
+        class="px-3 pt-2 pb-0"
+        @click="routeToHome()"
+        style="cursor: pointer"
+      />
+    </template>
+    <template #end>
+      <div class="flex align-items-center">
+        <!-- login status -->
+        <div class="pr-3">
+          <div v-if="userName.length > 0" class="flex align-items-center">
+            <span>{{ userName }}</span>
+            <Button
+              id="credential-button"
+              icon="pi pi-sign-out"
+              @click="logoutButtonClicked()"
+            />
+          </div>
+          <Button
+            v-else
+            icon="pi pi-cog"
+            id="credential-button"
+            @click="loginButtonClicked()"
+          />
+        </div>
+
+        <PlayerSearchBar />
+      </div>
+      <LoginModal />
+    </template>
+  </MenuBar>
+</template>
+
+<script>
+import { defineComponent, ref, provide, computed } from "vue";
+import { useRouter } from "vue-router";
+import { useStore } from "vuex";
+import Button from "primevue/button";
+import MenuBar from "primevue/menubar";
+
+import LoginModal from "@/components/LoginModal.vue";
+import PlayerSearchBar from "@/components/PlayerSearchBar.vue";
+
+export default defineComponent({
+  components: {
+    Button,
+    LoginModal,
+    MenuBar,
+    PlayerSearchBar,
+  },
+  setup() {
+    const router = useRouter();
+    const vuexStore = useStore();
+
+    const isLoginButtonClicked = ref(false);
+    provide("isLoginButtonClicked", isLoginButtonClicked);
+    const loginButtonClicked = () => {
+      if (isLoginButtonClicked.value == false)
+        isLoginButtonClicked.value = true;
+    };
+    const logoutButtonClicked = () => {
+      vuexStore.commit("tokenStore/flushToken");
+      router.go();
+    };
+
+    const routeToHome = () => {
+      router.push({
+        name: "HomeView",
+      });
+    };
+
+    const userName = computed(() => {
+      return vuexStore.getters["tokenStore/getUserName"];
+    });
+
+    const items = computed(() => {
+      const list = [
+        {
+          label: "Elo 랭킹",
+          icon: "pi pi-fw pi-chart-line",
+          to: "/elo-rank/",
+        },
+        {
+          label: "맵별 통계",
+          icon: "pi pi-fw pi-eye",
+          to: "/map/",
+        },
+      ];
+
+      if (userName.value.length > 0) {
+        list.push({
+          label: "전적 입력",
+          icon: "pi pi-fw pi-cloud-upload",
+          to: "/add-result/",
+        });
+      }
+      return list;
+    });
+
+    return {
+      items,
+      userName,
+      routeToHome,
+      loginButtonClicked,
+      logoutButtonClicked,
+    };
+  },
+});
+</script>
+
+<style scoped>
+#credential-button {
+  background-color: #dd0ea6;
+  border-color: #dd0ea6;
+  border-radius: 50%;
+}
+.p-menubar {
+  background: linear-gradient(120deg, #fea29a, #fe62d4);
+  border: none;
+  border-radius: 0px;
+}
+</style>
