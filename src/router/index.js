@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 import ServerApi from "@/api/server/module.js";
 
-
 const routeOnlyAuthenticatedUser = async (to, from, next) => {
   const response = await ServerApi.requestVerifyToken() || false;
   const isAuthenticated = (response.status == 200)
@@ -43,27 +42,53 @@ const routes = [
     beforeEnter: [routeOnlyAuthenticatedUser]
   },
   {
-    name: '401UnauthorizedAccessView',
+    name: '401View',
     path: '/401/',
-    component: () => import("@/views/App/App401UnauthorizedAccessView.vue")
+    component: () => import("@/views/App/App401View.vue")
   },
   {
-    name: '404RedirectView',
+    name: '404View',
     path: '/404/',
-    component: () => import("@/views/App/App404RedirectView.vue")
+    component: () => import("@/views/App/App404View.vue")
   },
   {
-    name: 'ErrorView',
+    name: '500View',
+    path: '/500/',
+    component: () => import("@/views/App/App500View.vue")
+  },
+  {
+    name: 'RequestErrorView',
     path: '/error/',
-    component: () => import("@/views/App/AppErrorView.vue")
+    component: () => import("@/views/App/AppRequestErrorView.vue")
   },
   {
     path: '/:pathMatch(.*)*',
-    component: () => import("@/views/App/App404RedirectView.vue")
+    component: () => import("@/views/App/App404View.vue")
   }
 ];
 
-export default createRouter({
+const router = createRouter({
   history: createWebHistory(),
   routes
 });
+
+router.beforeEach(async (to, from, next) => {
+  if (to.name == "401View" ||
+    to.name == "404View" ||
+    to.name == "500View" ||
+    to.name == "RequestErrorView") {
+    next();
+  }
+  else {
+    const response = await ServerApi.requestHostCheck() || false;
+    const isServerLive = (response.status == 200)
+    if (isServerLive) {
+      next();
+    }
+    else {
+      next({ name: "500View" });
+    }
+  }
+})
+
+export default router

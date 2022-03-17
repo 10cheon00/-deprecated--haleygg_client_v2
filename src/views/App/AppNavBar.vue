@@ -13,7 +13,7 @@
         <!-- login status -->
         <div class="pr-3">
           <div v-if="userName.length > 0" class="flex align-items-center">
-            <span>{{ userName }}</span>
+            <span class="pr-3">{{ userName }}</span>
             <Button
               id="credential-button"
               icon="pi pi-sign-out"

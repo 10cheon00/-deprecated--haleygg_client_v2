@@ -22,9 +22,10 @@
             <DropDown
               v-model="matchResultForm.league"
               class="w-full"
-              :options="clanData.leagueList"
+              :filter="true"
               optionLabel="name"
               optionValue="name"
+              :options="clanData.leagueList"
             />
           </div>
           <ValidationErrorMessage :obj="v$.state.league" />
@@ -57,6 +58,7 @@
             <DropDown
               v-model="matchResultForm.map"
               class="w-full"
+              :filter="true"
               optionLabel="name"
               optionValue="name"
               :options="clanData.mapList"
@@ -90,6 +92,7 @@
                     <DropDown
                       v-model="playerTuples.winner"
                       class="w-full"
+                      :filter="true"
                       optionLabel="name"
                       optionValue="name"
                       :options="clanData.playerList"
@@ -125,6 +128,7 @@
                     <DropDown
                       v-model="playerTuples.loser"
                       class="w-full"
+                      :filter="true"
                       optionLabel="name"
                       optionValue="name"
                       :options="clanData.playerList"
@@ -345,7 +349,7 @@ export default defineComponent({
               errorMessagesFromServer.splice(0, errorMessagesFromServer.length);
               parseErrorMessageFromServer(error.response.data);
             } else {
-              router.push({ name: "ErrorView" });
+              router.push({ name: "RequestErrorView" });
             }
           });
       }
