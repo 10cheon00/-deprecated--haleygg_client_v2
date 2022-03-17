@@ -8,10 +8,6 @@ const serverUrl = "https://api.haleygg.kr/";
 const axiosInstance = axios.create({
   baseURL: serverUrl,
   timeout: 1000,
-  headers: {
-    "Content-Type": "application/json",
-    "Access-Control-Allow-Origin": "*",
-  },
 })
 
 axiosInstance.interceptors.request.use(
