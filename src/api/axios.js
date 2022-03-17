@@ -3,7 +3,7 @@ import axios from "axios";
 import vuexStore from "@/store/store.js";
 import router from "@/router/index.js";
 
-const serverUrl = "/api";
+const serverUrl = "/proxy/";
 
 const axiosInstance = axios.create({
   baseURL: serverUrl,
