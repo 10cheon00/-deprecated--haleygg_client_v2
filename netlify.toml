@@ -1,6 +1,0 @@
-[[redirects]]
-  from = "/apiServer"
-  to = "https://api.haleygg.kr/:splat"
-  status = 200
-  force = true
-  headers = {Access-Control-Allow-Origin= "*"}
