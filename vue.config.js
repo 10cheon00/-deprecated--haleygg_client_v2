@@ -5,7 +5,7 @@ module.exports = {
         target: "https://api.haleygg.kr/",
         changeOrigin: true,
         pathRewrite: {
-          "^/server": ""
+          "^/apiServer": ""
         }
       }
     }
