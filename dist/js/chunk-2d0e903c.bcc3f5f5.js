@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0e903c"],{"8c72":function(n,c,e){"use strict";e.r(c);var t=e("7a23"),o={class:"container"};function u(n,c,e,u,i,s){return Object(t["y"])(),Object(t["h"])("div",o," 데이터 전송에 실패했습니다. 잠시 후 홈페이지로 이동합니다. ")}var i=e("6c02"),s=Object(t["m"])({setup:function(){var n=Object(i["c"])();Object(t["w"])((function(){setTimeout((function(){n.push({name:"HomeView"})}),1e3)}))}}),a=e("6b0d"),r=e.n(a);const b=r()(s,[["render",u]]);c["default"]=b}}]);
+//# sourceMappingURL=chunk-2d0e903c.bcc3f5f5.js.map

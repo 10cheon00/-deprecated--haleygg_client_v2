@@ -59,7 +59,7 @@
             <div class="text-md">Elo : {{ top3Player[2].current_elo }}</div>
           </div>
         </div>
-        <div v-else class="p-8 text-center text-300">데이터가 없습니다.</div>
+        <NullDataBox v-else />
       </Panel>
 
       <!-- Elo rank table -->
@@ -94,10 +94,11 @@
 import { defineComponent, onMounted, ref, provide, watch } from "vue";
 
 import LeagueSelector from "@/components/LeagueSelector.vue";
+import NullDataBox from "@/components/NullDataBox.vue";
 import PageHeader from "@/components/PageHeader.vue";
+import Panel from "@/components/Panel.vue";
 import PercentageBar from "@/components/PercentageBar.vue";
 import ServerApi from "@/api/server/module.js";
-import Panel from "@/components/Panel.vue";
 import { useRouter } from "vue-router";
 
 import { routeToPlayerInformation } from "@/utils/utils.js";
@@ -105,6 +106,7 @@ import { routeToPlayerInformation } from "@/utils/utils.js";
 export default defineComponent({
   components: {
     LeagueSelector,
+    NullDataBox,
     PageHeader,
     PercentageBar,
     Panel,
@@ -121,8 +123,10 @@ export default defineComponent({
       // fetch elo list.
       const response = await ServerApi.fetchEloRatingActiveLeagueList();
       leagueList.value = response.data;
-      selectedLeague.value = leagueList.value[0].id;
-      await fetchEloRanking();
+      if (leagueList.value.length > 0) {
+        selectedLeague.value = leagueList.value[0].id;
+        await fetchEloRanking();
+      }
 
       watch(selectedLeague, async () => {
         await fetchEloRanking();

@@ -73,10 +73,12 @@
             >
               <div id="elo-chart">
                 <Chart
+                  v-if="playerInformation.eloChartData"
                   type="line"
                   :data="playerInformation.eloChartData"
                   :options="playerInformation.eloChartOptions"
                 />
+                <NullDataBox v-else class="p-chart" />
               </div>
             </Panel>
           </div>
@@ -136,6 +138,7 @@ import CheckBox from "primevue/checkbox";
 
 import LeagueSelector from "@/components/LeagueSelector.vue";
 import MatchResultList from "@/components/MatchResultList.vue";
+import NullDataBox from "@/components/NullDataBox.vue";
 import PageHeader from "@/components/PageHeader.vue";
 import ServerApi from "@/api/server/module.js";
 import Panel from "@/components/Panel.vue";
@@ -146,6 +149,7 @@ export default defineComponent({
     CheckBox,
     LeagueSelector,
     MatchResultList,
+    NullDataBox,
     PageHeader,
     Panel,
   },

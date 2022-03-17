@@ -46,17 +46,22 @@ axiosInstance.interceptors.response.use(response => {
   }
   return response;
 }, async error => {
+  if (error.response.status >= 500) {
+    router.replace({
+      name: "500View"
+    })
+  }
   if (error.response.status == 400) {
     if (error.config.url == 'api/auth/token/verify/') {
       router.replace({
-        name: "401UnauthorizedAccessView"
+        name: "401View"
       });
       return Promise.reject(error);
     }
   }
   if (error.response.status == 404) {
     router.replace({
-      name: "404RedirectView"
+      name: "404View"
     });
     return Promise.reject(error)
   }
@@ -68,7 +73,7 @@ axiosInstance.interceptors.response.use(response => {
     else if (vuexStore.getters["tokenStore/isTokenExists"] == false) {
       // Wrong access
       router.replace({
-        name: "401UnauthorizedAccessView"
+        name: "401View"
       });
       return Promise.reject(error);
     }

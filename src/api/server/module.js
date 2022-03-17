@@ -48,6 +48,13 @@ server.requestVerifyToken = () => {
   })
 }
 
+server.requestHostCheck = () => {
+  return axiosInstance.request({
+    method: "GET",
+    url: `api/`
+  });
+}
+
 server.createMatch = (match) => {
   return axiosInstance.request({
     method: "POST",
