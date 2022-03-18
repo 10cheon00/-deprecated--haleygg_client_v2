@@ -3,7 +3,7 @@ import axios from "axios";
 import vuexStore from "@/store/store.js";
 import router from "@/router/index.js";
 
-const serverUrl = "https://api.haleygg.kr/";
+const serverUrl = "http://127.0.0.1:8000";
 
 const axiosInstance = axios.create({
   baseURL: serverUrl,

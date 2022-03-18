@@ -2,20 +2,6 @@
   <div id="null-data-box">데이터가 없습니다.</div>
 </template>
 
-<script>
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  props: {
-    condition: {
-      type: Boolean,
-      required: true,
-    },
-  },
-  setup() {},
-});
-</script>
-
 <style scoped>
 #null-data-box {
   display: flex;

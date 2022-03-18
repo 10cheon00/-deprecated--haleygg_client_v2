@@ -25,7 +25,7 @@
           class="grid grid-nogutter text-center"
           id="top3-players"
         >
-          <div class="col-12 elo-podium">
+          <div v-if="top3Player[0]" class="col-12 elo-podium">
             <div class="text-4xl my-3">
               <span
                 class="cursor-pointer"
@@ -36,7 +36,7 @@
             </div>
             <div class="text-xl">Elo : {{ top3Player[0].current_elo }}</div>
           </div>
-          <div class="col-12 lg:col-6 elo-podium">
+          <div v-if="top3Player[1]" class="col-12 lg:col-6 elo-podium">
             <div class="text-2xl my-3">
               <span
                 class="cursor-pointer"
@@ -47,7 +47,7 @@
             </div>
             <div class="text-md">Elo : {{ top3Player[1].current_elo }}</div>
           </div>
-          <div class="col-12 lg:col-6 elo-podium">
+          <div v-if="top3Player[2]" class="col-12 lg:col-6 elo-podium">
             <div class="text-2xl my-3">
               <span
                 class="cursor-pointer"
