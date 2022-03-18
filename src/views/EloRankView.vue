@@ -138,26 +138,12 @@ export default defineComponent({
       top3Player.value = undefined;
       top3Player.value = popTop3Player(response.data);
 
-      const colorCodeStart = [102, 255, 189];
-      const colorCodeEnd = [100, 206, 160];
+      const colorCode = "#1cf1b1";
 
       response.data.forEach((value, index, array) => {
-        value.value = value.current_elo;
+        value.label = value.current_elo;
         value.percentage = value.current_elo / array[0].current_elo;
-        value.color = [
-          Math.floor(
-            colorCodeStart[0] +
-              value.percentage * (colorCodeEnd[0] - colorCodeStart[0])
-          ),
-          Math.floor(
-            colorCodeStart[1] +
-              value.percentage * (colorCodeEnd[1] - colorCodeStart[1])
-          ),
-          Math.floor(
-            colorCodeStart[2] +
-              value.percentage * (colorCodeEnd[2] - colorCodeStart[2])
-          ),
-        ];
+        value.color = colorCode;
       });
       eloList.value = response.data;
     };

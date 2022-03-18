@@ -33,7 +33,11 @@
         </div>
 
         <!-- League selector -->
-        <LeagueSelector class="col-12 my-2" :leagueList="leagueList" />
+        <LeagueSelector
+          class="col-12 my-2"
+          :leagueList="leagueList"
+          :mapList="mapList"
+        />
 
         <div class="col-12 grid grid-nogutter">
           <!-- Statistics -->
@@ -45,21 +49,31 @@
               <div
                 v-for="(item, index) in playerInformation.statistics"
                 :key="index"
-                class="grid grid-nogutter p-2"
+                class="grid grid-nogutter"
                 id="content-item"
               >
-                <div class="col-6">{{ item.label }}</div>
                 <div
-                  class="col-4 text-right"
-                  style="
-                    border-right: dashed 1px lightgray;
-                    padding-right: 10px;
-                  "
+                  class="col-4 p-2"
+                  style="border-right: dashed 1px lightgray"
                 >
-                  {{ item.value }}
+                  {{ item.label }}
                 </div>
-                <div class="col-2 text-right" style="color: gray">
-                  {{ item.percentage }}
+                <div class="col-8 p-2 flex">
+                  <div
+                    class="
+                      flex-none flex
+                      justify-content-center
+                      text-sm text-300
+                      winning-rate
+                    "
+                  >
+                    {{ getPercentage(item.winCount, item.loseCount) }}%
+                  </div>
+                  <WinningRateBar
+                    class="flex-grow-1 flex"
+                    :winCount="item.winCount"
+                    :loseCount="item.loseCount"
+                  />
                 </div>
               </div>
             </Panel>
@@ -140,8 +154,10 @@ import LeagueSelector from "@/components/LeagueSelector.vue";
 import MatchResultList from "@/components/MatchResultList.vue";
 import NullDataBox from "@/components/NullDataBox.vue";
 import PageHeader from "@/components/PageHeader.vue";
-import ServerApi from "@/api/server/module.js";
 import Panel from "@/components/Panel.vue";
+import ServerApi from "@/api/server/module.js";
+import WinningRateBar from "@/components/WinningRateBar.vue";
+import { getPercentage } from "@/utils/utils.js";
 
 export default defineComponent({
   components: {
@@ -151,6 +167,7 @@ export default defineComponent({
     MatchResultList,
     NullDataBox,
     PageHeader,
+    WinningRateBar,
     Panel,
   },
   props: {
@@ -170,7 +187,10 @@ export default defineComponent({
 
     const leagueList = ref(null);
     const selectedLeague = ref(null);
+    const mapList = ref(null);
+    const selectedMap = ref(null);
     provide("selectedLeague", selectedLeague);
+    provide("selectedMap", selectedMap);
 
     const raceWallpaperUrls = {
       P: "https://bnetcmsus-a.akamaihd.net/cms/gallery/7EKSWN98V7M91498587613057.jpg",
@@ -196,11 +216,21 @@ export default defineComponent({
       });
       selectedLeague.value = leagueList.value[0].id;
 
+      response = await ServerApi.fetchMapList();
+      mapList.value = response.data;
+      mapList.value.push({
+        id: undefined,
+        name: "Total",
+      });
+
       // Fetch statistics and Elo and matches
-      await fetchPlayerStatisticsRelatedWithLeague();
+      await fetchPlayerStatisticsRelatedSelector();
 
       watch(selectedLeague, async () => {
-        await fetchPlayerStatisticsRelatedWithLeague();
+        await fetchPlayerStatisticsRelatedSelector();
+      });
+      watch(selectedMap, async () => {
+        await fetchPlayerStatisticsRelatedSelector();
       });
 
       playerInformation.value.isFetched = true;
@@ -224,81 +254,46 @@ export default defineComponent({
     });
 
     const aggregateStatistics = (data) => {
-      const percentage = (winning_count, losing_count) => {
-        if (losing_count + winning_count <= 0) {
-          return 0.0;
-        }
-
-        return (
-          Math.round((winning_count / (winning_count + losing_count)) * 1000) /
-          10
-        );
-      };
-
       const list = [
         {
           label: "개인",
-          value: `${data.winning_melee_matches_count}-${data.losing_melee_matches_count}`,
-          percentage: `${percentage(
-            data.winning_melee_matches_count,
-            data.losing_melee_matches_count
-          )}%`,
+          winCount: data.winning_melee_matches_count,
+          loseCount: data.losing_melee_matches_count,
         },
         {
           label: "팀플",
-          value: `${data.winning_top_and_bottom_matches_count}-${data.losing_top_and_bottom_matches_count}`,
-          percentage: `${percentage(
-            data.winning_top_and_bottom_matches_count,
-            data.losing_top_and_bottom_matches_count
-          )}%`,
+          winCount: data.winning_top_and_bottom_matches_count,
+          loseCount: data.losing_top_and_bottom_matches_count,
         },
         {
-          label: "프로토스 vs 테란",
-          value: `${data.protoss_wins_to_terran_count}-${data.protoss_loses_to_terran_count}`,
-          percentage: `${percentage(
-            data.protoss_wins_to_terran_count,
-            data.protoss_loses_to_terran_count
-          )}%`,
+          label: "P vs T",
+          winCount: data.protoss_wins_to_terran_count,
+          loseCount: data.protoss_loses_to_terran_count,
         },
         {
-          label: "프로토스 vs 저그",
-          value: `${data.protoss_wins_to_zerg_count}-${data.protoss_loses_to_zerg_count}`,
-          percentage: `${percentage(
-            data.protoss_wins_to_zerg_count,
-            data.protoss_loses_to_zerg_count
-          )}%`,
+          label: "P vs Z",
+          winCount: data.protoss_wins_to_zerg_count,
+          loseCount: data.protoss_loses_to_zerg_count,
         },
         {
-          label: "테란 vs 프로토스",
-          value: `${data.terran_wins_to_protoss_count}-${data.terran_loses_to_protoss_count}`,
-          percentage: `${percentage(
-            data.terran_wins_to_protoss_count,
-            data.terran_loses_to_protoss_count
-          )}%`,
+          label: "T vs P",
+          winCount: data.terran_wins_to_protoss_count,
+          loseCount: data.terran_loses_to_protoss_count,
         },
         {
-          label: "테란 vs 저그",
-          value: `${data.terran_wins_to_zerg_count}-${data.terran_loses_to_zerg_count}`,
-          percentage: `${percentage(
-            data.terran_wins_to_zerg_count,
-            data.terran_loses_to_zerg_count
-          )}%`,
+          label: "T vs Z",
+          winCount: data.terran_wins_to_zerg_count,
+          loseCount: data.terran_loses_to_zerg_count,
         },
         {
-          label: "저그 vs 프로토스",
-          value: `${data.zerg_wins_to_protoss_count}-${data.zerg_loses_to_protoss_count}`,
-          percentage: `${percentage(
-            data.zerg_wins_to_protoss_count,
-            data.zerg_loses_to_protoss_count
-          )}%`,
+          label: "Z vs P",
+          winCount: data.zerg_wins_to_protoss_count,
+          loseCount: data.zerg_loses_to_protoss_count,
         },
         {
-          label: "저그 vs 테란",
-          value: `${data.zerg_wins_to_terran_count}-${data.zerg_loses_to_terran_count}`,
-          percentage: `${percentage(
-            data.zerg_wins_to_terran_count,
-            data.zerg_loses_to_terran_count
-          )}%`,
+          label: "Z vs T",
+          winCount: data.zerg_wins_to_terran_count,
+          loseCount: data.zerg_loses_to_terran_count,
         },
       ];
 
@@ -318,11 +313,12 @@ export default defineComponent({
       }
     };
 
-    const fetchPlayerStatisticsRelatedWithLeague = async () => {
+    const fetchPlayerStatisticsRelatedSelector = async () => {
       // Fetch statistics
       let response = await ServerApi.fetchPlayerStatistics(
         player.value.id,
-        selectedLeague.value
+        selectedLeague.value,
+        selectedMap.value
       );
 
       playerInformation.value.statistics = aggregateStatistics(response.data);
@@ -330,7 +326,8 @@ export default defineComponent({
       // Fetch matches
       response = await ServerApi.fetchPlayerMatches(
         player.value.id,
-        selectedLeague.value
+        selectedLeague.value,
+        selectedMap.value
       );
       rawMatchResultList.value = [];
       addMatchResultsToList(response.data);
@@ -410,12 +407,14 @@ export default defineComponent({
       isMeleeMatchResultShown,
       isTopAndBottomMatchResultShown,
       leagueList,
+      mapList,
       matchResultList,
       nextURL,
       playerInformation,
+      getPercentage,
       selectedLeague,
       fetchPlayerNextMatches,
-      fetchPlayerStatisticsRelatedWithLeague,
+      fetchPlayerStatisticsRelatedSelector,
     };
   },
 });
@@ -442,5 +441,8 @@ export default defineComponent({
   width: 100%;
   min-height: 295px;
   max-height: 295px;
+}
+.winning-rate {
+  min-width: 3rem;
 }
 </style>

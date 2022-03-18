@@ -1,13 +1,12 @@
 <template>
   <div class="flex justify-content-between" id="selector">
-    <div class="font-bold mt-auto mb-auto ml-3">League</div>
+    <div class="font-bold mt-auto mb-auto ml-3"></div>
     <div id="selector-buttons">
       <Button
         v-for="league in leagueList"
         :key="league"
         :label="league.name"
         :class="{
-          'p-button-sm': true,
           'mx-1': true,
           'selected-league': league.id == selectedLeague ? true : false,
         }"
@@ -15,6 +14,16 @@
         @click="select(league.id)"
       />
     </div>
+    <Dropdown
+      v-if="mapList"
+      v-model="selectedMap"
+      class="ml-2"
+      id="selector-dropdown"
+      placeholder="맵 선택"
+      optionLabel="name"
+      optionValue="id"
+      :options="mapList"
+    />
   </div>
 </template>
 
@@ -22,6 +31,7 @@
 import { defineComponent, inject } from "vue";
 
 import Button from "primevue/button";
+import Dropdown from "primevue/dropdown";
 
 export default defineComponent({
   props: {
@@ -29,17 +39,24 @@ export default defineComponent({
       type: Array,
       required: true,
     },
+    mapList: {
+      type: Array,
+      required: true,
+    },
   },
   components: {
     Button,
+    Dropdown,
   },
   setup() {
     const selectedLeague = inject("selectedLeague");
+    const selectedMap = inject("selectedMap");
     const select = (leagueId) => {
       selectedLeague.value = leagueId;
     };
     return {
       selectedLeague,
+      selectedMap,
       select,
     };
   },
@@ -54,8 +71,12 @@ export default defineComponent({
   width: 100%;
 }
 #selector-buttons {
+  margin-left: auto;
   overflow-y: auto;
   white-space: nowrap;
+}
+#selector-dropdown {
+  min-width: 150px;
 }
 #selector-title {
   border-right: 1px solid #dee2e6;
