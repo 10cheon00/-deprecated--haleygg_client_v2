@@ -1,13 +1,15 @@
 <template>
-  <div class="flex justify-content-start">
-    <div :style="barStyle">
-      <span id="value">{{ data.label }}</span>
+  <div>
+    <div class="percentage-bar" :style="barStyle">
+      <span>{{ data.label }}</span>
     </div>
   </div>
 </template>
 
 <script>
 import { defineComponent, computed } from "vue";
+
+import { hexToRgb } from "@/utils/utils.js";
 
 export default defineComponent({
   props: {
@@ -21,15 +23,27 @@ export default defineComponent({
     // const dataRef = toRefs(props).data;
 
     const barStyle = computed(() => {
+      const rgbColor = hexToRgb(props.data.color);
       return {
-        "background-color": props.data.color,
-        "border-radius": "0.25rem",
-        color: "white",
-        display: "flex",
-        "justify-content": "end",
-        "min-width": "50px",
-        "padding-right": "0.25rem",
-        width: `${Math.round(props.data.percentage * 1000) / 10}%`,
+        // "background-color": props.data.color,
+        background: `
+          repeating-linear-gradient(
+            135deg,
+            ${props.data.color} ,
+            ${props.data.color} 10px,
+            rgb(
+              ${rgbColor[0] * 0.85},
+              ${rgbColor[1] * 0.85},
+              ${rgbColor[2] * 0.85}
+            ) 10px,
+            rgb(
+              ${rgbColor[0] * 0.85},
+              ${rgbColor[1] * 0.85},
+              ${rgbColor[2] * 0.85}
+            ) 20px
+          )
+          `,
+        width: `${props.data.percentage}%`,
       };
     });
 
@@ -41,4 +55,14 @@ export default defineComponent({
 </script>
 
 <style scoped>
+span {
+  padding-right: 0.25rem;
+  color: white;
+}
+.percentage-bar {
+  border-radius: 0.25rem;
+  display: flex;
+  justify-content: flex-end;
+  min-width: 2.75rem;
+}
 </style>

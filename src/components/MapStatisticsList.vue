@@ -14,7 +14,7 @@
       >
         <div
           :style="{
-            'background-image': `linear-gradient(90deg, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.25)),url(${mapData.image})`,
+            'background-image': `linear-gradient(180deg, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.5)),url(${mapData.image})`,
             'background-repeat': 'no-repeat',
             'background-size': 'cover',
             'background-position': 'center',
@@ -113,6 +113,8 @@
 import { defineComponent, onMounted, ref } from "vue";
 
 import PercentageBar from "@/components/PercentageBar.vue";
+import { getColor } from "@/css/color-config.js";
+import { getPercentage } from "@/utils/utils.js";
 
 export default defineComponent({
   components: {
@@ -122,46 +124,32 @@ export default defineComponent({
     data: Array,
   },
   setup(props) {
-    const protossColor = [230, 176, 0];
-    const terranColor = [29, 115, 221];
-    const zergColor = [116, 36, 174];
-
-    const percentage = (winning_count, losing_count) => {
-      if (losing_count + winning_count <= 0) {
-        return 0.0;
-      }
-
-      return (
-        Math.round((winning_count / (winning_count + losing_count)) * 1000) / 10
-      );
-    };
-
     const mapStatistics = ref(null);
 
     onMounted(() => {
       props.data.forEach((mapData) => {
         const raceRelativity = {
-          pvt: percentage(
+          pvt: getPercentage(
             mapData.aggregated_result.protoss_wins_to_terran_count,
             mapData.aggregated_result.terran_wins_to_protoss_count
           ),
-          pvz: percentage(
+          pvz: getPercentage(
             mapData.aggregated_result.protoss_wins_to_zerg_count,
             mapData.aggregated_result.zerg_wins_to_protoss_count
           ),
-          tvp: percentage(
+          tvp: getPercentage(
             mapData.aggregated_result.terran_wins_to_protoss_count,
             mapData.aggregated_result.protoss_wins_to_terran_count
           ),
-          tvz: percentage(
+          tvz: getPercentage(
             mapData.aggregated_result.terran_wins_to_zerg_count,
             mapData.aggregated_result.zerg_wins_to_terran_count
           ),
-          zvp: percentage(
+          zvp: getPercentage(
             mapData.aggregated_result.zerg_wins_to_protoss_count,
             mapData.aggregated_result.protoss_wins_to_zerg_count
           ),
-          zvt: percentage(
+          zvt: getPercentage(
             mapData.aggregated_result.zerg_wins_to_terran_count,
             mapData.aggregated_result.terran_wins_to_zerg_count
           ),
@@ -170,38 +158,38 @@ export default defineComponent({
 
         mapData.winningRate.protoss = {
           versusTerran: {
-            color: terranColor,
-            percentage: raceRelativity.pvt / 100,
-            value: `${raceRelativity.pvt}%`,
+            color: getColor("terran"),
+            percentage: raceRelativity.pvt,
+            label: `${raceRelativity.pvt}%`,
           },
           versusZerg: {
-            color: zergColor,
-            percentage: raceRelativity.pvz / 100,
-            value: `${raceRelativity.pvz}%`,
+            color: getColor("zerg"),
+            percentage: raceRelativity.pvz,
+            label: `${raceRelativity.pvz}%`,
           },
         };
         mapData.winningRate.terran = {
           versusProtoss: {
-            color: protossColor,
-            percentage: raceRelativity.tvp / 100,
-            value: `${raceRelativity.tvp}%`,
+            color: getColor("protoss"),
+            percentage: raceRelativity.tvp,
+            label: `${raceRelativity.tvp}%`,
           },
           versusZerg: {
-            color: zergColor,
-            percentage: raceRelativity.tvz / 100,
-            value: `${raceRelativity.tvz}%`,
+            color: getColor("zerg"),
+            percentage: raceRelativity.tvz,
+            label: `${raceRelativity.tvz}%`,
           },
         };
         mapData.winningRate.zerg = {
           versusProtoss: {
-            color: protossColor,
-            percentage: raceRelativity.zvp / 100,
-            value: `${raceRelativity.zvp}%`,
+            color: getColor("protoss"),
+            percentage: raceRelativity.zvp,
+            label: `${raceRelativity.zvp}%`,
           },
           versusTerran: {
-            color: terranColor,
-            percentage: raceRelativity.zvt / 100,
-            value: `${raceRelativity.zvt}%`,
+            color: getColor("terran"),
+            percentage: raceRelativity.zvt,
+            label: `${raceRelativity.zvt}%`,
           },
         };
       });

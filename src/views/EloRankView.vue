@@ -17,7 +17,7 @@
     </PageHeader>
 
     <div class="container p-3">
-      <LeagueSelector v-if="leagueList" class="mb-2" :leagueList="leagueList" />
+      <MatchSelector v-if="leagueList" class="mb-2" :leagueList="leagueList" />
 
       <Panel header="ELO Rank" class="my-2">
         <div
@@ -93,7 +93,7 @@
 <script>
 import { defineComponent, onMounted, ref, provide, watch } from "vue";
 
-import LeagueSelector from "@/components/LeagueSelector.vue";
+import MatchSelector from "@/components/MatchSelector.vue";
 import NullDataBox from "@/components/NullDataBox.vue";
 import PageHeader from "@/components/PageHeader.vue";
 import Panel from "@/components/Panel.vue";
@@ -105,7 +105,7 @@ import { routeToPlayerInformation } from "@/utils/utils.js";
 
 export default defineComponent({
   components: {
-    LeagueSelector,
+    MatchSelector,
     NullDataBox,
     PageHeader,
     PercentageBar,
@@ -142,7 +142,8 @@ export default defineComponent({
 
       response.data.forEach((value, index, array) => {
         value.label = value.current_elo;
-        value.percentage = value.current_elo / array[0].current_elo;
+        value.percentage =
+          Math.round((value.current_elo / array[0].current_elo) * 1000) / 10;
         value.color = colorCode;
       });
       eloList.value = response.data;

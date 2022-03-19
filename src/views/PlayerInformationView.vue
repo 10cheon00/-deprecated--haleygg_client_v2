@@ -33,7 +33,7 @@
         </div>
 
         <!-- League selector -->
-        <LeagueSelector
+        <MatchSelector
           class="col-12 my-2"
           :leagueList="leagueList"
           :mapList="mapList"
@@ -53,17 +53,22 @@
                 id="content-item"
               >
                 <div
-                  class="col-4 p-2"
-                  style="border-right: dashed 1px lightgray"
+                  class="col-fixed p-2"
+                  style="
+                    border-right: dashed 1px lightgray;
+                    min-width: 5rem;
+                    text-align: center;
+                    white-space: nowrap;
+                  "
                 >
                   {{ item.label }}
                 </div>
-                <div class="col-8 p-2 flex">
+                <div class="col flex p-2">
                   <div
                     class="
                       flex-none flex
                       justify-content-center
-                      text-sm text-300
+                      text-sm text-600
                       winning-rate
                     "
                   >
@@ -150,7 +155,7 @@ import { defineComponent, ref, computed, onMounted, watch, provide } from "vue";
 import Chart from "primevue/chart";
 import CheckBox from "primevue/checkbox";
 
-import LeagueSelector from "@/components/LeagueSelector.vue";
+import MatchSelector from "@/components/MatchSelector.vue";
 import MatchResultList from "@/components/MatchResultList.vue";
 import NullDataBox from "@/components/NullDataBox.vue";
 import PageHeader from "@/components/PageHeader.vue";
@@ -163,7 +168,7 @@ export default defineComponent({
   components: {
     Chart,
     CheckBox,
-    LeagueSelector,
+    MatchSelector,
     MatchResultList,
     NullDataBox,
     PageHeader,
