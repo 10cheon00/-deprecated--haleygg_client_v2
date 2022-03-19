@@ -1,57 +1,49 @@
 <template>
-  <div
-    class="flex justify-content-start"
-    :id="background ? 'background' : 'none'"
-  >
-    <div :style="barStyle">
-      <span id="value">{{ data.value }}</span>
+  <div>
+    <div class="percentage-bar" :style="barStyle">
+      <span>{{ data.label }}</span>
     </div>
   </div>
 </template>
 
 <script>
-import { defineComponent, computed, toRefs } from "vue";
+import { defineComponent, computed } from "vue";
+
+import { hexToRgb } from "@/utils/utils.js";
 
 export default defineComponent({
   props: {
-    background: {
-      required: false,
-      type: Boolean,
-    },
     data: {
-      color: Array,
+      color: String,
       percentage: Number,
-      value: Number,
+      label: Number,
     },
   },
   setup(props) {
-    const dataRef = toRefs(props).data;
+    // const dataRef = toRefs(props).data;
 
     const barStyle = computed(() => {
+      const rgbColor = hexToRgb(props.data.color);
       return {
+        // "background-color": props.data.color,
         background: `
           repeating-linear-gradient(
-            45deg,
-            rgb(${dataRef.value.color[0]},${dataRef.value.color[1]},${
-          dataRef.value.color[2]
-        }),
-            rgb(${dataRef.value.color[0]},${dataRef.value.color[1]},${
-          dataRef.value.color[2]
-        }) 10px,
-            rgb(${dataRef.value.color[0] * 0.85},${
-          dataRef.value.color[1] * 0.85
-        },${dataRef.value.color[2] * 0.85}) 10px,
-            rgb(${dataRef.value.color[0] * 0.85},${
-          dataRef.value.color[1] * 0.85
-        },${dataRef.value.color[2] * 0.85}) 20px
-          )`,
-        "border-radius": "0.25rem",
-        color: "white",
-        display: "flex",
-        "justify-content": "end",
-        "min-width": "50px",
-        "padding-right": "0.25rem",
-        width: `${Math.round(dataRef.value.percentage * 1000) / 10}%`,
+            135deg,
+            ${props.data.color} ,
+            ${props.data.color} 10px,
+            rgb(
+              ${rgbColor[0] * 0.85},
+              ${rgbColor[1] * 0.85},
+              ${rgbColor[2] * 0.85}
+            ) 10px,
+            rgb(
+              ${rgbColor[0] * 0.85},
+              ${rgbColor[1] * 0.85},
+              ${rgbColor[2] * 0.85}
+            ) 20px
+          )
+          `,
+        width: `${props.data.percentage}%`,
       };
     });
 
@@ -63,12 +55,14 @@ export default defineComponent({
 </script>
 
 <style scoped>
-#value {
-  margin-left: 0.25rem;
+span {
+  padding-right: 0.25rem;
+  color: white;
 }
-
-#background {
-  background-color: #4e4e4e00;
+.percentage-bar {
   border-radius: 0.25rem;
+  display: flex;
+  justify-content: flex-end;
+  min-width: 2.75rem;
 }
 </style>

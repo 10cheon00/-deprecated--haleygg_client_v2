@@ -17,7 +17,7 @@
     </PageHeader>
 
     <div class="container p-3">
-      <LeagueSelector v-if="leagueList" class="mb-2" :leagueList="leagueList" />
+      <MatchSelector v-if="leagueList" class="mb-2" :leagueList="leagueList" />
 
       <Panel header="ELO Rank" class="my-2">
         <div
@@ -25,7 +25,7 @@
           class="grid grid-nogutter text-center"
           id="top3-players"
         >
-          <div class="col-12 elo-podium">
+          <div v-if="top3Player[0]" class="col-12 elo-podium">
             <div class="text-4xl my-3">
               <span
                 class="cursor-pointer"
@@ -36,7 +36,7 @@
             </div>
             <div class="text-xl">Elo : {{ top3Player[0].current_elo }}</div>
           </div>
-          <div class="col-12 lg:col-6 elo-podium">
+          <div v-if="top3Player[1]" class="col-12 lg:col-6 elo-podium">
             <div class="text-2xl my-3">
               <span
                 class="cursor-pointer"
@@ -47,7 +47,7 @@
             </div>
             <div class="text-md">Elo : {{ top3Player[1].current_elo }}</div>
           </div>
-          <div class="col-12 lg:col-6 elo-podium">
+          <div v-if="top3Player[2]" class="col-12 lg:col-6 elo-podium">
             <div class="text-2xl my-3">
               <span
                 class="cursor-pointer"
@@ -93,7 +93,7 @@
 <script>
 import { defineComponent, onMounted, ref, provide, watch } from "vue";
 
-import LeagueSelector from "@/components/LeagueSelector.vue";
+import MatchSelector from "@/components/MatchSelector.vue";
 import NullDataBox from "@/components/NullDataBox.vue";
 import PageHeader from "@/components/PageHeader.vue";
 import Panel from "@/components/Panel.vue";
@@ -105,7 +105,7 @@ import { routeToPlayerInformation } from "@/utils/utils.js";
 
 export default defineComponent({
   components: {
-    LeagueSelector,
+    MatchSelector,
     NullDataBox,
     PageHeader,
     PercentageBar,
@@ -138,26 +138,13 @@ export default defineComponent({
       top3Player.value = undefined;
       top3Player.value = popTop3Player(response.data);
 
-      const colorCodeStart = [102, 255, 189];
-      const colorCodeEnd = [100, 206, 160];
+      const colorCode = "#1cf1b1";
 
       response.data.forEach((value, index, array) => {
-        value.value = value.current_elo;
-        value.percentage = value.current_elo / array[0].current_elo;
-        value.color = [
-          Math.floor(
-            colorCodeStart[0] +
-              value.percentage * (colorCodeEnd[0] - colorCodeStart[0])
-          ),
-          Math.floor(
-            colorCodeStart[1] +
-              value.percentage * (colorCodeEnd[1] - colorCodeStart[1])
-          ),
-          Math.floor(
-            colorCodeStart[2] +
-              value.percentage * (colorCodeEnd[2] - colorCodeStart[2])
-          ),
-        ];
+        value.label = value.current_elo;
+        value.percentage =
+          Math.round((value.current_elo / array[0].current_elo) * 1000) / 10;
+        value.color = colorCode;
       });
       eloList.value = response.data;
     };

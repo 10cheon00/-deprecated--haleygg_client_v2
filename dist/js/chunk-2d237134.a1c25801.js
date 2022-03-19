@@ -1,2 +1,0 @@
-(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d237134"],{fa25:function(n,c,e){"use strict";e.r(c);var t=e("7a23"),a={class:"container p-6"};function r(n,c){return Object(t["y"])(),Object(t["h"])("div",a,"권한이 없습니다.")}var o=e("6b0d"),s=e.n(o);const d={},i=s()(d,[["render",r]]);c["default"]=i}}]);
-//# sourceMappingURL=chunk-2d237134.a1c25801.js.map
