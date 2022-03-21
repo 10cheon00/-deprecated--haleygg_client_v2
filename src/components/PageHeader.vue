@@ -1,6 +1,6 @@
 <template>
   <div class="py-6" id="header">
-    <div class="container" id="header-content">
+    <div class="container">
       <slot></slot>
     </div>
   </div>
@@ -29,8 +29,5 @@ export default defineComponent({
   display: flex;
   align-items: center;
   min-height: 20rem;
-}
-#header-content {
-  padding-left: 4rem;
 }
 </style>

@@ -2,12 +2,12 @@
   <div v-if="playerInformation.isFetched">
     <!-- Profile -->
     <PageHeader
+      class="pl-6"
       :style="{
-        width: '100%',
-        'background-attachment': 'fixed',
+        width: 'auto',
         'background-image': `linear-gradient(90deg, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0)),
                       url('${playerInformation.profile.favorate_race_wallpaperUrl}')`,
-        'background-position': 'center',
+        'background-position': 'top',
         'background-repeat': 'no-repeat',
         'background-size': 'cover',
       }"
@@ -197,10 +197,19 @@ export default defineComponent({
     provide("selectedLeague", selectedLeague);
     provide("selectedMap", selectedMap);
 
-    const raceWallpaperUrls = {
-      P: "https://bnetcmsus-a.akamaihd.net/cms/gallery/7EKSWN98V7M91498587613057.jpg",
-      T: "https://bnetcmsus-a.akamaihd.net/cms/gallery/lt/LTHPT2MPAS8P1502725038501.jpg",
-      Z: "https://bnetcmsus-a.akamaihd.net/cms/gallery/JHXVBPP04GHH1498587636883.jpg",
+    const getWallpaperUrlByRace = (race) => {
+      const wallpaper = {
+        P: "https://bnetcmsus-a.akamaihd.net/cms/gallery/7EKSWN98V7M91498587613057.jpg",
+        T: "https://bnetcmsus-a.akamaihd.net/cms/gallery/lt/LTHPT2MPAS8P1502725038501.jpg",
+        Z: "https://bnetcmsus-a.akamaihd.net/cms/gallery/JHXVBPP04GHH1498587636883.jpg",
+      };
+      let url = "";
+      if (Object.keys(wallpaper).find((key) => key == race)) {
+        url = wallpaper[race];
+      } else {
+        url = "https://i.imgur.com/SK3Kyyf.jpeg";
+      }
+      return url;
     };
 
     onMounted(async () => {
@@ -210,7 +219,7 @@ export default defineComponent({
       player.value = response.data;
 
       playerInformation.value.profile.favorate_race_wallpaperUrl =
-        raceWallpaperUrls[player.value.favorate_race];
+        getWallpaperUrlByRace(player.value.favorate_race);
 
       // Fetch leagueList first to request only for specific league.
       response = await ServerApi.fetchLeagueList();

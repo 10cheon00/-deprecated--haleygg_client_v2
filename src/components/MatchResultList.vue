@@ -8,8 +8,8 @@
         align-content-center align-items-center
         grid grid-nogutter
         text-center
+        match-result
       "
-      id="match-result"
       :style="{
         'background-color': (() => {
           if (matchResult.isWonMatch !== undefined) {
@@ -25,14 +25,13 @@
           index < matchResultList.length - 1 ? '0.25rem' : 'none',
       }"
     >
-      <div class="col-3">
-        <div id="match-result-league">
-          {{ matchResult.league }} {{ matchResult.title }}
-        </div>
-        <div class="mt-1" id="match-result-date">{{ matchResult.date }}</div>
+      <div class="col-4">
+        <div class="my-1 match-result-date">{{ matchResult.date }}</div>
+        <div class="my-1">{{ matchResult.league }}</div>
+        <div class="my-1">{{ matchResult.title }}</div>
       </div>
 
-      <div class="col-6">
+      <div class="col-5">
         <div
           v-for="player_tuple in matchResult.player_tuples"
           :key="player_tuple"
@@ -40,25 +39,40 @@
         >
           <div class="col-6">
             <span
-              style="cursor: pointer"
+              :style="{
+                cursor: 'pointer',
+                'font-weight':
+                  resultListOwnerName == player_tuple.winner ? 900 : '',
+              }"
               @click="routeToPlayerInformation(router, player_tuple.winner)"
-              >{{ player_tuple.winner }}( {{ player_tuple.winner_race }} )</span
             >
+              {{ player_tuple.winner }}&nbsp;
+              <span v-if="player_tuple.winner_race" class="match-player-race">
+                ( {{ player_tuple.winner_race }} )
+              </span>
+            </span>
           </div>
           <div class="col-6">
             <span
-              style="cursor: pointer"
+              :style="{
+                cursor: 'pointer',
+                'font-weight':
+                  resultListOwnerName == player_tuple.loser ? 900 : '',
+              }"
               @click="routeToPlayerInformation(router, player_tuple.loser)"
-              >{{ player_tuple.loser }} ( {{ player_tuple.loser_race }} )</span
-            >
+              >{{ player_tuple.loser }}&nbsp;
+              <span v-if="player_tuple.loser_race" class="match-player-race">
+                ( {{ player_tuple.loser_race }} )
+              </span>
+            </span>
           </div>
         </div>
       </div>
 
-      <div class="col-1 text-lg font-bold" id="match-result-map">
+      <div class="col-2 text-lg" id="match-result-map">
         {{ matchResult.map }}
       </div>
-      <div class="col-2" id="match-result-miscellaneous">
+      <div class="col-1" id="match-result-miscellaneous">
         {{ matchResult.miscellaneous }}
       </div>
     </div>
@@ -115,11 +129,15 @@ export default defineComponent({
 </script>
 
 <style scoped>
-#match-result {
-  height: 5rem;
+.match-result {
+  height: 6rem;
 }
-#match-result-date {
+.match-result-date {
   font-size: 0.5rem;
   color: gray;
+}
+.match-player-race {
+  font-size: 0.5rem;
+  vertical-align: middle;
 }
 </style>

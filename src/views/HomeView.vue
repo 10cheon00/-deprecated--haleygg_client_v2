@@ -2,8 +2,8 @@
   <div>
     <PageHeader>
       <div class="text-center">
-        <p class="text-4xl font-bold">Haley.gg</p>
-        <PlayerSearchBar class="py-8" id="search-bar" :size="1.25" />
+        <p class="my-4 text-4xl font-bold">Haley.gg</p>
+        <PlayerSearchBar id="search-bar" :size="1.25" />
       </div>
     </PageHeader>
   </div>
@@ -40,7 +40,7 @@ export default defineComponent({
   color: white;
 }
 #search-bar {
-  width: 32rem;
+  width: 75%;
   margin-left: auto;
   margin-right: auto;
 }
