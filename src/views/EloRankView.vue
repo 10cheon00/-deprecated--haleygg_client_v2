@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Explanation -->
-    <PageHeader>
+    <PageHeader class="pl-6">
       <p class="text-4xl m-4 font-bold">Elo 랭킹</p>
       <p>Elo 산출 방식은 위키백과와 같습니다.</p>
       <p class="text-xl font-bold">After = Before + K * (W - R)</p>

@@ -1,19 +1,24 @@
 <template>
-  <Dialog :modal="true" :visible="visible" @update:visible="closeModal()">
+  <Dialog
+    :modal="true"
+    :visible="visible"
+    :style="{ width: '50vh' }"
+    @update:visible="closeModal()"
+  >
     <template #header> Login </template>
     <form class="p-3" id="login-form" @submit.prevent="login()">
-      <div class="flex align-items-center my-2">
-        <label class="mx-3" id="form-label">ID</label>
-        <InputText class="w-full" v-model="credential.id" type="text" />
+      <div class="my-2">
+        <label class="m-3" id="form-label">ID</label>
+        <InputText class="my-2 w-full" v-model="credential.id" type="text" />
       </div>
       <div>
         <ValidationErrorMessage :obj="v$.state.id" />
       </div>
 
-      <div class="flex align-items-center my-2">
-        <label class="mx-3" id="form-label">Password</label>
+      <div class="my-2">
+        <label class="m-3" id="form-label">Password</label>
         <InputText
-          class="w-full"
+          class="my-2 w-full"
           v-model="credential.password"
           type="password"
         />
@@ -107,10 +112,4 @@ export default defineComponent({
 </script>
 
 <style scoped>
-#login-form {
-  min-width: 32rem;
-}
-#form-label {
-  min-width: 8rem;
-}
 </style>
