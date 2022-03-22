@@ -20,6 +20,3 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
-
-# custom files
-server-url.js

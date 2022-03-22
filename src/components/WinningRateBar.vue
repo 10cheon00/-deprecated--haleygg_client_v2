@@ -76,6 +76,7 @@ span {
   border-radius: 0.25rem 0 0 0.25rem;
   color: white;
   padding-left: 0.25rem;
+  white-space: nowrap;
 }
 #lose-count-bar {
   background-color: #ff4040;
@@ -83,5 +84,6 @@ span {
   color: white;
   padding-right: 0.25rem;
   text-align: right;
+  white-space: nowrap;
 }
 </style>

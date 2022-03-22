@@ -128,7 +128,7 @@
 
           <MatchResultList
             :matchResultList="matchResultList"
-            :resultListOwnerName="playerName"
+            :resultListOwnerName="player.name"
           />
           <div
             v-if="nextURL"
@@ -424,7 +424,9 @@ export default defineComponent({
       mapList,
       matchResultList,
       nextURL,
+      player,
       playerInformation,
+
       getPercentage,
       selectedLeague,
       fetchPlayerNextMatches,

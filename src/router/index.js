@@ -62,6 +62,11 @@ const routes = [
     component: () => import("@/views/App/AppRequestErrorView.vue")
   },
   {
+    name: 'DeadServerView',
+    path: '/dead-server/',
+    component: () => import("@/views/App/AppDeadServerView.vue")
+  },
+  {
     path: '/:pathMatch(.*)*',
     component: () => import("@/views/App/App404View.vue")
   }
@@ -73,10 +78,13 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-  if (to.name == "401View" ||
+  if (
+    to.name == "401View" ||
     to.name == "404View" ||
     to.name == "500View" ||
-    to.name == "RequestErrorView") {
+    to.name == "RequestErrorView" ||
+    to.name == "DeadServerView"
+  ) {
     next();
   }
   else {

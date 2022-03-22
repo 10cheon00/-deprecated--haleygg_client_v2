@@ -1,12 +1,3 @@
-const routeToPlayerInformation = (router, playerName) => {
-  router.push({
-    name: "PlayerInformationView",
-    params: {
-      playerName: playerName,
-    },
-  });
-};
-
 const getPercentage = (winning_count, losing_count) => {
   if (losing_count + winning_count <= 0) {
     return 0.0;
@@ -30,7 +21,22 @@ const hexToRgb = (hex) => {
   return
 }
 
+const convertHyphenWithDateFormat = (dateString) => {
+  // ex) 2020-01-01 to 2020년 1월 1일
+  const date = new Date(dateString);
+  return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`
+}
+
+const routeToPlayerInformation = (router, playerName) => {
+  router.push({
+    name: "PlayerInformationView",
+    params: {
+      playerName: playerName,
+    },
+  });
+};
 export {
+  convertHyphenWithDateFormat,
   getPercentage,
   hexToRgb,
   routeToPlayerInformation
