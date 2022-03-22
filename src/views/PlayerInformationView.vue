@@ -321,7 +321,7 @@ export default defineComponent({
 
     const fetchPlayerNextMatches = async () => {
       if (nextURL.value) {
-        const url = "api" + nextURL.value.match(/(?<=api).+/);
+        const url = nextURL.value;
         const response = await ServerApi.fetchPlayerNextMatches(url);
         addMatchResultsToList(response.data);
       }
