@@ -2,7 +2,9 @@
   <div>
     <PageHeader>
       <div class="text-center">
-        <p class="my-4 text-4xl font-bold">Haley.gg</p>
+        <p class="my-4 text-4xl font-bold">
+          Haleygg.<span style="color: #fe62d4">kr</span>
+        </p>
         <PlayerSearchBar id="search-bar" :size="1.25" />
       </div>
     </PageHeader>

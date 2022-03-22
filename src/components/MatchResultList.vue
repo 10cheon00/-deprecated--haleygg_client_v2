@@ -4,76 +4,101 @@
     <div
       v-for="(matchResult, index) in matchResultListRef"
       :key="index"
-      class="
-        align-content-center align-items-center
-        grid grid-nogutter
-        text-center
-        match-result
-      "
-      :style="{
-        'background-color': (() => {
-          if (matchResult.isWonMatch !== undefined) {
-            if (matchResult.isWonMatch) {
-              return '#b3d0ff';
-            } else {
-              return '#ffb3b3';
-            }
-          }
-          return '#d7d9db';
-        })(),
-        'margin-bottom':
-          index < matchResultList.length - 1 ? '0.25rem' : 'none',
+      :class="{
+        'match-result': true,
+        'match-result-win': matchResult.isWonMatch,
+        'match-result-lose': !matchResult.isWonMatch,
       }"
     >
-      <div class="col-4">
-        <div class="my-1 match-result-date">{{ matchResult.date }}</div>
-        <div class="my-1">{{ matchResult.league }}</div>
-        <div class="my-1">{{ matchResult.title }}</div>
+      <!-- Date, League, Title -->
+      <div
+        :class="{
+          'grid grid-nogutter': true,
+          'justify-content-start': true,
+          'match-result-header': true,
+        }"
+      >
+        <!-- Date -->
+        <div class="col-6 md:col-2 match-result-date">
+          {{ convertHyphenWithDateFormat(matchResult.date) }}
+        </div>
+
+        <!-- League -->
+        <div class="col-6 md:col-2 match-result-league">
+          {{ matchResult.league }}
+        </div>
+
+        <!-- Title -->
+        <div class="col-12 md:col-8 match-result-title">
+          {{ matchResult.title }}
+        </div>
       </div>
 
-      <div class="col-5">
-        <div
-          v-for="player_tuple in matchResult.player_tuples"
-          :key="player_tuple"
-          class="grid grid-nogutter"
-        >
-          <div class="col-6">
+      <!-- Players, Map -->
+      <div
+        class="grid grid-nogutter align-items-center match-result-detail p-1"
+      >
+        <!-- Map -->
+        <div class="col-3 text-lg text-center" id="match-result-map">
+          {{ matchResult.map }}
+        </div>
+
+        <!-- Winner -->
+        <div class="col-3 flex-none">
+          <div
+            v-for="player_tuple in matchResult.player_tuples"
+            :key="player_tuple"
+          >
             <span
-              :style="{
-                cursor: 'pointer',
-                'font-weight':
-                  resultListOwnerName == player_tuple.winner ? 900 : '',
+              :class="{
+                'mr-auto': true,
+                'cursor-pointer': true,
+                'font-bold':
+                  resultListOwnerName == player_tuple.winner ? true : false,
               }"
               @click="routeToPlayerInformation(router, player_tuple.winner)"
             >
-              {{ player_tuple.winner }}&nbsp;
-              <span v-if="player_tuple.winner_race" class="match-player-race">
+              {{ player_tuple.winner }}
+              <span
+                v-if="player_tuple.winner_race"
+                class="match-player-race text-block"
+              >
                 ( {{ player_tuple.winner_race }} )
               </span>
             </span>
           </div>
-          <div class="col-6">
+        </div>
+
+        <!-- Loser -->
+        <div class="col-3 flex-none">
+          <div
+            v-for="player_tuple in matchResult.player_tuples"
+            :key="player_tuple"
+          >
             <span
-              :style="{
-                cursor: 'pointer',
-                'font-weight':
-                  resultListOwnerName == player_tuple.loser ? 900 : '',
+              :class="{
+                'mr-auto': true,
+                'cursor-pointer': true,
+                'font-bold':
+                  resultListOwnerName == player_tuple.loser ? true : false,
               }"
               @click="routeToPlayerInformation(router, player_tuple.loser)"
-              >{{ player_tuple.loser }}&nbsp;
-              <span v-if="player_tuple.loser_race" class="match-player-race">
+            >
+              {{ player_tuple.loser }}
+              <span
+                v-if="player_tuple.loser_race"
+                class="match-player-race text-block"
+              >
                 ( {{ player_tuple.loser_race }} )
               </span>
             </span>
           </div>
         </div>
-      </div>
 
-      <div class="col-2 text-lg" id="match-result-map">
-        {{ matchResult.map }}
-      </div>
-      <div class="col-1" id="match-result-miscellaneous">
-        {{ matchResult.miscellaneous }}
+        <!-- Miscellaneous -->
+        <div class="col-3 match-result-miscellaneous">
+          {{ matchResult.miscellaneous }}
+        </div>
       </div>
     </div>
   </div>
@@ -82,7 +107,10 @@
 <script>
 import { defineComponent, computed } from "vue";
 
-import { routeToPlayerInformation } from "@/utils/utils.js";
+import {
+  convertHyphenWithDateFormat,
+  routeToPlayerInformation,
+} from "@/utils/utils.js";
 import { useRouter } from "vue-router";
 
 export default defineComponent({
@@ -122,6 +150,8 @@ export default defineComponent({
     return {
       router,
       matchResultListRef,
+
+      convertHyphenWithDateFormat,
       routeToPlayerInformation,
     };
   },
@@ -129,13 +159,88 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.match-result {
-  height: 6rem;
+:root {
+  --win-border-color: #77abff;
+  --lose-border-color: #ff836d;
 }
+
+.match-result {
+  background-color: #f0f0f0;
+  margin-bottom: 0.25rem;
+  padding: 0;
+}
+
+.match-result * {
+  white-space: nowrap;
+}
+
+.match-result:last-child {
+  margin-bottom: 0;
+}
+
 .match-result-date {
-  font-size: 0.5rem;
+  font-size: small;
   color: gray;
 }
+
+.match-result-detail {
+  min-height: 80px;
+}
+
+.match-result-header > div {
+  padding: 0.5rem 1rem;
+}
+
+.match-result-title {
+  font-size: small;
+}
+
+.match-result-win {
+  background-color: #b3d0ff;
+}
+
+.match-result-win .match-result-detail {
+  background-color: #95beff;
+}
+
+.match-result-win .match-result-league {
+  border-right: 1px dashed #77abff;
+  border-left: 1px dashed #77abff;
+}
+
+.match-result-lose {
+  background-color: #ffb3b3;
+}
+
+.match-result-lose .match-result-detail {
+  background-color: #ff9e9e;
+}
+
+.match-result-lose .match-result-league {
+  border-right: 1px dashed #ff836d;
+  border-left: 1px dashed #ff836d;
+}
+
+@media (max-width: 768px) {
+  .match-result-win .match-result-date {
+    border-bottom: 1px dashed #77abff;
+  }
+
+  .match-result-win .match-result-league {
+    border-right: none;
+    border-bottom: 1px dashed #77abff;
+  }
+
+  .match-result-lose .match-result-date {
+    border-bottom: 1px dashed #ff836d;
+  }
+
+  .match-result-lose .match-result-league {
+    border-right: none;
+    border-bottom: 1px dashed #ff836d;
+  }
+}
+
 .match-player-race {
   font-size: 0.5rem;
   vertical-align: middle;
