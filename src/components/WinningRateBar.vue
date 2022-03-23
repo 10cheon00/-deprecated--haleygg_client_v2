@@ -14,6 +14,7 @@
 import { defineComponent, computed } from "vue";
 
 import { getPercentage } from "@/utils/utils.js";
+import "@/css/color.css";
 
 export default defineComponent({
   props: {
@@ -72,14 +73,16 @@ span {
   width: 100%;
 }
 #win-count-bar {
-  background-color: #6966ff;
+  background-color: rgb(var(--win-color));
+  /* background-color: #6966ff; */
   border-radius: 0.25rem 0 0 0.25rem;
   color: white;
   padding-left: 0.25rem;
   white-space: nowrap;
 }
 #lose-count-bar {
-  background-color: #ff4040;
+  background-color: rgb(var(--lose-color));
+  /* background-color: #ff4040; */
   border-radius: 0 0.25rem 0.25rem 0;
   color: white;
   padding-right: 0.25rem;

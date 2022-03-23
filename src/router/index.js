@@ -23,23 +23,32 @@ const routes = [
     name: 'PlayerInformationView',
     path: '/user/:playerName',
     component: () => import("@/views/PlayerInformationView.vue"),
-    props: true
+    props: true,
   },
   {
     name: 'EloRankView',
     path: '/elo-rank/',
-    component: () => import("@/views/EloRankView.vue")
+    component: () => import("@/views/EloRankView.vue"),
+    meta: {
+      title: "Elo 랭킹"
+    }
   },
   {
     name: 'MapStatisticsView',
     path: '/map/',
-    component: () => import("@/views/MapStatisticsView.vue")
+    component: () => import("@/views/MapStatisticsView.vue"),
+    meta: {
+      title: "맵별 전적"
+    }
   },
   {
     name: 'MatchResultFormView',
     path: '/add-result/',
     component: () => import("@/views/Form/MatchResultFormView.vue"),
-    beforeEnter: [routeOnlyAuthenticatedUser]
+    beforeEnter: [routeOnlyAuthenticatedUser],
+    meta: {
+      title: "전적 입력"
+    }
   },
   {
     name: '401View',
@@ -97,6 +106,16 @@ router.beforeEach(async (to, from, next) => {
       next({ name: "500View" });
     }
   }
-})
+});
+
+router.afterEach((to) => {
+  console.log(to.meta)
+  if (to.meta.title === undefined) {
+    document.title = "Haley클랜 전적검색기 - Haleygg.kr";
+  }
+  else {
+    document.title = `${to.meta.title} - Haleygg.kr`;
+  }
+});
 
 export default router

@@ -1,6 +1,5 @@
 <template>
   <div class="flex justify-content-between" id="selector">
-    <div class="font-bold mt-auto mb-auto ml-3"></div>
     <div id="selector-buttons">
       <Button
         v-for="league in leagueList"
@@ -17,7 +16,6 @@
     <Dropdown
       v-if="mapList"
       v-model="selectedMap"
-      class="ml-2"
       id="selector-dropdown"
       placeholder="맵 선택"
       optionLabel="name"
@@ -71,7 +69,7 @@ export default defineComponent({
   width: 100%;
 }
 #selector-buttons {
-  margin-left: auto;
+  margin-right: auto;
   overflow-y: auto;
   white-space: nowrap;
 }

@@ -36,15 +36,15 @@
 
       <!-- Players, Map -->
       <div
-        class="grid grid-nogutter align-items-center match-result-detail p-1"
+        class="grid grid-nogutter align-items-center p-0 match-result-detail"
       >
         <!-- Map -->
-        <div class="col-3 text-lg text-center" id="match-result-map">
+        <div class="col-2 text-sm match-result-map">
           {{ matchResult.map }}
         </div>
 
         <!-- Winner -->
-        <div class="col-3 flex-none">
+        <div class="col-4 flex-none">
           <div
             v-for="player_tuple in matchResult.player_tuples"
             :key="player_tuple"
@@ -70,7 +70,7 @@
         </div>
 
         <!-- Loser -->
-        <div class="col-3 flex-none">
+        <div class="col-4 flex-none">
           <div
             v-for="player_tuple in matchResult.player_tuples"
             :key="player_tuple"
@@ -79,6 +79,7 @@
               :class="{
                 'mr-auto': true,
                 'cursor-pointer': true,
+                'text-300': true,
                 'font-bold':
                   resultListOwnerName == player_tuple.loser ? true : false,
               }"
@@ -96,7 +97,7 @@
         </div>
 
         <!-- Miscellaneous -->
-        <div class="col-3 match-result-miscellaneous">
+        <div class="col-2 match-result-miscellaneous">
           {{ matchResult.miscellaneous }}
         </div>
       </div>
@@ -112,6 +113,7 @@ import {
   routeToPlayerInformation,
 } from "@/utils/utils.js";
 import { useRouter } from "vue-router";
+import "@/css/color.css";
 
 export default defineComponent({
   props: {
@@ -159,19 +161,9 @@ export default defineComponent({
 </script>
 
 <style scoped>
-:root {
-  --win-border-color: #77abff;
-  --lose-border-color: #ff836d;
-}
-
 .match-result {
   background-color: #f0f0f0;
   margin-bottom: 0.25rem;
-  padding: 0;
-}
-
-.match-result * {
-  white-space: nowrap;
 }
 
 .match-result:last-child {
@@ -180,64 +172,86 @@ export default defineComponent({
 
 .match-result-date {
   font-size: small;
-  color: gray;
+  text-align: center;
 }
 
 .match-result-detail {
   min-height: 80px;
+  text-align: center;
 }
 
 .match-result-header > div {
   padding: 0.5rem 1rem;
 }
 
+.match-result-league {
+  text-align: center;
+}
+
+.match-result-map {
+  border-right: 1px dashed #c5c5c5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: inherit;
+}
+
+.match-result-miscellaneous {
+  min-height: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-left: 1px dashed #c5c5c5;
+}
+
 .match-result-title {
+  color: gray;
   font-size: small;
 }
 
-.match-result-win {
+.match-result-win .match-result-date {
+  border-right: 1px dashed rgb(var(--win-color));
+  border-bottom: 1px dashed rgb(var(--win-color));
+}
+
+.match-result-win .match-result-header {
   background-color: #b3d0ff;
 }
 
-.match-result-win .match-result-detail {
-  background-color: #95beff;
-}
-
 .match-result-win .match-result-league {
-  border-right: 1px dashed #77abff;
-  border-left: 1px dashed #77abff;
+  border-bottom: 1px dashed rgb(var(--win-color));
 }
 
-.match-result-lose {
+.match-result-lose .match-result-date {
+  border-right: 1px dashed rgb(var(--lose-color));
+  border-bottom: 1px dashed rgb(var(--lose-color));
+}
+
+.match-result-lose .match-result-header {
   background-color: #ffb3b3;
 }
 
-.match-result-lose .match-result-detail {
-  background-color: #ff9e9e;
-}
-
 .match-result-lose .match-result-league {
-  border-right: 1px dashed #ff836d;
-  border-left: 1px dashed #ff836d;
+  border-bottom: 1px dashed rgb(var(--lose-color));
 }
 
-@media (max-width: 768px) {
+@media (min-width: 768px) {
   .match-result-win .match-result-date {
-    border-bottom: 1px dashed #77abff;
+    border-bottom: none;
   }
 
   .match-result-win .match-result-league {
-    border-right: none;
-    border-bottom: 1px dashed #77abff;
+    border-right: 1px dashed rgb(var(--win-color));
+    border-bottom: none;
   }
 
   .match-result-lose .match-result-date {
-    border-bottom: 1px dashed #ff836d;
+    border-bottom: none;
   }
 
   .match-result-lose .match-result-league {
-    border-right: none;
-    border-bottom: 1px dashed #ff836d;
+    border-right: 1px dashed rgb(var(--lose-color));
+    border-bottom: none;
   }
 }
 
