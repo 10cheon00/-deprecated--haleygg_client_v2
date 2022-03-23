@@ -14,7 +14,7 @@ export default defineComponent({
     onMounted(() => {
       setTimeout(() => {
         router.push({ name: "HomeView" });
-      }, 1000);
+      }, 2000);
     });
   },
 });

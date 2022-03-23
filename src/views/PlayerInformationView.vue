@@ -33,7 +33,7 @@
         </div>
 
         <!-- League selector -->
-        <MatchSelector
+        <MatchFilter
           class="col-12 my-2"
           :leagueList="leagueList"
           :mapList="mapList"
@@ -140,7 +140,7 @@
               text-center
               mt-1
             "
-            style="height: 5rem; background-color: #fee2e6; color: gray"
+            id="button-next-matches"
             @click="fetchPlayerNextMatches()"
           >
             <i class="pi pi-refresh"></i>&nbsp;더 보기
@@ -155,7 +155,7 @@ import { defineComponent, ref, computed, onMounted, watch, provide } from "vue";
 import Chart from "primevue/chart";
 import CheckBox from "primevue/checkbox";
 
-import MatchSelector from "@/components/MatchSelector.vue";
+import MatchFilter from "@/components/MatchFilter.vue";
 import MatchResultList from "@/components/MatchResultList.vue";
 import NullDataBox from "@/components/NullDataBox.vue";
 import PageHeader from "@/components/PageHeader.vue";
@@ -168,7 +168,7 @@ export default defineComponent({
   components: {
     Chart,
     CheckBox,
-    MatchSelector,
+    MatchFilter,
     MatchResultList,
     NullDataBox,
     PageHeader,
@@ -217,6 +217,7 @@ export default defineComponent({
       let response = await ServerApi.fetchPlayerDetail(props.playerName);
       playerInformation.value.profile = response.data;
       player.value = response.data;
+      document.title = `${player.value.name} - Haleygg.kr`;
 
       playerInformation.value.profile.favorate_race_wallpaperUrl =
         getWallpaperUrlByRace(player.value.favorate_race);
@@ -437,6 +438,12 @@ export default defineComponent({
 </script>
 
 <style scoped>
+#button-next-matches {
+  height: 3rem;
+  background-color: #f0f0f0;
+  border: 1px solid #dee2e6;
+  color: gray;
+}
 #content-item {
   border-bottom: solid 1px #dee2e6;
 }

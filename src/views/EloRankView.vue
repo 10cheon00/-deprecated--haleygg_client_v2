@@ -17,7 +17,7 @@
     </PageHeader>
 
     <div class="container p-3">
-      <MatchSelector v-if="leagueList" class="mb-2" :leagueList="leagueList" />
+      <MatchFilter v-if="leagueList" class="mb-2" :leagueList="leagueList" />
 
       <Panel header="ELO Rank" class="my-2">
         <div
@@ -93,7 +93,7 @@
 <script>
 import { defineComponent, onMounted, ref, provide, watch } from "vue";
 
-import MatchSelector from "@/components/MatchSelector.vue";
+import MatchFilter from "@/components/MatchFilter.vue";
 import NullDataBox from "@/components/NullDataBox.vue";
 import PageHeader from "@/components/PageHeader.vue";
 import Panel from "@/components/Panel.vue";
@@ -105,7 +105,7 @@ import { routeToPlayerInformation } from "@/utils/utils.js";
 
 export default defineComponent({
   components: {
-    MatchSelector,
+    MatchFilter,
     NullDataBox,
     PageHeader,
     PercentageBar,
