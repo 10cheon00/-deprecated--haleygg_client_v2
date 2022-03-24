@@ -163,7 +163,7 @@ export default defineComponent({
 <style scoped>
 .match-result {
   background-color: #f0f0f0;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.5rem;
 }
 
 .match-result:last-child {

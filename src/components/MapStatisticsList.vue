@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- Statistics -->
     <div v-if="mapStatistics" class="grid grid-nogutter" id="statistics">
       <div
         v-for="(mapData, index) in mapStatistics"
@@ -9,8 +8,8 @@
           'col-12 lg:col-6 pb-2': true,
           'pr-0 lg:pr-1': index % 2 == 0,
           'pr-0 lg:pl-1': index % 2,
+          map: true,
         }"
-        id="map-information"
       >
         <div
           :style="{
@@ -29,77 +28,91 @@
           </div>
 
           <!-- Statistics -->
-          <div class="p-3 pt-0 text-white">
+          <div class="p-3 pt-0 text-white text-sm map-statistics">
             <!-- Protoss's -->
-            <div id="race-winning-rate">
-              <div class="text-xl font-bold p-3">프로토스</div>
-              <div class="text-sm text-300">
-                <p>
-                  vs 테란
-                  {{ mapData.aggregated_result.protoss_wins_to_terran_count }}승
-                  {{ mapData.aggregated_result.terran_wins_to_protoss_count }}패
-                </p>
-                <PercentageBar
-                  :background="true"
-                  :data="mapData.winningRate.protoss.versusTerran"
-                />
-                <p>
-                  vs 저그
-                  {{ mapData.aggregated_result.protoss_wins_to_zerg_count }}승
-                  {{ mapData.aggregated_result.zerg_wins_to_protoss_count }}패
-                </p>
-                <PercentageBar
-                  :background="true"
-                  :data="mapData.winningRate.protoss.versusZerg"
-                />
+            <div
+              v-if="mapData.pvt"
+              class="flex align-items-center map-winning-rate"
+            >
+              <div class="flex-none map-race-label">
+                <div>프로토스</div>
+                <div>{{ mapData.pvt.protossWinningPercentage }}%</div>
+              </div>
+
+              <WinningRateBar
+                class="flex-grow-1"
+                :winCount="mapData.pvt.winCount"
+                :loseCount="mapData.pvt.loseCount"
+                :winColor="mapData.pvt.winColor"
+                :loseColor="mapData.pvt.loseColor"
+              >
+                <template #right-value>
+                  <span> {{ mapData.pvt.loseCount }}승 </span>
+                </template>
+              </WinningRateBar>
+
+              <div class="flex-none map-race-label">
+                <div>테란</div>
+                <div>{{ mapData.pvt.terranWinningPercentage }}%</div>
               </div>
             </div>
+
             <!-- Terran's -->
-            <div id="race-winning-rate">
-              <div class="text-xl font-bold p-3">테란</div>
-              <div class="text-sm text-300">
-                <p>
-                  vs 프로토스
-                  {{ mapData.aggregated_result.terran_wins_to_protoss_count }}승
-                  {{ mapData.aggregated_result.protoss_wins_to_terran_count }}패
-                </p>
-                <PercentageBar
-                  :background="true"
-                  :data="mapData.winningRate.terran.versusProtoss"
-                />
-                <p>
-                  vs 저그
-                  {{ mapData.aggregated_result.terran_wins_to_zerg_count }}승
-                  {{ mapData.aggregated_result.zerg_wins_to_terran_count }}패
-                </p>
-                <PercentageBar
-                  :background="true"
-                  :data="mapData.winningRate.terran.versusZerg"
-                />
+            <div
+              v-if="mapData.tvz"
+              class="flex align-items-center map-winning-rate"
+            >
+              <div class="flex-none map-race-label">
+                <div>테란</div>
+                <div>{{ mapData.tvz.terranWinningPercentage }}%</div>
+              </div>
+
+              <WinningRateBar
+                class="flex-grow-1"
+                :winCount="mapData.tvz.winCount"
+                :loseCount="mapData.tvz.loseCount"
+                :winColor="mapData.tvz.winColor"
+                :loseColor="mapData.tvz.loseColor"
+              >
+                <template #right-value>
+                  <span> {{ mapData.tvz.loseCount }}승 </span>
+                </template>
+              </WinningRateBar>
+
+              <div class="flex-none map-race-label">
+                <div>저그</div>
+                <div>{{ mapData.tvz.zergWinningPercentage }}%</div>
               </div>
             </div>
+
             <!-- Zerg's -->
-            <div id="race-winning-rate">
-              <div class="text-xl font-bold p-3">저그</div>
-              <div class="text-sm text-300">
-                <p>
-                  vs 프로토스
-                  {{ mapData.aggregated_result.zerg_wins_to_protoss_count }}승
-                  {{ mapData.aggregated_result.protoss_wins_to_zerg_count }}패
-                </p>
-                <PercentageBar
-                  :background="true"
-                  :data="mapData.winningRate.zerg.versusProtoss"
-                />
-                <p>
-                  vs 테란
-                  {{ mapData.aggregated_result.zerg_wins_to_terran_count }}승
-                  {{ mapData.aggregated_result.terran_wins_to_zerg_count }}패
-                </p>
-                <PercentageBar
-                  :background="true"
-                  :data="mapData.winningRate.zerg.versusTerran"
-                />
+            <div
+              v-if="mapData.zvp"
+              class="flex align-items-center map-winning-rate"
+            >
+              <div class="flex-none map-race-label">
+                <div>저그</div>
+                <div>{{ mapData.zvp.zergWinningPercentage }}%</div>
+              </div>
+
+              <WinningRateBar
+                class="flex-grow-1"
+                :winCount="mapData.zvp.winCount"
+                :loseCount="mapData.zvp.loseCount"
+                :winColor="mapData.zvp.winColor"
+                :loseColor="mapData.zvp.loseColor"
+              >
+                <template #left-value>
+                  <div>{{ mapData.zvp.winCount }}승</div>
+                </template>
+                <template #right-value>
+                  <span> {{ mapData.zvp.loseCount }}승 </span>
+                </template>
+              </WinningRateBar>
+
+              <div class="flex-none map-race-label">
+                <div>프로토스</div>
+                <div>{{ mapData.zvp.protossWinningPercentage }}%</div>
               </div>
             </div>
           </div>
@@ -110,90 +123,68 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, onMounted, toRef } from "vue";
 
-import PercentageBar from "@/components/PercentageBar.vue";
+import WinningRateBar from "@/components/WinningRateBar.vue";
 import { getColor } from "@/css/color-config.js";
 import { getPercentage } from "@/utils/utils.js";
 
 export default defineComponent({
   components: {
-    PercentageBar,
+    WinningRateBar,
   },
   props: {
     data: Array,
   },
   setup(props) {
-    const mapStatistics = ref(null);
+    const mapStatistics = toRef(props, "data");
 
     onMounted(() => {
-      props.data.forEach((mapData) => {
-        const raceRelativity = {
-          pvt: getPercentage(
-            mapData.aggregated_result.protoss_wins_to_terran_count,
-            mapData.aggregated_result.terran_wins_to_protoss_count
+      Object.keys(mapStatistics.value).forEach((key) => {
+        const map = mapStatistics.value[key];
+        map.pvt = {
+          winCount: map.aggregated_result.protoss_wins_to_terran_count,
+          loseCount: map.aggregated_result.terran_wins_to_protoss_count,
+          winColor: getColor("protoss"),
+          loseColor: getColor("terran"),
+          protossWinningPercentage: getPercentage(
+            map.aggregated_result.protoss_wins_to_terran_count,
+            map.aggregated_result.terran_wins_to_protoss_count
           ),
-          pvz: getPercentage(
-            mapData.aggregated_result.protoss_wins_to_zerg_count,
-            mapData.aggregated_result.zerg_wins_to_protoss_count
-          ),
-          tvp: getPercentage(
-            mapData.aggregated_result.terran_wins_to_protoss_count,
-            mapData.aggregated_result.protoss_wins_to_terran_count
-          ),
-          tvz: getPercentage(
-            mapData.aggregated_result.terran_wins_to_zerg_count,
-            mapData.aggregated_result.zerg_wins_to_terran_count
-          ),
-          zvp: getPercentage(
-            mapData.aggregated_result.zerg_wins_to_protoss_count,
-            mapData.aggregated_result.protoss_wins_to_zerg_count
-          ),
-          zvt: getPercentage(
-            mapData.aggregated_result.zerg_wins_to_terran_count,
-            mapData.aggregated_result.terran_wins_to_zerg_count
+          terranWinningPercentage: getPercentage(
+            map.aggregated_result.terran_wins_to_protoss_count,
+            map.aggregated_result.protoss_wins_to_terran_count
           ),
         };
-        mapData.winningRate = {};
-
-        mapData.winningRate.protoss = {
-          versusTerran: {
-            color: getColor("terran"),
-            percentage: raceRelativity.pvt,
-            label: `${raceRelativity.pvt}%`,
-          },
-          versusZerg: {
-            color: getColor("zerg"),
-            percentage: raceRelativity.pvz,
-            label: `${raceRelativity.pvz}%`,
-          },
+        map.tvz = {
+          winCount: map.aggregated_result.terran_wins_to_zerg_count,
+          loseCount: map.aggregated_result.zerg_wins_to_terran_count,
+          winColor: getColor("terran"),
+          loseColor: getColor("zerg"),
+          terranWinningPercentage: getPercentage(
+            map.aggregated_result.terran_wins_to_zerg_count,
+            map.aggregated_result.zerg_wins_to_terran_count
+          ),
+          zergWinningPercentage: getPercentage(
+            map.aggregated_result.zerg_wins_to_terran_count,
+            map.aggregated_result.terran_wins_to_zerg_count
+          ),
         };
-        mapData.winningRate.terran = {
-          versusProtoss: {
-            color: getColor("protoss"),
-            percentage: raceRelativity.tvp,
-            label: `${raceRelativity.tvp}%`,
-          },
-          versusZerg: {
-            color: getColor("zerg"),
-            percentage: raceRelativity.tvz,
-            label: `${raceRelativity.tvz}%`,
-          },
-        };
-        mapData.winningRate.zerg = {
-          versusProtoss: {
-            color: getColor("protoss"),
-            percentage: raceRelativity.zvp,
-            label: `${raceRelativity.zvp}%`,
-          },
-          versusTerran: {
-            color: getColor("terran"),
-            percentage: raceRelativity.zvt,
-            label: `${raceRelativity.zvt}%`,
-          },
+        map.zvp = {
+          winCount: map.aggregated_result.zerg_wins_to_protoss_count,
+          loseCount: map.aggregated_result.protoss_wins_to_zerg_count,
+          winColor: getColor("zerg"),
+          loseColor: getColor("protoss"),
+          zergWinningPercentage: getPercentage(
+            map.aggregated_result.zerg_wins_to_protoss_count,
+            map.aggregated_result.protoss_wins_to_zerg_count
+          ),
+          protossWinningPercentage: getPercentage(
+            map.aggregated_result.protoss_wins_to_zerg_count,
+            map.aggregated_result.zerg_wins_to_protoss_count
+          ),
         };
       });
-      mapStatistics.value = props.data;
     });
 
     return {
@@ -204,4 +195,15 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.map-statistics {
+  min-height: 16rem;
+}
+.map-race-label {
+  min-width: 4rem;
+  text-align: center;
+}
+.map-winning-rate {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
 </style>

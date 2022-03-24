@@ -12,7 +12,7 @@
     <div class="container flex justify-content-between p-3 text-sm" id="footer">
       <div>
         <p>Haley 클랜 전적검색기</p>
-        <p class="text-400">Made by mAziciAn</p>
+        <p>Made by mAziciAn</p>
       </div>
       <div></div>
       <div>

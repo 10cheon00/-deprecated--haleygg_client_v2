@@ -1,10 +1,14 @@
 <template>
-  <div class="">
+  <div class="flex">
     <div id="win-count-bar" :style="winCountBarStyle">
-      <span>{{ winCount }}승</span>
+      <slot name="left-value">
+        <span>{{ winCount }}승</span>
+      </slot>
     </div>
     <div id="lose-count-bar" :style="loseCountBarStyle">
-      <span>{{ loseCount }}패</span>
+      <slot name="right-value">
+        <span>{{ loseCount }}패</span>
+      </slot>
     </div>
     <div v-if="winCount == 0 && loseCount == 0" id="blank-bar">&nbsp;</div>
   </div>
@@ -26,6 +30,20 @@ export default defineComponent({
       type: Number,
       required: true,
     },
+    winColor: {
+      type: String,
+      required: false,
+      default: () => {
+        return "#77abff";
+      },
+    },
+    loseColor: {
+      type: String,
+      required: false,
+      default: () => {
+        return "#ff836d";
+      },
+    },
   },
   setup(props) {
     const winCountBarStyle = computed(() => {
@@ -36,6 +54,9 @@ export default defineComponent({
         style.width = `${getPercentage(props.winCount, props.loseCount)}%`;
         if (props.loseCount == 0) {
           style["border-radius"] = "0.25rem";
+        }
+        if (props.winColor) {
+          style["background-color"] = props.winColor;
         }
       }
       return style;
@@ -49,6 +70,9 @@ export default defineComponent({
         style.width = `${getPercentage(props.loseCount, props.winCount)}%`;
         if (props.winCount == 0) {
           style["border-radius"] = "0.25rem";
+        }
+        if (props.loseColor) {
+          style["background-color"] = props.loseColor;
         }
       }
       return style;
@@ -74,7 +98,6 @@ span {
 }
 #win-count-bar {
   background-color: rgb(var(--win-color));
-  /* background-color: #6966ff; */
   border-radius: 0.25rem 0 0 0.25rem;
   color: white;
   padding-left: 0.25rem;
@@ -82,7 +105,6 @@ span {
 }
 #lose-count-bar {
   background-color: rgb(var(--lose-color));
-  /* background-color: #ff4040; */
   border-radius: 0 0.25rem 0.25rem 0;
   color: white;
   padding-right: 0.25rem;

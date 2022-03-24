@@ -7,6 +7,16 @@ const fetchMapList = () => {
   });
 }
 
+const fetchMeleeMapList = () => {
+  return axiosInstance.request({
+    method: "GET",
+    url: `api/maps/`,
+    params: {
+      type: "melee"
+    }
+  });
+}
+
 const fetchMapDetail = (mapId) => {
   return axiosInstance.request({
     method: "GET",
@@ -27,5 +37,6 @@ const fetchMapStatistics = (mapId) => {
 export {
   fetchMapDetail,
   fetchMapList,
-  fetchMapStatistics
+  fetchMeleeMapList,
+  fetchMapStatistics,
 }

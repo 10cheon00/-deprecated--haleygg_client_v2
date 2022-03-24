@@ -109,9 +109,8 @@ router.beforeEach(async (to, from, next) => {
 });
 
 router.afterEach((to) => {
-  console.log(to.meta)
   if (to.meta.title === undefined) {
-    document.title = "Haley클랜 전적검색기 - Haleygg.kr";
+    document.title = "Haley 클랜 전적검색기 - Haleygg.kr";
   }
   else {
     document.title = `${to.meta.title} - Haleygg.kr`;

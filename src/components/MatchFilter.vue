@@ -16,6 +16,7 @@
     <Dropdown
       v-if="mapList"
       v-model="selectedMap"
+      class="ml-2"
       id="selector-dropdown"
       placeholder="맵 선택"
       optionLabel="name"

@@ -12,29 +12,24 @@
         'background-size': 'cover',
       }"
     >
-      <div class="text-4xl font-bold mb-3" id="player-name">
+      <!-- Profile -->
+      <div class="text-4xl font-bold my-2" id="player-name">
         {{ playerInformation.profile.name }}
       </div>
       <small class="text-sm" id="signup-date"
         >{{ playerInformation.profile.joined_date }} 가입</small
       >
+      <!-- Career -->
+      <div class="text-200 my-2">
+        {{ playerInformation.profile.career }}
+      </div>
     </PageHeader>
 
     <div class="container">
       <div class="grid grid-nogutter p-3">
-        <!-- Career -->
-        <div class="col-12">
-          <Panel
-            header="Career"
-            :stripeColor="playerInformation.profile.favorate_race"
-          >
-            <div class="p-3">{{ playerInformation.profile.career }}</div>
-          </Panel>
-        </div>
-
         <!-- League selector -->
         <MatchFilter
-          class="col-12 my-2"
+          class="col-12 mb-2"
           :leagueList="leagueList"
           :mapList="mapList"
         />
@@ -66,7 +61,7 @@
                 <div class="col flex p-2">
                   <div
                     class="
-                      flex-none flex
+                      flex
                       justify-content-center
                       text-sm text-600
                       winning-rate
@@ -75,7 +70,7 @@
                     {{ getPercentage(item.winCount, item.loseCount) }}%
                   </div>
                   <WinningRateBar
-                    class="flex-grow-1 flex"
+                    class="w-full"
                     :winCount="item.winCount"
                     :loseCount="item.loseCount"
                   />
@@ -104,9 +99,9 @@
         </div>
 
         <!-- List of Matches -->
-        <div class="col-12 pt-2" id="match-result-list">
+        <div class="col-12 mt-2" id="match-result-list">
           <Panel
-            class="pb-1"
+            class="mb-2"
             header="Recent Matches"
             :stripeColor="playerInformation.favorate_race"
           >
@@ -138,7 +133,7 @@
               justify-content-center
               w-full
               text-center
-              mt-1
+              mt-2
             "
             id="button-next-matches"
             @click="fetchPlayerNextMatches()"
@@ -217,7 +212,7 @@ export default defineComponent({
       let response = await ServerApi.fetchPlayerDetail(props.playerName);
       playerInformation.value.profile = response.data;
       player.value = response.data;
-      document.title = `${player.value.name} - Haleygg.kr`;
+      document.title = `${player.value.name} - 전적 조회 - Haleygg.kr`;
 
       playerInformation.value.profile.favorate_race_wallpaperUrl =
         getWallpaperUrlByRace(player.value.favorate_race);
@@ -225,11 +220,11 @@ export default defineComponent({
       // Fetch leagueList first to request only for specific league.
       response = await ServerApi.fetchLeagueList();
       leagueList.value = response.data;
+      selectedLeague.value = leagueList.value[leagueList.value.length - 1].id;
       leagueList.value.push({
         id: undefined,
         name: "Total",
       });
-      selectedLeague.value = leagueList.value[0].id;
 
       response = await ServerApi.fetchMapList();
       mapList.value = response.data;
