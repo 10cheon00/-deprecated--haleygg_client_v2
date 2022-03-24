@@ -17,7 +17,10 @@
         {{ playerInformation.profile.name }}
       </div>
       <small class="text-sm" id="signup-date"
-        >{{ playerInformation.profile.joined_date }} 가입</small
+        >{{
+          convertHyphenWithDateFormat(playerInformation.profile.joined_date)
+        }}
+        가입</small
       >
       <!-- Career -->
       <div class="text-200 my-2">
@@ -25,14 +28,15 @@
       </div>
     </PageHeader>
 
+    <MatchFilter
+      class="sticky top-0 z-5"
+      :leagueList="leagueList"
+      :mapList="mapList"
+    />
+
     <div class="container">
       <div class="grid grid-nogutter p-3">
         <!-- League selector -->
-        <MatchFilter
-          class="col-12 mb-2"
-          :leagueList="leagueList"
-          :mapList="mapList"
-        />
 
         <div class="col-12 grid grid-nogutter">
           <!-- Statistics -->
@@ -157,7 +161,7 @@ import PageHeader from "@/components/PageHeader.vue";
 import Panel from "@/components/Panel.vue";
 import ServerApi from "@/api/server/module.js";
 import WinningRateBar from "@/components/WinningRateBar.vue";
-import { getPercentage } from "@/utils/utils.js";
+import { getPercentage, convertHyphenWithDateFormat } from "@/utils/utils.js";
 
 export default defineComponent({
   components: {
@@ -220,7 +224,9 @@ export default defineComponent({
       // Fetch leagueList first to request only for specific league.
       response = await ServerApi.fetchLeagueList();
       leagueList.value = response.data;
-      selectedLeague.value = leagueList.value[leagueList.value.length - 1].id;
+      if (leagueList.value.length > 0) {
+        selectedLeague.value = leagueList.value[leagueList.value.length - 1].id;
+      }
       leagueList.value.push({
         id: undefined,
         name: "Total",
@@ -423,6 +429,7 @@ export default defineComponent({
       player,
       playerInformation,
 
+      convertHyphenWithDateFormat,
       getPercentage,
       selectedLeague,
       fetchPlayerNextMatches,

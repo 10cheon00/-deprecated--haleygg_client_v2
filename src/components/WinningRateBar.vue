@@ -103,6 +103,7 @@ span {
   padding-left: 0.25rem;
   white-space: nowrap;
 }
+
 #lose-count-bar {
   background-color: rgb(var(--lose-color));
   border-radius: 0 0.25rem 0.25rem 0;

@@ -1,35 +1,35 @@
 <template>
-  <div class="flex justify-content-between" id="selector">
-    <div id="selector-buttons">
-      <Button
-        v-for="league in leagueList"
-        :key="league"
-        :label="league.name"
-        :class="{
-          'mx-1': true,
-          'selected-league': league.id == selectedLeague ? true : false,
-        }"
-        id="league-button"
-        @click="select(league.id)"
+  <div id="selector">
+    <div class="container flex justify-content-between px-3">
+      <div id="selector-buttons">
+        <div
+          v-for="league in leagueList"
+          :key="league"
+          :class="{
+            'selected-league': league.id == selectedLeague ? true : false,
+            'selector-button': true,
+          }"
+          @click="select(league.id)"
+        >
+          {{ league.name }}
+        </div>
+      </div>
+      <Dropdown
+        v-if="mapList"
+        v-model="selectedMap"
+        id="selector-dropdown"
+        placeholder="맵 선택"
+        optionLabel="name"
+        optionValue="id"
+        :options="mapList"
       />
     </div>
-    <Dropdown
-      v-if="mapList"
-      v-model="selectedMap"
-      class="ml-2"
-      id="selector-dropdown"
-      placeholder="맵 선택"
-      optionLabel="name"
-      optionValue="id"
-      :options="mapList"
-    />
   </div>
 </template>
 
 <script>
 import { defineComponent, inject } from "vue";
 
-import Button from "primevue/button";
 import Dropdown from "primevue/dropdown";
 
 export default defineComponent({
@@ -44,12 +44,14 @@ export default defineComponent({
     },
   },
   components: {
-    Button,
     Dropdown,
   },
-  setup() {
+  setup(props) {
     const selectedLeague = inject("selectedLeague");
-    const selectedMap = inject("selectedMap");
+    let selectedMap = null;
+    if (props.mapList) {
+      selectedMap = inject("selectedMap");
+    }
     const select = (leagueId) => {
       selectedLeague.value = leagueId;
     };
@@ -64,32 +66,36 @@ export default defineComponent({
 
 <style scoped>
 #selector {
-  background-color: #f0f0f0;
-  border: 1px solid #dee2e6;
-  padding: 0.5rem;
-  width: 100%;
+  background-color: #404040;
 }
+
 #selector-buttons {
+  display: flex;
   margin-right: auto;
   overflow-y: auto;
   white-space: nowrap;
 }
+
 #selector-dropdown {
-  min-width: 150px;
+  margin: auto 0 auto 1rem;
+  border-radius: 0;
+  background-color: #404040;
 }
-#selector-title {
-  border-right: 1px solid #dee2e6;
+
+.selector-button {
+  color: white;
+  padding: 1.5rem;
 }
-#league-button {
-  flex: 0 0 auto;
-  border: 1px solid white;
-  background-color: white;
-  color: gray;
-  border-radius: 3rem;
+
+@media (max-width: 768px) {
+  .selector-button {
+    padding: 0.75rem;
+  }
 }
+
 .selected-league {
-  border: 1px solid #fea29a !important;
-  background-color: #fea29a !important;
-  color: white !important;
+  background-color: white;
+  color: black;
+  font-weight: bolder;
 }
 </style>
