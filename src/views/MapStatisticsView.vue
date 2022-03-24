@@ -27,7 +27,7 @@ export default defineComponent({
     const mapDataList = ref(null);
     onMounted(async () => {
       //fetch map statistics
-      const response = await ServerApi.fetchMapList();
+      const response = await ServerApi.fetchMeleeMapList();
       const mapList = response.data;
       for (let key in mapList) {
         let response = await ServerApi.fetchMapStatistics(mapList[key].id);

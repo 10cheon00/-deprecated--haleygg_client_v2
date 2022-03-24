@@ -16,10 +16,10 @@
       </div>
     </PageHeader>
 
-    <div class="container p-3">
-      <MatchFilter v-if="leagueList" class="mb-2" :leagueList="leagueList" />
+    <MatchFilter v-if="leagueList" :leagueList="leagueList" />
 
-      <Panel header="ELO Rank" class="my-2">
+    <div class="container p-3">
+      <Panel header="ELO Rank">
         <div
           v-if="top3Player"
           class="grid grid-nogutter text-center"
@@ -123,6 +123,7 @@ export default defineComponent({
       // fetch elo list.
       const response = await ServerApi.fetchEloRatingActiveLeagueList();
       leagueList.value = response.data;
+
       if (leagueList.value.length > 0) {
         selectedLeague.value = leagueList.value[0].id;
         await fetchEloRanking();
