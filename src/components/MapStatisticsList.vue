@@ -28,7 +28,7 @@
           </div>
 
           <!-- Statistics -->
-          <div class="p-3 pt-0 text-white text-sm map-statistics">
+          <div class="p-3 text-white text-sm map-statistics">
             <!-- Protoss's -->
             <div
               v-if="mapData.pvt"
