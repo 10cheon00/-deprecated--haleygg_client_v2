@@ -32,6 +32,8 @@
       class="sticky top-0 z-5"
       :leagueList="leagueList"
       :mapList="mapList"
+      :enableTotalLeague="true"
+      :enableTotalMap="true"
     />
 
     <div class="container">
@@ -41,35 +43,19 @@
         <div class="col-12 grid grid-nogutter">
           <!-- Statistics -->
           <div class="col-12 md:col-4 pr-0 md:pr-2 pb-2 md:pb-0">
-            <Panel
-              header="Statistics"
-              :stripeColor="playerInformation.favorate_race"
-            >
+            <Panel header="통계">
               <div
                 v-for="(item, index) in playerInformation.statistics"
                 :key="index"
                 class="grid grid-nogutter"
                 id="content-item"
               >
-                <div
-                  class="col-fixed p-2"
-                  style="
-                    border-right: dashed 1px lightgray;
-                    min-width: 5rem;
-                    text-align: center;
-                    white-space: nowrap;
-                  "
-                >
+                <div class="col-fixed p-2 statistics-label">
                   {{ item.label }}
                 </div>
                 <div class="col flex p-2">
                   <div
-                    class="
-                      flex
-                      justify-content-center
-                      text-sm text-600
-                      winning-rate
-                    "
+                    class="flex justify-content-center statistics-winning-rate"
                   >
                     {{ getPercentage(item.winCount, item.loseCount) }}%
                   </div>
@@ -85,10 +71,7 @@
 
           <!-- Elo chart -->
           <div class="col-12 md:col-8">
-            <Panel
-              header="Elo Chart"
-              :stripeColor="playerInformation.favorate_race"
-            >
+            <Panel header="Elo 그래프">
               <div id="elo-chart">
                 <Chart
                   v-if="playerInformation.eloChartData"
@@ -103,47 +86,55 @@
         </div>
 
         <!-- List of Matches -->
-        <div class="col-12 mt-2" id="match-result-list">
-          <Panel
-            class="mb-2"
-            header="Recent Matches"
-            :stripeColor="playerInformation.favorate_race"
-          >
-            <template #panel-header-right>
-              <CheckBox
-                name="밀리 전적"
-                v-model="isMeleeMatchResultShown"
-                :binary="true"
-              />
-              <label class="ml-1 mr-3">밀리</label>
-              <CheckBox
-                name="팀플 전적"
-                v-model="isTopAndBottomMatchResultShown"
-                :binary="true"
-              />
-              <label class="ml-1">팀플</label>
-            </template>
-          </Panel>
+        <Panel class="col-12 my-2" header="최근 전적">
+          <template #panel-header-right>
+            <CheckBox
+              name="밀리 전적"
+              v-model="isMeleeMatchResultShown"
+              :binary="true"
+            />
+            <label class="ml-1 mr-3">밀리</label>
+            <CheckBox
+              name="팀플 전적"
+              v-model="isTopAndBottomMatchResultShown"
+              :binary="true"
+            />
+            <label class="ml-1">팀플</label>
+          </template>
 
-          <MatchResultList
-            :matchResultList="matchResultList"
-            :resultListOwnerName="player.name"
-          />
+          <!-- Matches summary -->
           <div
-            v-if="nextURL"
-            class="
-              flex
-              align-items-center
-              justify-content-center
-              w-full
-              text-center
-              mt-2
-            "
-            id="button-next-matches"
-            @click="fetchPlayerNextMatches()"
+            v-if="matchResultList.length > 0"
+            class="grid grid-nogutter p-0 flex-column md:flex-row"
+            id="matches-summary"
           >
-            <i class="pi pi-refresh"></i>&nbsp;더 보기
+            <!-- nn경기 n승 n패 승률 nn.n% -->
+            <div class="col matches-summary-item">
+              <div>
+                <div class="text-sm mb-3">
+                  {{ matchesSummary.totalCount }}전
+                  {{ matchesSummary.winCount }}승
+                  {{ matchesSummary.loseCount }}패
+                </div>
+                <div class="text-2xl">{{ matchesSummary.winningRate }}%</div>
+              </div>
+            </div>
           </div>
+
+          <NullDataBox v-else class="w-full" />
+        </Panel>
+        <MatchResultList
+          :matchResultList="matchResultList"
+          :resultListOwnerName="player.name"
+          class="col-12"
+        />
+        <div
+          v-if="nextURL"
+          class="flex align-items-center justify-content-center"
+          id="fetch-next-matches-button"
+          @click="fetchNextMatches()"
+        >
+          <i class="pi pi-refresh"></i>&nbsp;더 보기
         </div>
       </div>
     </div>
@@ -196,21 +187,6 @@ export default defineComponent({
     provide("selectedLeague", selectedLeague);
     provide("selectedMap", selectedMap);
 
-    const getWallpaperUrlByRace = (race) => {
-      const wallpaper = {
-        P: "https://bnetcmsus-a.akamaihd.net/cms/gallery/7EKSWN98V7M91498587613057.jpg",
-        T: "https://bnetcmsus-a.akamaihd.net/cms/gallery/lt/LTHPT2MPAS8P1502725038501.jpg",
-        Z: "https://bnetcmsus-a.akamaihd.net/cms/gallery/JHXVBPP04GHH1498587636883.jpg",
-      };
-      let url = "";
-      if (Object.keys(wallpaper).find((key) => key == race)) {
-        url = wallpaper[race];
-      } else {
-        url = "https://i.imgur.com/SK3Kyyf.jpeg";
-      }
-      return url;
-    };
-
     onMounted(async () => {
       // Fetch profile.
       let response = await ServerApi.fetchPlayerDetail(props.playerName);
@@ -227,47 +203,59 @@ export default defineComponent({
       if (leagueList.value.length > 0) {
         selectedLeague.value = leagueList.value[leagueList.value.length - 1].id;
       }
-      leagueList.value.push({
-        id: undefined,
-        name: "Total",
-      });
 
       response = await ServerApi.fetchMapList();
       mapList.value = response.data;
-      mapList.value.push({
-        id: undefined,
-        name: "Total",
-      });
 
-      // Fetch statistics and Elo and matches
-      await fetchPlayerStatisticsRelatedSelector();
+      // Fetch statistics, Elo and matches
+      await fetchMatches();
+      await fetchEloHistory();
+      await fetchStatistics();
 
       watch(selectedLeague, async () => {
-        await fetchPlayerStatisticsRelatedSelector();
+        await fetchMatches();
+        await fetchEloHistory();
+        await fetchStatistics();
       });
       watch(selectedMap, async () => {
-        await fetchPlayerStatisticsRelatedSelector();
+        await fetchMatches();
+        await fetchStatistics();
       });
 
       playerInformation.value.isFetched = true;
     });
 
-    const matchResultList = computed(() => {
-      return rawMatchResultList.value.filter((matchResult) => {
-        const matchType =
-          matchResult.player_tuples.length > 1 ? "topAndBottom" : "melee";
-        if (
-          matchType == "topAndBottom" &&
-          isTopAndBottomMatchResultShown.value
-        ) {
-          return true;
-        }
-        if (matchType == "melee" && isMeleeMatchResultShown.value) {
-          return true;
-        }
-        return false;
-      });
-    });
+    const getWallpaperUrlByRace = (race) => {
+      const wallpaper = {
+        P: "https://bnetcmsus-a.akamaihd.net/cms/gallery/7EKSWN98V7M91498587613057.jpg",
+        T: "https://bnetcmsus-a.akamaihd.net/cms/gallery/lt/LTHPT2MPAS8P1502725038501.jpg",
+        Z: "https://bnetcmsus-a.akamaihd.net/cms/gallery/JHXVBPP04GHH1498587636883.jpg",
+      };
+      let url = "";
+      if (Object.keys(wallpaper).find((key) => key == race)) {
+        url = wallpaper[race];
+      } else {
+        url = "https://i.imgur.com/SK3Kyyf.jpeg";
+      }
+      return url;
+    };
+
+    const fetchNextMatches = async () => {
+      if (nextURL.value) {
+        const url = nextURL.value;
+        const response = await ServerApi.fetchPlayerNextMatches(url);
+        addMatchResultsToList(response.data);
+      }
+    };
+
+    const fetchStatistics = async () => {
+      const response = await ServerApi.fetchPlayerStatistics(
+        player.value.id,
+        selectedLeague.value,
+        selectedMap.value
+      );
+      playerInformation.value.statistics = aggregateStatistics(response.data);
+    };
 
     const aggregateStatistics = (data) => {
       const list = [
@@ -316,40 +304,65 @@ export default defineComponent({
       return list;
     };
 
-    const addMatchResultsToList = (data) => {
-      rawMatchResultList.value = rawMatchResultList.value.concat(data.results);
-      nextURL.value = data.next;
-    };
-
-    const fetchPlayerNextMatches = async () => {
-      if (nextURL.value) {
-        const url = nextURL.value;
-        const response = await ServerApi.fetchPlayerNextMatches(url);
-        addMatchResultsToList(response.data);
-      }
-    };
-
-    const fetchPlayerStatisticsRelatedSelector = async () => {
-      // Fetch statistics
-      let response = await ServerApi.fetchPlayerStatistics(
-        player.value.id,
-        selectedLeague.value,
-        selectedMap.value
-      );
-
-      playerInformation.value.statistics = aggregateStatistics(response.data);
-
-      // Fetch matches
-      response = await ServerApi.fetchPlayerMatches(
+    const fetchMatches = async () => {
+      const response = await ServerApi.fetchPlayerMatches(
         player.value.id,
         selectedLeague.value,
         selectedMap.value
       );
       rawMatchResultList.value = [];
       addMatchResultsToList(response.data);
+    };
 
-      // Fetch elo history
-      response = await ServerApi.fetchPlayerEloHistory(
+    const addMatchResultsToList = (data) => {
+      rawMatchResultList.value = rawMatchResultList.value.concat(data.results);
+      nextURL.value = data.next;
+    };
+
+    const matchResultList = computed(() => {
+      return rawMatchResultList.value.filter((matchResult) => {
+        const matchType =
+          matchResult.player_tuples.length > 1 ? "topAndBottom" : "melee";
+        if (
+          matchType == "topAndBottom" &&
+          isTopAndBottomMatchResultShown.value
+        ) {
+          return true;
+        }
+        if (matchType == "melee" && isMeleeMatchResultShown.value) {
+          return true;
+        }
+        return false;
+      });
+    });
+
+    const matchesSummary = computed(() => {
+      const data = matchResultList.value.reduce(
+        (data, match) => {
+          const isWinMatch = match.player_tuples.some((playerTuple) => {
+            return playerTuple.winner == player.value.name;
+          });
+          if (isWinMatch) {
+            data.winCount += 1;
+          } else {
+            data.loseCount += 1;
+          }
+          data.totalCount += 1;
+          return data;
+        },
+        {
+          totalCount: 0,
+          winCount: 0,
+          loseCount: 0,
+          winningRate: 0,
+        }
+      );
+      data.winningRate = getPercentage(data.winCount, data.loseCount);
+      return data;
+    });
+
+    const fetchEloHistory = async () => {
+      const response = await ServerApi.fetchPlayerEloHistory(
         player.value.id,
         selectedLeague.value
       );
@@ -425,6 +438,7 @@ export default defineComponent({
       leagueList,
       mapList,
       matchResultList,
+      matchesSummary,
       nextURL,
       player,
       playerInformation,
@@ -432,20 +446,23 @@ export default defineComponent({
       convertHyphenWithDateFormat,
       getPercentage,
       selectedLeague,
-      fetchPlayerNextMatches,
-      fetchPlayerStatisticsRelatedSelector,
+      fetchNextMatches,
     };
   },
 });
 </script>
 
 <style scoped>
-#button-next-matches {
-  height: 3rem;
+#fetch-next-matches-button {
   background-color: #f0f0f0;
   border: 1px solid #dee2e6;
   color: gray;
+  height: 3rem;
+  margin-top: 0.5rem;
+  text-align: center;
+  width: 100%;
 }
+
 #content-item {
   border-bottom: solid 1px #dee2e6;
 }
@@ -463,11 +480,39 @@ export default defineComponent({
 }
 
 .p-chart {
-  width: 100%;
   min-height: 295px;
   max-height: 295px;
+  width: 100%;
 }
-.winning-rate {
+
+.statistics-label {
+  border-right: dashed 1px lightgray;
+  min-width: 5rem;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.statistics-winning-rate {
+  color: #435862;
+  font-size: small;
   min-width: 3rem;
+}
+
+.matches-summary-item {
+  border-bottom: 1px solid #dee2e6;
+  border-right: 1px solid #dee2e6;
+  padding: 1rem;
+  text-align: center;
+}
+
+.matches-summary-item:last-child {
+  border-right: none;
+  border-bottom: none;
+}
+
+@media (min-width: 768px) {
+  .matches-summary-item {
+    border-bottom: none;
+  }
 }
 </style>

@@ -6,8 +6,9 @@
       :key="index"
       :class="{
         'match-result': true,
-        'match-result-win': matchResult.isWonMatch,
-        'match-result-lose': !matchResult.isWonMatch,
+        'match-result-none': !resultListOwnerName,
+        'match-result-win': resultListOwnerName && matchResult.isWonMatch,
+        'match-result-lose': resultListOwnerName && !matchResult.isWonMatch,
       }"
     >
       <!-- Date, League, Title -->
@@ -82,6 +83,7 @@
                 'text-300': true,
                 'font-bold':
                   resultListOwnerName == player_tuple.loser ? true : false,
+                'match-player': true,
               }"
               @click="routeToPlayerInformation(router, player_tuple.loser)"
             >
@@ -107,12 +109,12 @@
 
 <script>
 import { defineComponent, computed } from "vue";
+import { useRouter } from "vue-router";
 
 import {
   convertHyphenWithDateFormat,
   routeToPlayerInformation,
 } from "@/utils/utils.js";
-import { useRouter } from "vue-router";
 import "@/css/color.css";
 
 export default defineComponent({
@@ -124,6 +126,9 @@ export default defineComponent({
     resultListOwnerName: {
       required: false,
       type: String,
+      default: () => {
+        return undefined;
+      },
     },
   },
   setup(props) {
@@ -209,6 +214,30 @@ export default defineComponent({
   font-size: small;
 }
 
+.match-result-none .match-result-date {
+  border-right: 1px dashed #3e3e3e;
+  border-bottom: 1px dashed #3e3e3e;
+}
+
+.match-result-none .match-result-header {
+  background-color: #cecece;
+}
+
+.match-result-none .match-result-league {
+  border-bottom: 1px dashed #3e3e3e;
+}
+
+@media (min-width: 768px) {
+  .match-result-none .match-result-date {
+    border-bottom: none;
+  }
+
+  .match-result-none .match-result-league {
+    border-right: 1px dashed #3e3e3e;
+    border-bottom: none;
+  }
+}
+
 .match-result-win .match-result-date {
   border-right: 1px dashed rgb(var(--win-color));
   border-bottom: 1px dashed rgb(var(--win-color));
@@ -253,6 +282,9 @@ export default defineComponent({
     border-right: 1px dashed rgb(var(--lose-color));
     border-bottom: none;
   }
+}
+.match-player {
+  white-space: nowrap;
 }
 
 .match-player-race {

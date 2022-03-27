@@ -6,13 +6,15 @@
         <PlayerSearchBar id="search-bar" :size="1.25" />
       </div>
     </PageHeader>
+
+    <div class="container p-3"></div>
   </div>
 </template>
 
 <script>
 import { defineComponent } from "vue";
-import PageHeader from "@/components/PageHeader.vue";
 
+import PageHeader from "@/components/PageHeader.vue";
 import PlayerSearchBar from "@/components/PlayerSearchBar.vue";
 
 export default defineComponent({
@@ -20,9 +22,7 @@ export default defineComponent({
     PageHeader,
     PlayerSearchBar,
   },
-  setup() {
-    return {};
-  },
+  setup() {},
 });
 </script>
 
