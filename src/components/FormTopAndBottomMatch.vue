@@ -1,7 +1,7 @@
 <template>
-  <div v-if="form">
+  <div v-if="form" class="grid grid-nogutter">
     <!-- League -->
-    <ValidationWrapper class="p-2 pb-0 mb-2" :errorObj="form.errorObj.league">
+    <ValidationWrapper class="form-content" :errorObj="form.errorObj.league">
       <label class="form-label">리그</label>
       <DropDown
         v-model="form.state.league"
@@ -13,12 +13,12 @@
       />
     </ValidationWrapper>
     <!-- Title -->
-    <ValidationWrapper class="m-2" :errorObj="form.errorObj.title">
+    <ValidationWrapper class="form-content" :errorObj="form.errorObj.title">
       <label class="form-label">게임 제목</label>
       <InputText v-model="form.state.title" class="w-full" type="text" />
     </ValidationWrapper>
     <!-- Date -->
-    <ValidationWrapper class="m-2" :errorObj="form.errorObj.date">
+    <ValidationWrapper class="form-content" :errorObj="form.errorObj.date">
       <label class="form-label">날짜</label>
       <InputMask
         v-model="form.state.date"
@@ -28,7 +28,7 @@
       />
     </ValidationWrapper>
     <!-- Map -->
-    <ValidationWrapper class="m-2" :errorObj="form.errorObj.map">
+    <ValidationWrapper class="form-content" :errorObj="form.errorObj.map">
       <label class="form-label">맵</label>
       <DropDown
         v-model="form.state.map"
@@ -39,14 +39,15 @@
         :options="resources.maps"
       />
     </ValidationWrapper>
+
     <!-- Player tuples -->
     <div
       v-for="(playerTuple, index) in form.state.player_tuples"
       :key="index"
-      class="form-player-tuples"
+      class="col-12 grid grid-nogutter form-player-tuples"
     >
       <ValidationWrapper
-        class="m-2"
+        class="form-content"
         :errorObj="form.errorObj.player_tuples.$child[index].winner"
       >
         <label class="form-label">승자</label>
@@ -60,7 +61,7 @@
         />
       </ValidationWrapper>
       <ValidationWrapper
-        class="m-2"
+        class="form-content"
         :errorObj="form.errorObj.player_tuples.$child[index].loser"
       >
         <label class="form-label">패자</label>
@@ -75,7 +76,7 @@
     </div>
 
     <!-- Miscellaneous -->
-    <div class="p-2" id="miscellaneous">
+    <div class="col-12 p-2" id="miscellaneous">
       <label class="form-label">비고</label>
       <InputText
         class="w-full"
@@ -120,16 +121,22 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.form-header {
-  border-bottom: 1px dashed #dee2e6;
-  font-weight: bold;
-}
-
 .form-label {
   color: gray;
   font-size: smaller;
   font-weight: bold;
   margin-left: 0.5rem;
+}
+
+.form-content {
+  padding: 0.5rem;
+  width: 50%;
+}
+
+@media (max-width: 768px) {
+  .form-content {
+    width: 100%;
+  }
 }
 
 .form-player-tuples {

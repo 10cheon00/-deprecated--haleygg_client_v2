@@ -1,7 +1,7 @@
 <template>
-  <div v-if="form">
+  <div v-if="form" class="grid grid-nogutter">
     <!-- League -->
-    <ValidationWrapper class="p-2 pb-0 mb-2" :errorObj="form.errorObj.league">
+    <ValidationWrapper class="form-content" :errorObj="form.errorObj.league">
       <label class="form-label">리그</label>
       <DropDown
         v-model="form.state.league"
@@ -13,12 +13,12 @@
       />
     </ValidationWrapper>
     <!-- Title -->
-    <ValidationWrapper class="m-2" :errorObj="form.errorObj.title">
+    <ValidationWrapper class="form-content" :errorObj="form.errorObj.title">
       <label class="form-label">게임 제목</label>
       <InputText v-model="form.state.title" class="w-full" type="text" />
     </ValidationWrapper>
     <!-- Date -->
-    <ValidationWrapper class="m-2" :errorObj="form.errorObj.date">
+    <ValidationWrapper class="form-content" :errorObj="form.errorObj.date">
       <label class="form-label">날짜</label>
       <InputMask
         v-model="form.state.date"
@@ -28,7 +28,7 @@
       />
     </ValidationWrapper>
     <!-- Map -->
-    <ValidationWrapper class="m-2" :errorObj="form.errorObj.map">
+    <ValidationWrapper class="form-content" :errorObj="form.errorObj.map">
       <label class="form-label">맵</label>
       <DropDown
         v-model="form.state.map"
@@ -39,66 +39,73 @@
         :options="resources.maps"
       />
     </ValidationWrapper>
+
     <!-- Player tuples -->
-    <div class="form-player-tuples">
-      <ValidationWrapper
-        class="m-2"
-        :errorObj="form.errorObj.player_tuples.$child[0].winner"
-      >
-        <label class="form-label">승자</label>
-        <DropDown
-          v-model="form.state.player_tuples[0].winner"
-          class="w-full"
-          :filter="true"
-          optionLabel="name"
-          optionValue="name"
-          :options="resources.players"
-        />
-      </ValidationWrapper>
-      <ValidationWrapper
-        class="m-2"
-        :errorObj="form.errorObj.player_tuples.$child[0].winner_race"
-      >
-        <label class="form-label">승자 종족</label>
-        <SelectButton
-          v-model="form.state.player_tuples[0].winner_race"
-          class="w-full"
-          :filter="true"
-          optionLabel="race"
-          optionValue="value"
-          :options="resources.races"
-        />
-      </ValidationWrapper>
-      <ValidationWrapper
-        class="m-2"
-        :errorObj="form.errorObj.player_tuples.$child[0].loser"
-      >
-        <label class="form-label">패자</label>
-        <DropDown
-          v-model="form.state.player_tuples[0].loser"
-          class="w-full"
-          optionLabel="name"
-          optionValue="name"
-          :options="resources.players"
-        />
-      </ValidationWrapper>
-      <ValidationWrapper
-        class="m-2"
-        :errorObj="form.errorObj.player_tuples.$child[0].loser_race"
-      >
-        <label class="form-label">패자 종족</label>
-        <SelectButton
-          v-model="form.state.player_tuples[0].loser_race"
-          class="w-full"
-          :filter="true"
-          optionLabel="race"
-          optionValue="value"
-          :options="resources.races"
-        />
-      </ValidationWrapper>
+    <div class="col-12 form-player-tuples">
+      <div class="grid grid-nogutter">
+        <ValidationWrapper
+          class="form-content"
+          :errorObj="form.errorObj.player_tuples.$child[0].winner"
+        >
+          <label class="form-label">승자</label>
+          <DropDown
+            v-model="form.state.player_tuples[0].winner"
+            class="w-full"
+            :filter="true"
+            optionLabel="name"
+            optionValue="name"
+            :options="resources.players"
+          />
+        </ValidationWrapper>
+        <ValidationWrapper
+          class="form-content"
+          :errorObj="form.errorObj.player_tuples.$child[0].winner_race"
+        >
+          <label class="form-label">승자 종족</label>
+          <SelectButton
+            v-model="form.state.player_tuples[0].winner_race"
+            class="w-full"
+            :filter="true"
+            optionLabel="race"
+            optionValue="value"
+            :options="resources.races"
+          />
+        </ValidationWrapper>
+      </div>
+
+      <div class="grid grid-nogutter">
+        <ValidationWrapper
+          class="form-content"
+          :errorObj="form.errorObj.player_tuples.$child[0].loser"
+        >
+          <label class="form-label">패자</label>
+          <DropDown
+            v-model="form.state.player_tuples[0].loser"
+            class="w-full"
+            optionLabel="name"
+            optionValue="name"
+            :options="resources.players"
+          />
+        </ValidationWrapper>
+        <ValidationWrapper
+          class="form-content"
+          :errorObj="form.errorObj.player_tuples.$child[0].loser_race"
+        >
+          <label class="form-label">패자 종족</label>
+          <SelectButton
+            v-model="form.state.player_tuples[0].loser_race"
+            class="w-full"
+            :filter="true"
+            optionLabel="race"
+            optionValue="value"
+            :options="resources.races"
+          />
+        </ValidationWrapper>
+      </div>
     </div>
+
     <!-- Miscellaneous -->
-    <div class="p-2" id="miscellaneous">
+    <div class="col-12 p-2" id="miscellaneous">
       <label class="form-label">비고</label>
       <InputText
         class="w-full"
@@ -145,16 +152,22 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.form-header {
-  border-bottom: 1px dashed #dee2e6;
-  font-weight: bold;
-}
-
 .form-label {
   color: gray;
   font-size: smaller;
   font-weight: bold;
   margin-left: 0.5rem;
+}
+
+.form-content {
+  padding: 0.5rem;
+  width: 50%;
+}
+
+@media (max-width: 768px) {
+  .form-content {
+    width: 100%;
+  }
 }
 
 .form-player-tuples {

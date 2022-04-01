@@ -25,7 +25,10 @@
             :resources="resources"
             :wrappedForm="item"
           />
-          <div class="form-error-from-server">
+          <div
+            v-if="item.errorMessagesFromServer.length"
+            class="form-error-from-server"
+          >
             <ValidationErrorMessage
               v-for="message in item.errorMessagesFromServer"
               :key="message"
@@ -38,14 +41,14 @@
       <!-- Controller -->
       <div class="flex mb-2">
         <Button
-          class="p-button-info button mr-1"
+          class="p-button-info controller-button mr-1"
           @click="addMeleeMatchResult()"
         >
           <i class="pi pi-plus" />
           <span>&nbsp;개인 전적 추가</span>
         </Button>
         <Button
-          class="p-button-help button ml-1"
+          class="p-button-help controller-button ml-1"
           @click="addTopAndBottomMatchResult()"
         >
           <i class="pi pi-plus" />
@@ -177,6 +180,7 @@ export default defineComponent({
           state: state,
           rules: rules,
           errorObj: initializeErrorObj(state, rules),
+          errorMessagesFromServer: [],
         });
       });
     };
