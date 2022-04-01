@@ -30,7 +30,7 @@
 
         <PlayerSearchBar />
       </div>
-      <LoginModal />
+      <LoginModalForm />
     </template>
   </MenuBar>
 </template>
@@ -42,13 +42,13 @@ import { useStore } from "vuex";
 import Button from "primevue/button";
 import MenuBar from "primevue/menubar";
 
-import LoginModal from "@/components/LoginModal.vue";
+import LoginModalForm from "@/components/FormLoginModal.vue";
 import PlayerSearchBar from "@/components/PlayerSearchBar.vue";
 
 export default defineComponent({
   components: {
     Button,
-    LoginModal,
+    LoginModalForm,
     MenuBar,
     PlayerSearchBar,
   },
