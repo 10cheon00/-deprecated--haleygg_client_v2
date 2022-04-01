@@ -1,7 +1,7 @@
 <template>
   <div id="filter">
     <div class="container flex justify-content-between px-3">
-      <div id="league-filter">
+      <div v-if="filter.leagueList" id="league-filter">
         <div
           v-for="league in filter.leagueList"
           :key="league"
@@ -16,7 +16,12 @@
           {{ league.name }}
         </div>
       </div>
-      <select v-model="filter.selectedMap" id="map-filter" required>
+      <select
+        v-if="filter.mapList"
+        v-model="filter.selectedMap"
+        id="map-filter"
+        required
+      >
         <option selected disabled :value="null">맵 선택</option>
         <option
           v-for="map in filter.mapList"

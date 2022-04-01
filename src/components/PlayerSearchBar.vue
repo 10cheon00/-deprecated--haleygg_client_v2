@@ -22,11 +22,11 @@ import { useRouter } from "vue-router";
 import InputText from "primevue/inputtext";
 
 export default defineComponent({
-  props: {
-    size: Number,
-  },
   components: {
     InputText,
+  },
+  props: {
+    size: Number,
   },
   setup() {
     const router = useRouter();
