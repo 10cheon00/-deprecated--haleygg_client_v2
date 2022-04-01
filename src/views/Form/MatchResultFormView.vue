@@ -24,8 +24,15 @@
             :is="item.component"
             :resources="resources"
             :wrappedForm="item"
-          >
-          </component>
+          />
+          <div class="form-error-from-server">
+            <ValidationErrorMessage
+              v-for="message in item.errorMessagesFromServer"
+              :key="message"
+              :message="message"
+              class="m-2"
+            />
+          </div>
         </Panel>
       </div>
       <!-- Controller -->
@@ -62,6 +69,7 @@ import Button from "primevue/button";
 import ServerApi from "@/api/server/module.js";
 import PageHeader from "@/components/PageHeader.vue";
 import Panel from "@/components/Panel.vue";
+import ValidationErrorMessage from "@/components/ValidationErrorMessage.vue";
 import {
   initializeErrorObj,
   isErrorExists,
@@ -74,10 +82,10 @@ export default defineComponent({
     Button,
     PageHeader,
     Panel,
+    ValidationErrorMessage,
   },
   setup() {
     const resources = ref(null);
-    const errorMessagesFromServer = reactive([]);
     const matchResultForms = reactive([]);
 
     const addMeleeMatchResult = () => {
@@ -119,6 +127,7 @@ export default defineComponent({
           state: state,
           rules: rules,
           errorObj: initializeErrorObj(state, rules),
+          errorMessagesFromServer: [],
         });
       });
     };
@@ -191,13 +200,35 @@ export default defineComponent({
         return acc;
       }, new Array());
 
-      ServerApi.createMatch(forms)
-        .then((response) => {
-          console.log(response);
-        })
-        .catch((error) => {
-          console.log(error.response);
+      if (forms.length > 0) {
+        ServerApi.createMatch(forms)
+          .then((res) => {
+            console.log(forms, res);
+            //alert result.
+          })
+          .catch((error) => {
+            error.response.data.forEach((data, index) => {
+              matchResultForms[index].errorMessagesFromServer =
+                parseResponseToErrorMessage(data);
+            });
+          });
+      }
+    };
+
+    const parseResponseToErrorMessage = (response) => {
+      let result = [];
+      if (typeof response == "object") {
+        Object.keys(response).forEach((key) => {
+          result = result.concat(parseResponseToErrorMessage(response[key]));
         });
+      } else if (Array.isArray(response)) {
+        response.forEach((data) => {
+          result = result.concat(parseResponseToErrorMessage(data));
+        });
+      } else {
+        result = result.concat([response]);
+      }
+      return result;
     };
 
     onMounted(async () => {
@@ -229,7 +260,6 @@ export default defineComponent({
     });
 
     return {
-      errorMessagesFromServer,
       matchResultForms,
       resources,
 
@@ -243,13 +273,17 @@ export default defineComponent({
 </script>
 
 <style>
-.form {
-  margin-bottom: 0.5rem;
-}
-
 .controller-button {
   width: 100%;
   display: flex;
   justify-content: center;
+}
+
+.form {
+  margin-bottom: 0.5rem;
+}
+
+.form-error-from-server {
+  border-top: 1px dashed #dee2e6;
 }
 </style>

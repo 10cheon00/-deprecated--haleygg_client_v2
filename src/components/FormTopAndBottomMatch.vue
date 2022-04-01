@@ -94,6 +94,12 @@ import InputText from "primevue/inputtext";
 import ValidationWrapper from "@/components/ValidationWrapper.vue";
 
 export default defineComponent({
+  components: {
+    DropDown,
+    InputMask,
+    InputText,
+    ValidationWrapper,
+  },
   props: {
     resources: {
       type: Object,
@@ -103,12 +109,6 @@ export default defineComponent({
       type: Object,
       required: true,
     },
-  },
-  components: {
-    DropDown,
-    InputMask,
-    InputText,
-    ValidationWrapper,
   },
   setup(props) {
     const form = toRef(props, "wrappedForm");

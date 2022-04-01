@@ -16,7 +16,7 @@ const updateErrorObj = (state, rules) => {
         $this: computed(() => {
           const errorObj = {
             isErrorExists: false,
-            errorMessage: ""
+            message: ""
           }
           return errorObj;
         }),
@@ -30,11 +30,11 @@ const updateErrorObj = (state, rules) => {
       acc[key] = computed(() => {
         const errorObj = {
           isErrorExists: false,
-          errorMessage: ""
+          message: ""
         }
         if (rules[key] == Required && !state[key]) {
           errorObj.isErrorExists = true;
-          errorObj.errorMessage = "이 항목은 필수입니다.";
+          errorObj.message = "이 항목은 필수입니다.";
         }
         return errorObj;
       })
@@ -71,7 +71,7 @@ const initializeErrorObj = (state) => {
     } else {
       acc[key] = {
         isErrorExists: false,
-        errorMessage: "",
+        message: "",
       };
     }
     return acc;
