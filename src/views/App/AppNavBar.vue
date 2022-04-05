@@ -120,7 +120,7 @@ i {
 }
 
 #navbar {
-  background: linear-gradient(120deg, #fea29a, #fe62d4);
+  background-color: #fd7f71;
   border: none;
   border-radius: 0px;
 }
@@ -145,8 +145,8 @@ i {
 }
 
 #navbar #top .credential-button {
-  background-color: #dd0ea6;
-  border-color: #dd0ea6;
+  background-color: #fea29a;
+  border: none;
 }
 
 #navbar #top .credential-user-name {
@@ -161,6 +161,7 @@ i {
 }
 
 #navbar #router {
+  background-color: #fea29a;
   display: flex;
   flex-wrap: nowrap;
   overflow: auto;
@@ -168,6 +169,7 @@ i {
 
 #navbar #router .button {
   border-radius: 5px;
+  color: white;
   flex: 0 0 auto;
   margin-left: 0.25rem;
   margin-right: 0.25rem;
@@ -175,6 +177,7 @@ i {
   padding: 0.75rem;
   text-align: center;
   transition: background-color 0.25s;
+  transition: color 0.25s;
 }
 
 #navbar #router .button:active {
@@ -183,10 +186,17 @@ i {
 
 #navbar #router .button:hover {
   background-color: white;
+  color: black;
 }
 
 #navbar #router .active {
   background-color: white;
+  color: black;
+}
+
+#navbar > .player-search-bar {
+  background-color: #fd7f71;
+  border: none;
 }
 
 @media (min-width: 768px) {
