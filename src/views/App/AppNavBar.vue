@@ -88,7 +88,7 @@ export default defineComponent({
         },
         {
           label: "맵별 통계",
-          iconClass: "pi pi-fw pi-eye",
+          iconClass: "pi pi-fw pi-image",
           to: "/map/",
         },
       ];

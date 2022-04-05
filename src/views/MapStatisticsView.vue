@@ -1,6 +1,6 @@
 <template>
   <div>
-    <PageHeader class="pl-6">
+    <PageHeader>
       <p class="text-4xl font-bold">맵별 통계</p>
     </PageHeader>
     <div v-if="mapDataList">

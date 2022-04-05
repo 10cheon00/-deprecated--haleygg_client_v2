@@ -2,7 +2,6 @@
   <div v-if="playerInformation.isFetched">
     <!-- Profile -->
     <PageHeader
-      class="pl-6"
       :style="{
         width: 'auto',
         'background-image': `linear-gradient(90deg, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0)),

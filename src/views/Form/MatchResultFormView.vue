@@ -1,6 +1,6 @@
 <template>
   <div v-if="resources">
-    <PageHeader class="p-6">
+    <PageHeader>
       <p class="text-4xl m-4 font-bold">전적 입력</p>
       <p class="text-300">
         게임 타입에 맞게 전적을 추가해 입력한 후, 저장 버튼을 누르시면 한 번에
