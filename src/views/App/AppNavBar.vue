@@ -1,38 +1,42 @@
 <template>
-  <MenuBar class="tabmenu" :model="items">
-    <template #start>
-      <img
-        src="/logo.png"
-        class="px-3 pt-2 pb-0"
-        @click="routeToHome()"
-        style="cursor: pointer"
+  <div id="navbar">
+    <div id="top">
+      <img src="/logo.png" @click="routeToHome()" />
+      <PlayerSearchBar class="player-search-bar" />
+      <span class="credential-user-name">
+        {{ userName }}
+      </span>
+      <Button
+        v-if="userName"
+        class="credential-button p-button-rounded"
+        icon="pi pi-sign-out"
+        @click="logoutButtonClicked()"
       />
-    </template>
-    <template #end>
-      <div class="flex align-items-center">
-        <!-- login status -->
-        <div class="pr-3">
-          <div v-if="userName.length > 0" class="flex align-items-center">
-            <span class="pr-3">{{ userName }}</span>
-            <Button
-              id="credential-button"
-              icon="pi pi-sign-out"
-              @click="logoutButtonClicked()"
-            />
-          </div>
-          <Button
-            v-else
-            icon="pi pi-cog"
-            id="credential-button"
-            @click="loginButtonClicked()"
-          />
-        </div>
+      <Button
+        v-else
+        icon="pi pi-user"
+        class="credential-button p-button-rounded"
+        @click="loginButtonClicked()"
+      />
+    </div>
 
-        <PlayerSearchBar />
-      </div>
-      <LoginModalForm />
-    </template>
-  </MenuBar>
+    <div id="router">
+      <router-link
+        v-for="item in items"
+        :key="item"
+        :class="{
+          active: item.to == $route.path ? true : false,
+          button: true,
+        }"
+        :to="item.to"
+      >
+        <i :class="item.iconClass" />
+        {{ item.label }}
+      </router-link>
+    </div>
+    <PlayerSearchBar class="player-search-bar" />
+    <LoginModalForm />
+  </div>
 </template>
 
 <script>
@@ -40,7 +44,6 @@ import { defineComponent, ref, provide, computed } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import Button from "primevue/button";
-import MenuBar from "primevue/menubar";
 
 import LoginModalForm from "@/components/FormLoginModal.vue";
 import PlayerSearchBar from "@/components/PlayerSearchBar.vue";
@@ -49,7 +52,6 @@ export default defineComponent({
   components: {
     Button,
     LoginModalForm,
-    MenuBar,
     PlayerSearchBar,
   },
   setup() {
@@ -81,12 +83,12 @@ export default defineComponent({
       const list = [
         {
           label: "Elo 랭킹",
-          icon: "pi pi-fw pi-chart-line",
+          iconClass: "pi pi-fw pi-chart-line",
           to: "/elo-rank/",
         },
         {
           label: "맵별 통계",
-          icon: "pi pi-fw pi-eye",
+          iconClass: "pi pi-fw pi-eye",
           to: "/map/",
         },
       ];
@@ -94,7 +96,7 @@ export default defineComponent({
       if (userName.value.length > 0) {
         list.push({
           label: "전적 입력",
-          icon: "pi pi-fw pi-cloud-upload",
+          iconClass: "pi pi-fw pi-cloud-upload",
           to: "/add-result/",
         });
       }
@@ -113,14 +115,87 @@ export default defineComponent({
 </script>
 
 <style scoped>
-#credential-button {
-  background-color: #dd0ea6;
-  border-color: #dd0ea6;
-  border-radius: 50%;
+i {
+  vertical-align: middle;
 }
-.p-menubar {
+
+#navbar {
   background: linear-gradient(120deg, #fea29a, #fe62d4);
   border: none;
   border-radius: 0px;
+}
+
+#navbar > * {
+  margin-top: auto;
+  margin-bottom: auto;
+  padding: 0.5rem;
+}
+
+#navbar #top {
+  display: flex;
+}
+
+#navbar #top img {
+  cursor: pointer;
+  display: block;
+  margin-right: auto;
+  margin-top: auto;
+  width: 153px;
+  height: 33px;
+}
+
+#navbar #top .credential-button {
+  background-color: #dd0ea6;
+  border-color: #dd0ea6;
+}
+
+#navbar #top .credential-user-name {
+  flex: 0 0 none;
+  align-self: center;
+  margin-left: 0.25rem;
+  margin-right: 0.25rem;
+}
+
+#navbar #top .player-search-bar {
+  display: none;
+}
+
+#navbar #router {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow: auto;
+}
+
+#navbar #router .button {
+  border-radius: 5px;
+  flex: 0 0 auto;
+  margin-left: 0.25rem;
+  margin-right: 0.25rem;
+  min-width: 5rem;
+  padding: 0.75rem;
+  text-align: center;
+  transition: background-color 0.25s;
+}
+
+#navbar #router .button:active {
+  background-color: #d0d0d0;
+}
+
+#navbar #router .button:hover {
+  background-color: white;
+}
+
+#navbar #router .active {
+  background-color: white;
+}
+
+@media (min-width: 768px) {
+  #navbar > .player-search-bar {
+    display: none;
+  }
+
+  #navbar #top .player-search-bar {
+    display: block;
+  }
 }
 </style>

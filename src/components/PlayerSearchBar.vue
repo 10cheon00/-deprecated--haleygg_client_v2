@@ -32,12 +32,14 @@ export default defineComponent({
     const router = useRouter();
     const playerName = ref("");
     const search = () => {
-      router.push({
-        name: "PlayerInformationView",
-        params: {
-          playerName: playerName.value,
-        },
-      });
+      if (playerName.value) {
+        router.push({
+          name: "PlayerInformationView",
+          params: {
+            playerName: playerName.value,
+          },
+        });
+      }
     };
     return {
       playerName,
