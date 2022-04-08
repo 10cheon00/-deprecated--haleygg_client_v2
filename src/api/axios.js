@@ -3,11 +3,10 @@ import axios from "axios";
 import vuexStore from "@/store/store.js";
 import router from "@/router/index.js";
 
-// const developServerUrl = "http://127.0.0.1:8000"
-const deployServerUrl = "https://api.haleygg.kr/"
+const serverUrl = "https://haleygg.10cheon00.xyz/"
 
 const axiosInstance = axios.create({
-  baseURL: deployServerUrl,
+  baseURL: serverUrl,
   timeout: 5000,
 })
 
