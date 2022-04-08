@@ -1,7 +1,7 @@
 <template>
   <div>
     <PageHeader>
-      <p class="text-4xl font-bold">맵별 통계</p>
+      <p class="m-4 text-4xl font-bold">맵별 통계</p>
     </PageHeader>
     <div v-if="mapDataList">
       <!-- Header -->
