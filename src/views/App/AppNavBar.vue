@@ -181,7 +181,7 @@ i {
 }
 
 #navbar #router .button:active {
-  background-color: #d0d0d0;
+  background-color: white;
 }
 
 #navbar #router .button:hover {
