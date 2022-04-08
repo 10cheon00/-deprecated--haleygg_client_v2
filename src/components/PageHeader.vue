@@ -1,5 +1,5 @@
 <template>
-  <div class="py-6" id="header">
+  <div class="p-6" id="header">
     <div class="container">
       <slot></slot>
     </div>

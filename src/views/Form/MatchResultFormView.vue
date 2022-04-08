@@ -1,6 +1,6 @@
 <template>
   <div v-if="resources">
-    <PageHeader class="p-6">
+    <PageHeader>
       <p class="text-4xl m-4 font-bold">전적 입력</p>
       <p class="text-300">
         게임 타입에 맞게 전적을 추가해 입력한 후, 저장 버튼을 누르시면 한 번에
@@ -111,17 +111,17 @@ export default defineComponent({
           ],
         };
         const rules = {
-          league: Required,
-          title: Required,
-          date: Required,
-          map: Required,
+          league: { Required },
+          title: { Required },
+          date: { DateFormat, Required },
+          map: { Required },
           player_tuples: {
-            $this: Required,
+            $this: { NoDuplicates, Required },
             $child: {
-              winner: Required,
-              winner_race: Required,
-              loser: Required,
-              loser_race: Required,
+              winner: { Required },
+              winner_race: { Required },
+              loser: { Required },
+              loser_race: { Required },
             },
           },
         };
@@ -129,7 +129,7 @@ export default defineComponent({
           component: component,
           state: state,
           rules: rules,
-          errorObj: initializeErrorObj(state, rules),
+          errorObj: initializeErrorObj(state),
           errorMessagesFromServer: [],
         });
       });
@@ -161,17 +161,15 @@ export default defineComponent({
           ],
         };
         const rules = {
-          league: Required,
-          title: Required,
-          date: Required,
-          map: Required,
+          league: { Required },
+          title: { Required },
+          date: { DateFormat, Required },
+          map: { Required },
           player_tuples: {
-            $this: Required,
+            $this: { NoDuplicates, Required },
             $child: {
-              winner: Required,
-              winner_race: Required,
-              loser: Required,
-              loser_race: Required,
+              winner: { Required },
+              loser: { Required },
             },
           },
         };
@@ -183,6 +181,33 @@ export default defineComponent({
           errorMessagesFromServer: [],
         });
       });
+    };
+
+    const DateFormat = (state) => {
+      if (isNaN(Date.parse(state))) {
+        return "잘못된 날짜입니다.";
+      }
+      return false;
+    };
+
+    const NoDuplicates = (state) => {
+      const aggregation = state.reduce((a, e) => {
+        if (e.winner != "") {
+          a[e.winner] = (a[e.winner] || 0) + 1;
+        }
+        if (e.loser != "") {
+          a[e.loser] = (a[e.loser] || 0) + 1;
+        }
+        return a;
+      }, new Object());
+      const duplicates = Object.keys(aggregation).filter(
+        (key) => aggregation[key] > 1
+      );
+      console.log(duplicates);
+      if (duplicates.length > 0) {
+        return `${duplicates}이(가) 중복되었습니다.`;
+      }
+      return false;
     };
 
     const deleteMatchResult = (index) => {

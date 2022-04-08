@@ -3,8 +3,8 @@
     <!-- Header -->
     <div id="panel-header">
       <div class="flex justify-content-between align-items-center">
-        <div>{{ header }}</div>
-        <div class="flex ml-3">
+        <div class="p-3">{{ header }}</div>
+        <div class="flex m-2">
           <slot name="panel-header-right"></slot>
         </div>
       </div>
@@ -39,7 +39,7 @@ export default defineComponent({
   background-color: #f0f0f0;
   border: solid 1px #dee2e6;
   font-weight: bold;
-  padding: 1rem 1.25rem;
+  /* padding: 1rem 1.25rem; */
 }
 #panel-content {
   border: solid 1px #dee2e6;

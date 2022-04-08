@@ -56,6 +56,10 @@
             optionValue="name"
             :options="resources.players"
           />
+          <ValidationErrorMessage
+            class="w-full my-2"
+            :message="form.errorObj.player_tuples.$this.message"
+          />
         </ValidationWrapper>
         <ValidationWrapper
           class="form-content"
@@ -82,9 +86,14 @@
           <DropDown
             v-model="form.state.player_tuples[0].loser"
             class="w-full"
+            :filter="true"
             optionLabel="name"
             optionValue="name"
             :options="resources.players"
+          />
+          <ValidationErrorMessage
+            class="w-full my-2"
+            :message="form.errorObj.player_tuples.$this.message"
           />
         </ValidationWrapper>
         <ValidationWrapper
@@ -122,6 +131,7 @@ import InputMask from "primevue/inputmask";
 import InputText from "primevue/inputtext";
 import SelectButton from "primevue/selectbutton";
 
+import ValidationErrorMessage from "@/components/ValidationErrorMessage.vue";
 import ValidationWrapper from "@/components/ValidationWrapper.vue";
 
 export default defineComponent({
@@ -130,6 +140,7 @@ export default defineComponent({
     InputMask,
     InputText,
     SelectButton,
+    ValidationErrorMessage,
     ValidationWrapper,
   },
   props: {

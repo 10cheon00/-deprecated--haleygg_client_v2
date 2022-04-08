@@ -8,7 +8,7 @@ const deployServerUrl = "https://api.haleygg.kr/"
 
 const axiosInstance = axios.create({
   baseURL: deployServerUrl,
-  timeout: 1000,
+  timeout: 5000,
 })
 
 axiosInstance.interceptors.request.use(

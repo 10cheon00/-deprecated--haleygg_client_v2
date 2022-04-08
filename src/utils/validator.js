@@ -1,9 +1,11 @@
 import { computed } from "vue";
 
-// let extraValidations = null;
-
-const Required = "REQUIRED";
-const NotRequired = "NOT_REQUIRED";
+const Required = (state) => {
+  if (state) {
+    return false;
+  }
+  return "이 항목은 필수입니다."
+}
 
 const validate = (form) => {
   form.errorObj = updateErrorObj(form.state, form.rules);
@@ -11,64 +13,75 @@ const validate = (form) => {
 
 const updateErrorObj = (state, rules) => {
   return Object.keys(state).reduce((acc, key) => {
+    // check value is array
     if (Array.isArray(state[key])) {
       acc[key] = {
         $this: computed(() => {
-          const errorObj = {
+          const validationFunctions = rules[key].$this;
+          return Object.keys(validationFunctions).reduce((errorObj, _key) => {
+            const _validate = validationFunctions[_key]
+            const errorMessage = _validate(state[key]);
+            if (errorMessage) {
+              errorObj.isErrorExists = true;
+              errorObj.message = errorMessage;
+            }
+            return errorObj;
+          }, {
             isErrorExists: false,
             message: ""
-          }
-          return errorObj;
+          });
         }),
-        $child: []
+        $child: state[key].reduce((_acc, _cur) => {
+          _acc.push(updateErrorObj(_cur, rules[key].$child));
+          return _acc;
+        }, new Array())
       };
-      acc[key].$child = state[key].reduce((_acc, _cur) => {
-        _acc.push(updateErrorObj(_cur, rules[key].$child));
-        return _acc;
-      }, new Array());
     } else {
-      acc[key] = computed(() => {
-        const errorObj = {
+      // otherwise create computed property.
+      if (rules[key] == undefined) {
+        acc[key] = {
           isErrorExists: false,
           message: ""
         }
-        if (rules[key] == Required && !state[key]) {
-          errorObj.isErrorExists = true;
-          errorObj.message = "이 항목은 필수입니다.";
-        }
-        return errorObj;
-      })
+      }
+      else {
+        acc[key] = computed(() => {
+          const validationFunctions = rules[key];
+          return Object.keys(validationFunctions).reduce((errorObj, _key) => {
+            const _validate = validationFunctions[_key]
+            const errorMessage = _validate(state[key]);
+            if (errorMessage) {
+              errorObj.isErrorExists = true;
+              errorObj.message = errorMessage;
+            }
+            return errorObj;
+          }, {
+            isErrorExists: false,
+            message: ""
+          });
+        });
+      }
     }
-    // if (extraValidations !== undefined) {
-    //   if (Object.keys(extraValidations).includes(key)) {
-    //     if (Array.isArray(obj[key]) && obj[key].length > 0) {
-    //       acc['extra'] = extraValidations[key](obj[key]);
-    //       console.log(acc.extra)
-    //     }
-    //     else if (obj[key]) {
-    //       acc['extra'] = extraValidations[key](obj[key]);
-    //     }
-    //   }
-    // }
     return acc;
   }, new Object());
 };
 
 const initializeErrorObj = (state) => {
   const result = Object.keys(state).reduce((acc, key) => {
+    // check value is array.
     if (Array.isArray(state[key])) {
       acc[key] = {
         $this: {
           isErrorExists: false,
           message: ""
         },
-        $child: []
+        $child: state[key].reduce((_acc, _cur) => {
+          _acc.push(initializeErrorObj(_cur));
+          return _acc;
+        }, new Array())
       };
-      acc[key].$child = state[key].reduce((_acc, _cur) => {
-        _acc.push(initializeErrorObj(_cur));
-        return _acc;
-      }, new Array());
     } else {
+      // otherwise, create error object.
       acc[key] = {
         isErrorExists: false,
         message: "",
@@ -84,11 +97,11 @@ const isErrorExists = (form) => {
 }
 
 const getError = (errorObj) => {
-  // return form;
   const val = Object.keys(errorObj).reduce((result, key) => {
-    // if erorrObj is list,
+    // check erorrObj is array
     if (Object.prototype.hasOwnProperty.call(errorObj[key], "$child")) {
       result = errorObj[key].$this.isErrorExists || result;
+      // call getError method recursively on each child errorObj.
       result = errorObj[key].$child.reduce(
         (_result, erorrObjRef) => {
           _result = getError(erorrObjRef) || _result;
@@ -107,6 +120,6 @@ export {
   initializeErrorObj,
   isErrorExists,
   validate,
-  NotRequired,
   Required,
+  // NotRequired,
 } 
