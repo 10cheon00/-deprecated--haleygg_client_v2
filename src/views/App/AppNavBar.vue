@@ -169,7 +169,7 @@ i {
 
 #navbar #router .button {
   border-radius: 5px;
-  color: white;
+  color: black;
   flex: 0 0 auto;
   margin-left: 0.25rem;
   margin-right: 0.25rem;
@@ -186,12 +186,10 @@ i {
 
 #navbar #router .button:hover {
   background-color: white;
-  color: black;
 }
 
 #navbar #router .active {
   background-color: white;
-  color: black;
 }
 
 #navbar > .player-search-bar {
