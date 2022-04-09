@@ -174,7 +174,6 @@ i {
   min-width: 5rem;
   padding: 0.75rem 0;
   text-align: center;
-  transition: border-bottom 5s;
   transition: color 0.25s;
 }
 
