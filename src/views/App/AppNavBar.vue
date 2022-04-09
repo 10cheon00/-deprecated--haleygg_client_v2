@@ -168,28 +168,30 @@ i {
 }
 
 #navbar #router .button {
-  border-radius: 5px;
   color: black;
   flex: 0 0 auto;
   margin-left: 0.25rem;
   margin-right: 0.25rem;
   min-width: 5rem;
-  padding: 0.75rem;
+  padding: 0.5rem 1.75rem;
   text-align: center;
   transition: background-color 0.25s;
   transition: color 0.25s;
 }
 
 #navbar #router .button:active {
-  background-color: white;
+  border-bottom: 3px solid white;
+  color: white;
 }
 
 #navbar #router .button:hover {
-  background-color: white;
+  border-bottom: 3px solid white;
+  color: white;
 }
 
 #navbar #router .active {
-  background-color: white;
+  border-bottom: 3px solid white;
+  color: white;
 }
 
 #navbar > .player-search-bar {
