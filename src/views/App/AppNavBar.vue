@@ -168,6 +168,7 @@ i {
 }
 
 #navbar #router .button {
+  border-bottom: 3px solid #00000000;
   color: black;
   flex: 0 0 auto;
   margin: 0 1rem;
