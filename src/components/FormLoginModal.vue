@@ -61,8 +61,8 @@ export default defineComponent({
 
     const isLoginFailed = ref(false);
     const rules = {
-      id: Required,
-      password: Required,
+      id: { Required },
+      password: { Required },
     };
     const state = {
       id: "",
