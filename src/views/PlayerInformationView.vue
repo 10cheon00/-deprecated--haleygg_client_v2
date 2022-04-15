@@ -460,6 +460,7 @@ export default defineComponent({
   margin-top: 0.5rem;
   text-align: center;
   width: 100%;
+  cursor: pointer;
 }
 
 #content-item {

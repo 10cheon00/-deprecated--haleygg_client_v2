@@ -119,6 +119,10 @@ i {
   vertical-align: middle;
 }
 
+img {
+  image-rendering: pixelated;
+}
+
 #navbar {
   background-color: #fd7f71;
   border: none;
