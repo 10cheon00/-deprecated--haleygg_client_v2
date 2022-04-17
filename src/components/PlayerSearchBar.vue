@@ -1,48 +1,69 @@
 <template>
   <form @submit.prevent="search()">
-    <span class="p-input-icon-right w-full">
-      <i
-        class="pi pi-search"
-        :style="{ 'margin-right': `${size / 2}rem` }"
-        @click="search()"
-      />
-      <InputText
-        class="w-full"
+    <div class="p-input-icon-right">
+      <AutoComplete
         placeholder="플레이어 검색"
         type="text"
-        v-model="playerName"
-        :style="{ padding: `${size}rem` }"
+        v-model="player"
+        field="name"
+        :suggestions="filteredPlayerList"
+        @complete="findPlayerInList($event)"
       />
-    </span>
+      <i class="pi pi-search" @click="search()" />
+    </div>
   </form>
 </template>
 <script>
-import { defineComponent, ref } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
+import { useStore } from "vuex";
 import { useRouter } from "vue-router";
-import InputText from "primevue/inputtext";
+import AutoComplete from "primevue/autocomplete";
 
 export default defineComponent({
   components: {
-    InputText,
+    AutoComplete,
   },
   props: {
     size: Number,
   },
   setup() {
+    const vuexStore = useStore();
     const router = useRouter();
-    const playerName = ref("");
+    const player = ref(null);
+    const playerList = ref(null);
     const search = () => {
-      if (playerName.value) {
+      if (player.value) {
         router.push({
           name: "PlayerInformationView",
           params: {
-            playerName: playerName.value,
+            playerName: player.value.name,
           },
         });
       }
     };
+
+    const filteredPlayerList = ref();
+
+    const findPlayerInList = (event) => {
+      if (!event.query.trim().length) {
+        filteredPlayerList.value = [...playerList.value];
+      } else {
+        filteredPlayerList.value = playerList.value.filter((player) => {
+          return player.name
+            .toLowerCase()
+            .startsWith(event.query.toLowerCase());
+        });
+      }
+    };
+
+    onMounted(() => {
+      playerList.value = vuexStore.getters["playerListStore/getPlayerList"];
+    });
+
     return {
-      playerName,
+      filteredPlayerList,
+      player,
+      findPlayerInList,
       search,
     };
   },
