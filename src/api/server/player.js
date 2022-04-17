@@ -8,21 +8,21 @@ const fetchPlayerList = () => {
   });
 }
 
-const fetchPlayerDetail = (playerId) => {
+const fetchPlayerDetail = (playerName) => {
   return axiosInstance.request({
     method: "GET",
-    url: `api/players/${playerId}/`
+    url: `api/players/${playerName}/`
   });
 }
 
-const fetchPlayerMatches = (playerId, leagueId, mapId) => {
+const fetchPlayerMatches = (playerName, leagueName = null, mapName = null) => {
   return axiosInstance.request({
     method: "GET",
     url: `api/matches/`,
     params: {
-      "league": (leagueId == null) ? "" : leagueId,
-      "map": (mapId == null) ? "" : mapId,
-      "players": playerId
+      "players": playerName,
+      "league": leagueName,
+      "map": mapName
     }
   });
 }
@@ -34,25 +34,25 @@ const fetchPlayerNextMatches = (url) => {
   });
 }
 
-const fetchPlayerStatistics = (playerId, leagueId, mapId) => {
+const fetchPlayerStatistics = (playerName, leagueName = null, mapName = null) => {
   return axiosInstance.request({
     method: "GET",
     url: `api/matches-summary/`,
     params: {
-      "league": (leagueId == null) ? "" : leagueId,
-      "map": (mapId == null) ? "" : mapId,
-      "player": playerId
+      "player": playerName,
+      "league": leagueName,
+      "map": mapName
     }
   });
 }
 
-const fetchPlayerEloHistory = (playerId, leagueId) => {
+const fetchPlayerEloHistory = (playerName, leagueName) => {
   return axiosInstance.request({
     method: "GET",
     url: `api/elo/history/`,
     params: {
-      "league": leagueId,
-      "player": playerId
+      "league": leagueName,
+      "player": playerName
     }
   });
 }

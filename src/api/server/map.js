@@ -17,19 +17,19 @@ const fetchMeleeMapList = () => {
   });
 }
 
-const fetchMapDetail = (mapId) => {
+const fetchMapDetail = (mapName) => {
   return axiosInstance.request({
     method: "GET",
-    url: `api/maps/${mapId}`
+    url: `api/maps/${mapName}`
   });
 }
 
-const fetchMapStatistics = (mapId) => {
+const fetchMapStatistics = (mapName) => {
   return axiosInstance.request({
     method: "GET",
     url: `api/matches-summary/`,
     params: {
-      "map": mapId
+      "map": mapName
     }
   });
 }

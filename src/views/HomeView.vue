@@ -7,7 +7,16 @@
       </div>
     </PageHeader>
 
-    <div class="container p-3"></div>
+    <div class="container p-3">
+      <div id="info">
+        <p class="p-1">
+          카페에 가입하신 닉네임을 검색하시면 자신의 전적을 확인할 수 있습니다.
+        </p>
+        <p class="p-1">
+          현재 개발하고 있는 중입니다... 조금만 더 기다려주세요.
+        </p>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -39,6 +48,12 @@ export default defineComponent({
   background-position: center;
   color: white;
 }
+
+#info {
+  text-align: center;
+  padding: 4rem 0;
+}
+
 #search-bar {
   width: 75%;
   margin-left: auto;

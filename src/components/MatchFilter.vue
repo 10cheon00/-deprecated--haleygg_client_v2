@@ -8,12 +8,12 @@
           :class="{
             'cursor-pointer': true,
             'selected-league':
-              league.id == filter.selectedLeague ? true : false,
+              league.name == filter.selectedLeague ? true : false,
             'league-filter-button': true,
           }"
-          @click="select(league.id)"
+          @click="select(league.name)"
         >
-          {{ league.name }}
+          {{ league.label }}
         </div>
       </div>
       <select
@@ -27,8 +27,8 @@
           v-for="map in filter.mapList"
           :key="map"
           class="maplist-item"
-          :label="map.name"
-          :value="map.id"
+          :label="map.label"
+          :value="map.name"
         />
       </select>
     </div>
@@ -73,23 +73,25 @@ export default defineComponent({
     if (filter.leagueList) {
       filter.selectedLeague = inject("selectedLeague");
       if (props.enableTotalLeague) {
-        filter.leagueList.push({
-          id: undefined,
-          name: "Total",
+        filter.leagueList.unshift({
+          label: "Total",
+          value: undefined,
         });
+        filter.selectedLeague = undefined;
       }
     }
     if (filter.mapList) {
       filter.selectedMap = inject("selectedMap");
       if (props.enableTotalMap) {
-        filter.mapList.push({
-          id: undefined,
-          name: "Total",
+        filter.mapList.unshift({
+          label: "Total",
+          value: undefined,
         });
+        filter.selectedMap = undefined;
       }
     }
-    const select = (leagueId) => {
-      filter.selectedLeague = leagueId;
+    const select = (leagueName) => {
+      filter.selectedLeague = leagueName;
     };
     return {
       filter,
@@ -100,6 +102,24 @@ export default defineComponent({
 </script>
 
 <style scoped>
+::-webkit-scrollbar {
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #f4f4f4aa;
+  border: 0px;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #f4f4f4ff;
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: #f4f4f488;
+}
+
 #filter {
   background-color: #404040;
 }
