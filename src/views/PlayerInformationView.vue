@@ -28,7 +28,6 @@
     </PageHeader>
 
     <MatchFilter
-      class="sticky top-0 z-5"
       :leagueList="leagueList"
       :mapList="mapList"
       :enableTotalLeague="true"
@@ -198,13 +197,12 @@ export default defineComponent({
 
       // Fetch leagueList first to request only for specific league.
       response = await ServerApi.fetchLeagueList();
-      leagueList.value = response.data;
-      if (leagueList.value.length > 0) {
-        selectedLeague.value = leagueList.value[leagueList.value.length - 1].id;
-      }
+      leagueList.value = response.data.reverse();
+      leagueList.value.forEach((league) => (league.label = league.name));
 
       response = await ServerApi.fetchMapList();
-      mapList.value = response.data;
+      mapList.value = response.data.reverse();
+      mapList.value.forEach((map) => (map.label = map.name));
 
       // Fetch statistics, Elo and matches
       await fetchMatches();
@@ -249,7 +247,7 @@ export default defineComponent({
 
     const fetchStatistics = async () => {
       const response = await ServerApi.fetchPlayerStatistics(
-        player.value.id,
+        player.value.name,
         selectedLeague.value,
         selectedMap.value
       );
@@ -305,7 +303,7 @@ export default defineComponent({
 
     const fetchMatches = async () => {
       const response = await ServerApi.fetchPlayerMatches(
-        player.value.id,
+        player.value.name,
         selectedLeague.value,
         selectedMap.value
       );

@@ -30,7 +30,7 @@ export default defineComponent({
       const response = await ServerApi.fetchMeleeMapList();
       const mapList = response.data;
       for (let key in mapList) {
-        let response = await ServerApi.fetchMapStatistics(mapList[key].id);
+        let response = await ServerApi.fetchMapStatistics(mapList[key].name);
         mapList[key].aggregated_result = response.data;
       }
       mapDataList.value = mapList;
