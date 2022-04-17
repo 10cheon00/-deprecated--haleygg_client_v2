@@ -13,7 +13,7 @@
       <div>
         <p>Haley 클랜 전적검색기</p>
         <p>Made by mAziciAn</p>
-        <p>0.2.1</p>
+        <p>0.2.2</p>
       </div>
       <div></div>
       <div>

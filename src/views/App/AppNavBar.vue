@@ -19,6 +19,7 @@
         @click="loginButtonClicked()"
       />
     </div>
+    <PlayerSearchBar class="player-search-bar p-fluid" />
 
     <div id="router">
       <router-link
@@ -34,19 +35,19 @@
         {{ item.label }}
       </router-link>
     </div>
-    <PlayerSearchBar class="player-search-bar" />
     <LoginModalForm />
   </div>
 </template>
 
 <script>
-import { defineComponent, ref, provide, computed } from "vue";
+import { defineComponent, ref, provide, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import Button from "primevue/button";
 
 import LoginModalForm from "@/components/FormLoginModal.vue";
 import PlayerSearchBar from "@/components/PlayerSearchBar.vue";
+import ServerApi from "@/api/server/module.js";
 
 export default defineComponent({
   components: {
@@ -101,6 +102,13 @@ export default defineComponent({
         });
       }
       return list;
+    });
+
+    onMounted(async () => {
+      if (vuexStore.getters["playerListStore/getPlayerList"].length == 0) {
+        const response = await ServerApi.fetchPlayerList();
+        vuexStore.commit("playerListStore/setPlayerList", response.data);
+      }
     });
 
     return {

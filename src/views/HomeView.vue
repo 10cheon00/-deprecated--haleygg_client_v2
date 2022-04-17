@@ -3,7 +3,7 @@
     <PageHeader>
       <div class="text-center">
         <p class="my-4 text-4xl font-bold">Haleygg.kr</p>
-        <PlayerSearchBar id="search-bar" :size="1.25" />
+        <PlayerSearchBar class="p-fluid" id="search-bar" :size="1.25" />
       </div>
     </PageHeader>
 
