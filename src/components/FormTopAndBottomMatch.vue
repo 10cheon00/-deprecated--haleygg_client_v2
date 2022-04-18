@@ -72,6 +72,7 @@
         <DropDown
           v-model="playerTuple.loser"
           class="w-full"
+          :filter="true"
           optionLabel="name"
           optionValue="name"
           :options="resources.players"
