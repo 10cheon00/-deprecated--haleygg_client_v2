@@ -14,7 +14,7 @@
   </form>
 </template>
 <script>
-import { defineComponent, onMounted, ref } from "vue";
+import { computed, defineComponent, ref } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import AutoComplete from "primevue/autocomplete";
@@ -30,7 +30,10 @@ export default defineComponent({
     const vuexStore = useStore();
     const router = useRouter();
     const player = ref(null);
-    const playerList = ref(null);
+    const playerList = computed(() => {
+      return vuexStore.getters["playerListStore/getPlayerList"];
+    });
+
     const search = () => {
       if (player.value) {
         router.push({
@@ -55,10 +58,6 @@ export default defineComponent({
         });
       }
     };
-
-    onMounted(() => {
-      playerList.value = vuexStore.getters["playerListStore/getPlayerList"];
-    });
 
     return {
       filteredPlayerList,
