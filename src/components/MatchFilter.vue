@@ -1,17 +1,31 @@
 <template>
   <div id="filter">
-    <div class="container flex justify-content-between px-3">
-      <div v-if="filter.leagueList" id="league-filter">
+    <div
+      class="container flex justify-content-center px-3"
+      id="league-type-filter"
+    >
+      <div
+        v-for="type in typeList"
+        :key="type"
+        :class="{
+          button: true,
+          active: type.value == filter.selectedLeagueType,
+        }"
+        @click="selectLeagueType(type)"
+      >
+        <div>{{ type.label }}</div>
+      </div>
+    </div>
+    <div class="container flex justify-content-center p-3">
+      <div v-if="filter.filteredleagueList" id="league-filter">
         <div
-          v-for="league in filter.leagueList"
+          v-for="league in filter.filteredleagueList"
           :key="league"
           :class="{
-            'cursor-pointer': true,
-            'selected-league':
-              league.name == filter.selectedLeague ? true : false,
-            'league-filter-button': true,
+            active: league.name == filter.selectedLeague ? true : false,
+            button: true,
           }"
-          @click="select(league.name)"
+          @click="selectLeague(league.name)"
         >
           {{ league.label }}
         </div>
@@ -36,7 +50,7 @@
 </template>
 
 <script>
-import { defineComponent, inject, reactive } from "vue";
+import { computed, defineComponent, inject, reactive } from "vue";
 
 export default defineComponent({
   props: {
@@ -67,35 +81,71 @@ export default defineComponent({
     const filter = reactive({
       leagueList: props.leagueList,
       mapList: props.mapList,
-      selectedLeague: undefined,
-      selectedMap: undefined,
+      selectedLeague: inject("selectedLeague"),
+      selectedMap: inject("selectedMap"),
+      selectedLeagueType: inject("selectedLeagueType"),
     });
-    if (filter.leagueList) {
-      filter.selectedLeague = inject("selectedLeague");
+
+    filter.filteredleagueList = computed(() => {
+      if (!filter.selectedLeagueType) {
+        return [
+          {
+            label: "Total",
+            value: undefined,
+          },
+        ];
+      }
+
+      // deep copy
+      let result = JSON.parse(JSON.stringify(filter.leagueList));
+      result = result.filter((item) => {
+        return item.type == filter.selectedLeagueType;
+      });
       if (props.enableTotalLeague) {
-        filter.leagueList.unshift({
+        result.unshift({
           label: "Total",
           value: undefined,
         });
-        filter.selectedLeague = undefined;
       }
+      return result;
+    });
+
+    if (props.enableTotalMap) {
+      filter.mapList.unshift({
+        label: "Total",
+        value: undefined,
+      });
+      filter.selectedMap = undefined;
     }
-    if (filter.mapList) {
-      filter.selectedMap = inject("selectedMap");
-      if (props.enableTotalMap) {
-        filter.mapList.unshift({
-          label: "Total",
-          value: undefined,
-        });
-        filter.selectedMap = undefined;
-      }
-    }
-    const select = (leagueName) => {
+
+    const typeList = [
+      {
+        label: "Total",
+        value: undefined,
+      },
+      {
+        label: "프로리그",
+        value: "proleague",
+      },
+      {
+        label: "스타리그",
+        value: "starleague",
+      },
+    ];
+
+    const selectLeague = (leagueName) => {
       filter.selectedLeague = leagueName;
     };
+
+    const selectLeagueType = (type) => {
+      filter.selectedLeagueType = type.value;
+    };
+
     return {
       filter,
-      select,
+      typeList,
+      selectLeague,
+      selectLeagueType,
     };
   },
 });
@@ -121,7 +171,26 @@ export default defineComponent({
 }
 
 #filter {
+  background-color: white;
+}
+
+#league-type-filter {
   background-color: #404040;
+  display: flex;
+  margin-right: auto;
+  overflow-y: auto;
+  white-space: nowrap;
+}
+
+#league-type-filter .button {
+  color: white;
+  padding: 1.5rem;
+  cursor: pointer;
+}
+
+#league-type-filter .button.active {
+  background-color: white;
+  color: black;
 }
 
 #league-filter {
@@ -131,15 +200,28 @@ export default defineComponent({
   white-space: nowrap;
 }
 
-.league-filter-button {
+#league-filter .button {
+  border-radius: 1.5rem;
+  background-color: #e9e9e9;
+  color: #8d8d8d;
+  text-align: center;
+  padding: 0.5rem 1rem;
+  margin: 0 0.25rem;
+}
+
+#league-filter .button.active {
+  background-color: #404040;
   color: white;
-  padding: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .league-filter .button {
+    padding: 0.75rem;
+  }
 }
 
 #map-filter {
-  background-color: #404040;
-  border: 1px solid white;
-  color: white;
+  border: 1px solid #a6a9ac;
   margin: auto 0 auto 1rem;
   max-width: 8rem;
   padding: 0.5rem;
@@ -151,17 +233,8 @@ export default defineComponent({
 }
 
 @media (max-width: 768px) {
-  .league-filter-button {
-    padding: 0.75rem;
-  }
   #map-filter {
     margin-left: 0.25rem;
   }
-}
-
-.selected-league {
-  background-color: white;
-  color: black;
-  font-weight: bolder;
 }
 </style>

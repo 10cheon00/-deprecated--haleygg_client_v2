@@ -15,13 +15,14 @@ const fetchPlayerDetail = (playerName) => {
   });
 }
 
-const fetchPlayerMatches = (playerName, leagueName = null, mapName = null) => {
+const fetchPlayerMatches = (playerName, leagueName = null, leagueType = null, mapName = null) => {
   return axiosInstance.request({
     method: "GET",
     url: `api/matches/`,
     params: {
       "players": playerName,
       "league": leagueName,
+      "league__type": leagueType,
       "map": mapName
     }
   });
@@ -34,13 +35,14 @@ const fetchPlayerNextMatches = (url) => {
   });
 }
 
-const fetchPlayerStatistics = (playerName, leagueName = null, mapName = null) => {
+const fetchPlayerStatistics = (playerName, leagueName = null, leagueType = null, mapName = null) => {
   return axiosInstance.request({
     method: "GET",
     url: `api/matches-summary/`,
     params: {
       "player": playerName,
       "league": leagueName,
+      "league__type": leagueType,
       "map": mapName
     }
   });

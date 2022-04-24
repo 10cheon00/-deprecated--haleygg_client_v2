@@ -34,7 +34,7 @@
       :enableTotalMap="true"
     />
 
-    <div class="container grid grid-nogutter p-3">
+    <div class="container grid grid-nogutter p-3 pt-0">
       <div class="col-12 grid grid-nogutter">
         <!-- Tier -->
         <div class="col-12 md:col-4 pr-0 md:pr-2 pb-2 md:pb-0" id="tier">
@@ -209,6 +209,8 @@ export default defineComponent({
     const selectedLeague = ref(null);
     const mapList = ref(null);
     const selectedMap = ref(null);
+    const selectedLeagueType = ref(null);
+    provide("selectedLeagueType", selectedLeagueType);
     provide("selectedLeague", selectedLeague);
     provide("selectedMap", selectedMap);
 
@@ -236,6 +238,11 @@ export default defineComponent({
       await fetchEloHistory();
       await fetchStatistics();
 
+      watch(selectedLeagueType, async () => {
+        await fetchMatches();
+        await fetchEloHistory();
+        await fetchStatistics();
+      });
       watch(selectedLeague, async () => {
         await fetchMatches();
         await fetchEloHistory();
@@ -276,6 +283,7 @@ export default defineComponent({
       const response = await ServerApi.fetchPlayerStatistics(
         player.value.name,
         selectedLeague.value,
+        selectedLeagueType.value,
         selectedMap.value
       );
       playerInformation.value.statistics = aggregateStatistics(response.data);
@@ -355,6 +363,7 @@ export default defineComponent({
       const response = await ServerApi.fetchPlayerMatches(
         player.value.name,
         selectedLeague.value,
+        selectedLeagueType.value,
         selectedMap.value
       );
       rawMatchResultList.value = [];
@@ -492,7 +501,6 @@ export default defineComponent({
 
       convertHyphenWithDateFormat,
       getPercentage,
-      selectedLeague,
       fetchNextMatches,
     };
   },

@@ -1,6 +1,6 @@
 import axiosInstance from "@/api/axios";
 import { fetchMapDetail, fetchMapList, fetchMeleeMapList, fetchMapStatistics } from "@/api/server/map.js";
-import { fetchEloRatingActiveLeagueList, fetchLeagueList } from "@/api/server/league.js";
+import { fetchLeagueList } from "@/api/server/league.js";
 import {
   fetchPlayerDetail,
   fetchPlayerEloHistory,
@@ -17,7 +17,6 @@ const server = {
   fetchMapStatistics,
   fetchMeleeMapList,
 
-  fetchEloRatingActiveLeagueList,
   fetchLeagueList,
 
   fetchPlayerDetail,
