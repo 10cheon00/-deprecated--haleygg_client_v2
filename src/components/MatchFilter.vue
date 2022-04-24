@@ -1,9 +1,6 @@
 <template>
   <div id="filter">
-    <div
-      class="container flex justify-content-center px-3"
-      id="league-type-filter"
-    >
+    <div class="flex justify-content-center px-3" id="league-type-filter">
       <div
         v-for="type in typeList"
         :key="type"
@@ -16,35 +13,37 @@
         <div>{{ type.label }}</div>
       </div>
     </div>
-    <div class="container flex justify-content-center p-3">
-      <div v-if="filter.filteredleagueList" id="league-filter">
-        <div
-          v-for="league in filter.filteredleagueList"
-          :key="league"
-          :class="{
-            active: league.name == filter.selectedLeague ? true : false,
-            button: true,
-          }"
-          @click="selectLeague(league.name)"
-        >
-          {{ league.label }}
+    <div class="container my-2 px-3">
+      <div class="flex justify-content-center p-2" id="filter-group">
+        <div v-if="filter.filteredleagueList" id="league-filter">
+          <div
+            v-for="league in filter.filteredleagueList"
+            :key="league"
+            :class="{
+              active: league.name == filter.selectedLeague ? true : false,
+              button: true,
+            }"
+            @click="selectLeague(league.name)"
+          >
+            {{ league.label }}
+          </div>
         </div>
+        <select
+          v-if="filter.mapList"
+          v-model="filter.selectedMap"
+          id="map-filter"
+          required
+        >
+          <option selected disabled :value="null">맵 선택</option>
+          <option
+            v-for="map in filter.mapList"
+            :key="map"
+            class="maplist-item"
+            :label="map.label"
+            :value="map.name"
+          />
+        </select>
       </div>
-      <select
-        v-if="filter.mapList"
-        v-model="filter.selectedMap"
-        id="map-filter"
-        required
-      >
-        <option selected disabled :value="null">맵 선택</option>
-        <option
-          v-for="map in filter.mapList"
-          :key="map"
-          class="maplist-item"
-          :label="map.label"
-          :value="map.name"
-        />
-      </select>
     </div>
   </div>
 </template>
@@ -175,6 +174,11 @@ export default defineComponent({
   background-color: white;
 }
 
+#filter-group {
+  background-color: #f0f0f0;
+  border: 1px solid #dee2e6;
+}
+
 #league-type-filter {
   background-color: #404040;
   display: flex;
@@ -203,15 +207,15 @@ export default defineComponent({
 
 #league-filter .button {
   border-radius: 1.5rem;
-  background-color: #e9e9e9;
-  color: #8d8d8d;
+  background-color: #ffffff;
+  color: #c25e53;
   text-align: center;
   padding: 0.5rem 1rem;
   margin: 0 0.25rem;
 }
 
 #league-filter .button.active {
-  background-color: #404040;
+  background-color: #fd7f71;
   color: white;
 }
 
