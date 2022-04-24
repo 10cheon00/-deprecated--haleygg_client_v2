@@ -90,12 +90,15 @@ export default defineComponent({
 span {
   font-size: small;
   vertical-align: top;
+  z-index: 0;
 }
+
 #blank-bar {
   background-color: lightgray;
   border-radius: 0.25rem;
   width: 100%;
 }
+
 #win-count-bar {
   background-color: rgb(var(--win-color));
   border-radius: 0.25rem 0 0 0.25rem;
