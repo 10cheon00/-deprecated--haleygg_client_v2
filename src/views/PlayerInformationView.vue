@@ -244,13 +244,17 @@ export default defineComponent({
         await fetchStatistics();
       });
       watch(selectedLeague, async () => {
-        await fetchMatches();
-        await fetchEloHistory();
-        await fetchStatistics();
+        if (selectedLeagueType.value) {
+          await fetchMatches();
+          await fetchEloHistory();
+          await fetchStatistics();
+        }
       });
       watch(selectedMap, async () => {
-        await fetchMatches();
-        await fetchStatistics();
+        if (selectedLeagueType.value) {
+          await fetchMatches();
+          await fetchStatistics();
+        }
       });
 
       playerInformation.value.isFetched = true;

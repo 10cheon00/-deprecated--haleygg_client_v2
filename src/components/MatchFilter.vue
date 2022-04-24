@@ -139,6 +139,7 @@ export default defineComponent({
 
     const selectLeagueType = (type) => {
       filter.selectedLeagueType = type.value;
+      filter.selectedLeague = undefined;
     };
 
     return {
