@@ -16,7 +16,7 @@
       </div>
     </PageHeader>
 
-    <MatchFilter v-if="leagueList" :leagueList="leagueList" />
+    <MatchFilter :disableTotalLeagueType="true" />
 
     <div class="container p-3">
       <Panel header="ELO Rank">
@@ -63,7 +63,7 @@
       </Panel>
 
       <!-- Elo rank table -->
-      <table v-if="eloList" class="p-3" id="elo-rank-table">
+      <table v-if="eloList" class="my-3" id="elo-rank-table">
         <colgroup>
           <col width="10%" />
           <col width="20%" />
@@ -115,31 +115,26 @@ export default defineComponent({
     const eloList = ref(null);
     const top3Player = ref(null);
     const leagueList = ref(null);
-    const selectedLeague = ref(null);
-    provide("selectedLeague", selectedLeague);
+    const selectedLeagueType = ref("proleague");
+    provide("selectedLeagueType", selectedLeagueType);
     const router = useRouter();
 
     onMounted(async () => {
-      // fetch elo list.
-      const response = await ServerApi.fetchEloRatingActiveLeagueList();
-      leagueList.value = response.data;
+      await fetchEloRanking();
 
-      if (leagueList.value.length > 0) {
-        selectedLeague.value = leagueList.value[0].id;
-        await fetchEloRanking();
-      }
-
-      watch(selectedLeague, async () => {
+      watch(selectedLeagueType, async () => {
         await fetchEloRanking();
       });
     });
 
     const fetchEloRanking = async () => {
-      const response = await ServerApi.fetchEloRanking(selectedLeague.value);
+      const response = await ServerApi.fetchEloRanking(
+        selectedLeagueType.value
+      );
       top3Player.value = undefined;
       top3Player.value = popTop3Player(response.data);
 
-      const colorCode = "#1cf1b1";
+      const colorCode = "#d9e7a8";
 
       response.data.forEach((value, index, array) => {
         value.label = value.current_elo;
@@ -170,7 +165,6 @@ export default defineComponent({
       eloList,
       leagueList,
       router,
-      selectedLeague,
       top3Player,
       fetchEloRanking,
       routeToPlayerInformation,

@@ -27,12 +27,7 @@
       </div>
     </PageHeader>
 
-    <MatchFilter
-      :leagueList="leagueList"
-      :mapList="mapList"
-      :enableTotalLeague="true"
-      :enableTotalMap="true"
-    />
+    <MatchFilter :leagueList="leagueList" :mapList="mapList" />
 
     <div class="container grid grid-nogutter p-3 pt-0">
       <div class="col-12 grid grid-nogutter">
@@ -230,7 +225,7 @@ export default defineComponent({
       leagueList.value.forEach((league) => (league.label = league.name));
 
       response = await ServerApi.fetchMapList();
-      mapList.value = response.data;
+      mapList.value = response.data.reverse();
       mapList.value.forEach((map) => (map.label = map.name));
 
       // Fetch statistics, Elo and matches
@@ -246,17 +241,17 @@ export default defineComponent({
           clearEloHistory();
         }
       });
+
       watch(selectedLeague, async () => {
         if (selectedLeagueType.value) {
           await fetchMatches();
           await fetchStatistics();
         }
       });
+
       watch(selectedMap, async () => {
-        if (selectedLeagueType.value) {
-          await fetchMatches();
-          await fetchStatistics();
-        }
+        await fetchMatches();
+        await fetchStatistics();
       });
 
       playerInformation.value.isFetched = true;

@@ -13,7 +13,10 @@
         <div>{{ type.label }}</div>
       </div>
     </div>
-    <div class="container my-2 pt-2 px-3">
+    <div
+      v-if="filter.leagueList || filter.mapList"
+      class="container my-2 pt-2 px-3"
+    >
       <div class="flex justify-content-center p-2" id="filter-group">
         <div v-if="filter.filteredleagueList" id="league-filter">
           <div
@@ -61,14 +64,21 @@ export default defineComponent({
       type: Array,
       required: false,
     },
-    enableTotalLeague: {
+    disableTotalLeagueType: {
       type: Boolean,
       required: false,
       default: () => {
         return false;
       },
     },
-    enableTotalMap: {
+    disableTotalLeague: {
+      type: Boolean,
+      required: false,
+      default: () => {
+        return false;
+      },
+    },
+    disableTotalMap: {
       type: Boolean,
       required: false,
       default: () => {
@@ -83,16 +93,16 @@ export default defineComponent({
       selectedLeague: inject("selectedLeague"),
       selectedMap: inject("selectedMap"),
       selectedLeagueType: inject("selectedLeagueType"),
+      filteredleagueList: null,
     });
 
     filter.filteredleagueList = computed(() => {
+      if (!props.leagueList) {
+        return;
+      }
+
       if (!filter.selectedLeagueType) {
-        return [
-          {
-            label: "Total",
-            value: undefined,
-          },
-        ];
+        return [];
       }
 
       // deep copy
@@ -100,7 +110,8 @@ export default defineComponent({
       result = result.filter((item) => {
         return item.type == filter.selectedLeagueType;
       });
-      if (props.enableTotalLeague) {
+
+      if (!props.disableTotalLeague) {
         result.unshift({
           label: "Total",
           value: undefined,
@@ -109,19 +120,16 @@ export default defineComponent({
       return result;
     });
 
-    if (props.enableTotalMap) {
-      filter.mapList.unshift({
-        label: "Total",
-        value: undefined,
-      });
-      filter.selectedMap = undefined;
+    if (!props.disableTotalMap) {
+      if (filter.mapList) {
+        filter.mapList.unshift({
+          label: "Total",
+          value: undefined,
+        });
+      }
     }
 
     const typeList = [
-      {
-        label: "Total",
-        value: undefined,
-      },
       {
         label: "프로리그",
         value: "proleague",
@@ -131,6 +139,12 @@ export default defineComponent({
         value: "starleague",
       },
     ];
+    if (!props.disableTotalLeagueType) {
+      typeList.unshift({
+        label: "Total",
+        value: undefined,
+      });
+    }
 
     const selectLeague = (leagueName) => {
       filter.selectedLeague = leagueName;

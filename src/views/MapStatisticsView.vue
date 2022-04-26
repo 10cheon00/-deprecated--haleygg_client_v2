@@ -33,7 +33,7 @@ export default defineComponent({
         let response = await ServerApi.fetchMapStatistics(mapList[key].name);
         mapList[key].aggregated_result = response.data;
       }
-      mapDataList.value = mapList;
+      mapDataList.value = mapList.reverse();
     });
 
     return {
