@@ -40,7 +40,7 @@ const fetchPlayerStatistics = (playerName, leagueName = null, leagueType = null,
     method: "GET",
     url: `api/matches-summary/`,
     params: {
-      "player": playerName,
+      "players": playerName,
       "league": leagueName,
       "league__type": leagueType,
       "map": mapName
@@ -48,13 +48,13 @@ const fetchPlayerStatistics = (playerName, leagueName = null, leagueType = null,
   });
 }
 
-const fetchPlayerEloHistory = (playerName, leagueName) => {
+const fetchPlayerEloHistory = (playerName, leagueType) => {
   return axiosInstance.request({
     method: "GET",
-    url: `api/elo/history/`,
+    url: `api/elo/`,
     params: {
-      "league": leagueName,
-      "player": playerName
+      "players": playerName,
+      "league__type": leagueType
     }
   });
 }
