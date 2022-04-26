@@ -226,11 +226,11 @@ export default defineComponent({
 
       // Fetch leagueList first to request only for specific league.
       response = await ServerApi.fetchLeagueList();
-      leagueList.value = response.data.reverse();
+      leagueList.value = response.data;
       leagueList.value.forEach((league) => (league.label = league.name));
 
       response = await ServerApi.fetchMapList();
-      mapList.value = response.data.reverse();
+      mapList.value = response.data;
       mapList.value.forEach((map) => (map.label = map.name));
 
       // Fetch statistics, Elo and matches
@@ -242,6 +242,8 @@ export default defineComponent({
         await fetchStatistics();
         if (selectedLeagueType.value) {
           await fetchEloHistory();
+        } else {
+          clearEloHistory();
         }
       });
       watch(selectedLeague, async () => {
@@ -501,6 +503,12 @@ export default defineComponent({
           },
         },
       };
+    };
+
+    const clearEloHistory = () => {
+      playerInformation.value.eloList = null;
+      playerInformation.value.eloChartData = null;
+      playerInformation.value.eloChartOptions = null;
     };
 
     return {

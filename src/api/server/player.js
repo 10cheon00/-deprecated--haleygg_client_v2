@@ -40,7 +40,7 @@ const fetchPlayerStatistics = (playerName, leagueName = null, leagueType = null,
     method: "GET",
     url: `api/matches-summary/`,
     params: {
-      "players": playerName,
+      "player": playerName,
       "league": leagueName,
       "league__type": leagueType,
       "map": mapName
