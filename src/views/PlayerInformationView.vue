@@ -235,18 +235,18 @@ export default defineComponent({
 
       // Fetch statistics, Elo and matches
       await fetchMatches();
-      await fetchEloHistory();
       await fetchStatistics();
 
       watch(selectedLeagueType, async () => {
         await fetchMatches();
-        await fetchEloHistory();
         await fetchStatistics();
+        if (selectedLeagueType.value) {
+          await fetchEloHistory();
+        }
       });
       watch(selectedLeague, async () => {
         if (selectedLeagueType.value) {
           await fetchMatches();
-          await fetchEloHistory();
           await fetchStatistics();
         }
       });
@@ -423,8 +423,8 @@ export default defineComponent({
 
     const fetchEloHistory = async () => {
       const response = await ServerApi.fetchPlayerEloHistory(
-        player.value.id,
-        selectedLeague.value
+        player.value.name,
+        selectedLeagueType.value
       );
 
       // manage chart options
@@ -434,7 +434,16 @@ export default defineComponent({
         playerInformation.value.eloChartOptions = null;
         return;
       }
-      playerInformation.value.eloList = response.data;
+      // remove duplicated data what have equal date
+      const dates = [];
+      const distinctEloList = response.data.results.filter((item) => {
+        const isDuplicate = dates.includes(item.date);
+        if (!isDuplicate) {
+          dates.push(item.date);
+        }
+        return !isDuplicate;
+      });
+      playerInformation.value.eloList = distinctEloList.reverse();
 
       playerInformation.value.eloChartData = {
         datasets: [
@@ -451,7 +460,7 @@ export default defineComponent({
         maintainAspectRatio: false,
         parsing: {
           xAxisKey: "date",
-          yAxisKey: "elo",
+          yAxisKey: "rating",
         },
         plugins: {
           datalabels: {
@@ -462,7 +471,7 @@ export default defineComponent({
             color: "white",
             borderRadius: "5",
             formatter: (value) => {
-              return value.elo;
+              return value.rating;
             },
           },
           legend: {
@@ -474,18 +483,20 @@ export default defineComponent({
             suggestedMin:
               parseFloat(
                 playerInformation.value.eloList.reduce((previous, current) => {
-                  return parseFloat(previous.elo) < parseFloat(current.elo)
+                  return parseFloat(previous.rating) <
+                    parseFloat(current.rating)
                     ? previous
                     : current;
-                }).elo
+                }).rating
               ) - 20,
             suggestedMax:
               parseFloat(
                 playerInformation.value.eloList.reduce((previous, current) => {
-                  return parseFloat(previous.elo) > parseFloat(current.elo)
+                  return parseFloat(previous.rating) >
+                    parseFloat(current.rating)
                     ? previous
                     : current;
-                }).elo
+                }).rating
               ) + 20,
           },
         },
