@@ -13,7 +13,7 @@
         <div>{{ type.label }}</div>
       </div>
     </div>
-    <div class="container my-2 px-3">
+    <div class="container my-2 pt-2 px-3">
       <div class="flex justify-content-center p-2" id="filter-group">
         <div v-if="filter.filteredleagueList" id="league-filter">
           <div
@@ -152,24 +152,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-::-webkit-scrollbar {
-  height: 8px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #f4f4f4aa;
-  border: 0px;
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #f4f4f4ff;
-}
-
-::-webkit-scrollbar-thumb:active {
-  background: #f4f4f488;
-}
-
 #filter {
   background-color: white;
 }
