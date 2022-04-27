@@ -36,7 +36,7 @@
             </div>
             <div class="text-xl">Elo : {{ top3Player[0].current_elo }}</div>
           </div>
-          <div v-if="top3Player[1]" class="col-12 lg:col-6 elo-podium">
+          <div v-if="top3Player[1]" class="col-12 sm:col-6 elo-podium">
             <div class="text-2xl my-3">
               <span
                 class="cursor-pointer"
@@ -47,7 +47,7 @@
             </div>
             <div class="text-md">Elo : {{ top3Player[1].current_elo }}</div>
           </div>
-          <div v-if="top3Player[2]" class="col-12 lg:col-6 elo-podium">
+          <div v-if="top3Player[2]" class="col-12 sm:col-6 elo-podium">
             <div class="text-2xl my-3">
               <span
                 class="cursor-pointer"
@@ -196,7 +196,7 @@ export default defineComponent({
   border-right: none;
 }
 
-@media (max-width: 992px) {
+@media (max-width: 576px) {
   #top3-players .elo-podium {
     border-bottom: 1px #dee2e6 solid;
     border-right: none;

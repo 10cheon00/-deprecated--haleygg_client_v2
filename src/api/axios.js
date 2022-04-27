@@ -49,6 +49,10 @@ axiosInstance.interceptors.response.use(response => {
     })
   }
   else {
+    if (error.config.isNotEssential) {
+      return Promise.reject(error);
+    }
+
     if (error.response.status >= 500) {
       router.replace({
         name: "500View"

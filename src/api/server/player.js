@@ -59,11 +59,20 @@ const fetchPlayerEloHistory = (playerName, leagueType) => {
   });
 }
 
+const fetchPlayerTier = (playerName, leagueName) => {
+  return axiosInstance.request({
+    method: "GET",
+    url: `api/tier/players/${playerName}/leagues/${leagueName}/`,
+    isNotEssential: true
+  });
+}
+
 export default {
   fetchPlayerDetail,
   fetchPlayerEloHistory,
   fetchPlayerList,
   fetchPlayerMatches,
   fetchPlayerNextMatches,
-  fetchPlayerStatistics
+  fetchPlayerStatistics,
+  fetchPlayerTier
 }

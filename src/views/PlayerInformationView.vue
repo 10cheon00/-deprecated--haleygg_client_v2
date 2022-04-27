@@ -32,10 +32,14 @@
     <div class="container grid grid-nogutter p-3 pt-0">
       <div class="col-12 grid grid-nogutter">
         <!-- Tier -->
-        <div class="col-12 md:col-4 pr-0 md:pr-2 pb-2 md:pb-0" id="tier">
+        <div class="col-12 md:col-4 pr-0 md:pr-2 pb-2 md:pb-0">
           <Panel header="티어">
-            <div v-if="playerInformation.tierList">티어</div>
-            <NullDataBox v-else class="p-chart" />
+            <div id="tier">
+              <div v-if="playerInformation.tier">
+                {{ playerInformation.tier }}
+              </div>
+              <NullDataBox v-else />
+            </div>
           </Panel>
         </div>
 
@@ -49,7 +53,7 @@
                 :data="playerInformation.eloChartData"
                 :options="playerInformation.eloChartOptions"
               />
-              <NullDataBox v-else class="p-chart" />
+              <NullDataBox v-else />
             </div>
           </Panel>
         </div>
@@ -244,6 +248,7 @@ export default defineComponent({
 
       watch(selectedLeague, async () => {
         if (selectedLeagueType.value) {
+          await fetchTier();
           await fetchMatches();
           await fetchStatistics();
         }
@@ -500,6 +505,18 @@ export default defineComponent({
       };
     };
 
+    const fetchTier = async () => {
+      const response = await ServerApi.fetchPlayerTier(
+        player.value.name,
+        selectedLeague.value
+      );
+      if (response.status == 404) {
+        playerInformation.value.tier = undefined;
+      } else {
+        playerInformation.value.tier = response.data.tier;
+      }
+    };
+
     const clearEloHistory = () => {
       playerInformation.value.eloList = null;
       playerInformation.value.eloChartData = null;
@@ -546,10 +563,12 @@ export default defineComponent({
 }
 
 #tier {
-  height: 200px;
+  height: 145px;
+  min-height: 145px;
+  max-height: 145px;
 }
 
-.p-chart {
+#elo-chart {
   min-height: 145px;
   max-height: 145px;
   width: 100%;
