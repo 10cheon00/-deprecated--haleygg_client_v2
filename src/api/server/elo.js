@@ -11,6 +11,6 @@ const fetchEloRanking = (leagueType) => {
   });
 }
 
-export {
+export default {
   fetchEloRanking
 }

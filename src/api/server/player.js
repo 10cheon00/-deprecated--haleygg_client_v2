@@ -59,7 +59,7 @@ const fetchPlayerEloHistory = (playerName, leagueType) => {
   });
 }
 
-export {
+export default {
   fetchPlayerDetail,
   fetchPlayerEloHistory,
   fetchPlayerList,

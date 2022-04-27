@@ -1,32 +1,14 @@
 import axiosInstance from "@/api/axios";
-import { fetchMapDetail, fetchMapList, fetchMeleeMapList, fetchMapStatistics } from "@/api/server/map.js";
-import { fetchLeagueList } from "@/api/server/league.js";
-import {
-  fetchPlayerDetail,
-  fetchPlayerEloHistory,
-  fetchPlayerList,
-  fetchPlayerMatches,
-  fetchPlayerNextMatches,
-  fetchPlayerStatistics
-} from "@/api/server/player.js";
-import { fetchEloRanking } from "@/api/server/elo.js"
+import MapModule from "@/api/server/map.js";
+import LeagueModule from "@/api/server/league.js";
+import PlayerModule from "@/api/server/player.js";
+import EloModule from "@/api/server/elo.js"
 
 const server = {
-  fetchMapDetail,
-  fetchMapList,
-  fetchMapStatistics,
-  fetchMeleeMapList,
-
-  fetchLeagueList,
-
-  fetchPlayerDetail,
-  fetchPlayerEloHistory,
-  fetchPlayerList,
-  fetchPlayerMatches,
-  fetchPlayerNextMatches,
-  fetchPlayerStatistics,
-
-  fetchEloRanking,
+  ...MapModule,
+  ...LeagueModule,
+  ...PlayerModule,
+  ...EloModule,
 };
 
 

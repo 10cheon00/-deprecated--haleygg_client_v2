@@ -9,6 +9,6 @@ const fetchLeagueList = () => {
 }
 
 
-export {
+export default {
   fetchLeagueList,
 }
