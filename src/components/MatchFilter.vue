@@ -166,6 +166,27 @@ export default defineComponent({
 </script>
 
 <style scoped>
+@media (pointer: fine) {
+  ::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #bbb;
+    border-radius: 1rem;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #999;
+  }
+
+  ::-webkit-scrollbar-thumb:active {
+    background: #666;
+  }
+}
+
 #filter {
   background-color: white;
 }
