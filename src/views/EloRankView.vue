@@ -19,7 +19,7 @@
     <MatchFilter :disableTotalLeagueType="true" />
 
     <div class="container p-3">
-      <Panel header="ELO Rank">
+      <Panel header="ELO 랭킹">
         <div
           v-if="top3Player"
           class="grid grid-nogutter text-center"

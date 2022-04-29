@@ -265,7 +265,7 @@ export default defineComponent({
         if (selectedLeagueType.value) {
           await fetchMatches();
           await fetchStatistics();
-          if (selectedLeagueType.value == "proleague") {
+          if (selectedLeagueType.value == "proleague" && selectedLeague.value) {
             await fetchTier();
           }
         }
@@ -526,7 +526,6 @@ export default defineComponent({
           },
           x: {
             ticks: {
-              autoSkip: false,
               maxRotation: 0,
             },
           },

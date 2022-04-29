@@ -90,11 +90,17 @@ export default defineComponent({
     const filter = reactive({
       leagueList: props.leagueList,
       mapList: props.mapList,
-      selectedLeague: inject("selectedLeague"),
-      selectedMap: inject("selectedMap"),
+      selectedLeague: undefined,
+      selectedMap: undefined,
       selectedLeagueType: inject("selectedLeagueType"),
       filteredleagueList: null,
     });
+    if (props.leagueList) {
+      filter.selectedLeague = inject("selectedLeague");
+    }
+    if (props.mapList) {
+      filter.selectedMap = inject("selectedMap");
+    }
 
     filter.filteredleagueList = computed(() => {
       if (!props.leagueList) {
