@@ -250,13 +250,13 @@ export default defineComponent({
       await fetchStatistics();
 
       watch(selectedLeagueType, async () => {
+        clearTier();
         await fetchMatches();
         await fetchStatistics();
         if (selectedLeagueType.value) {
           await fetchEloHistory();
         } else {
           clearEloHistory();
-          clearTier();
         }
       });
 
