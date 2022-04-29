@@ -34,9 +34,22 @@
         <!-- Tier -->
         <div class="col-12 md:col-4 pr-0 md:pr-2 pb-2 md:pb-0">
           <Panel header="티어">
-            <div id="tier">
-              <div v-if="playerInformation.tier">
-                {{ playerInformation.tier }}
+            <div
+              class="flex justify-content-center align-items-center"
+              id="tier"
+            >
+              <div
+                v-if="playerInformation.tier"
+                class="flex flex-column align-items-center"
+              >
+                <img class="my-2" :src="playerInformation.tier.imagePath" />
+                <span class="text-sm text-300">
+                  {{ playerInformation.tier.league }}
+                </span>
+
+                <span class="text-2xl font-bold">{{
+                  playerInformation.tier.value
+                }}</span>
               </div>
               <NullDataBox v-else />
             </div>
@@ -248,9 +261,11 @@ export default defineComponent({
 
       watch(selectedLeague, async () => {
         if (selectedLeagueType.value) {
-          await fetchTier();
           await fetchMatches();
           await fetchStatistics();
+          if (selectedLeagueType.value == "proleague") {
+            await fetchTier();
+          }
         }
       });
 
@@ -506,15 +521,35 @@ export default defineComponent({
     };
 
     const fetchTier = async () => {
-      const response = await ServerApi.fetchPlayerTier(
-        player.value.name,
-        selectedLeague.value
-      );
-      if (response.status == 404) {
-        playerInformation.value.tier = undefined;
-      } else {
-        playerInformation.value.tier = response.data.tier;
+      try {
+        const response = await ServerApi.fetchPlayerTier(
+          player.value.name,
+          selectedLeague.value
+        );
+        playerInformation.value.tier = {
+          league: selectedLeague.value,
+          value: response.data.tier,
+          imagePath: getTierImagePath(response.data.tier),
+        };
+      } catch (err) {
+        if (err.response.status == 404) {
+          playerInformation.value.tier = undefined;
+        }
       }
+    };
+
+    const getTierImagePath = (tier) => {
+      let path = "/tier/";
+      if (tier == "메이저" || tier == "1티어") {
+        path += "1";
+      } else if (tier == "마이너" || tier == "2티어") {
+        path += "2";
+      } else if (tier == "루키" || tier == "3티어") {
+        path += "3";
+      } else if (tier == "4티어") {
+        path += "4";
+      }
+      return path + ".png";
     };
 
     const clearEloHistory = () => {
@@ -533,6 +568,7 @@ export default defineComponent({
       nextURL,
       player,
       playerInformation,
+      selectedLeague,
 
       convertHyphenWithDateFormat,
       getPercentage,
@@ -568,7 +604,14 @@ export default defineComponent({
   max-height: 145px;
 }
 
+#tier-data {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 #elo-chart {
+  height: 145px;
   min-height: 145px;
   max-height: 145px;
   width: 100%;
