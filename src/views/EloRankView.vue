@@ -66,8 +66,8 @@
       <table v-if="eloList" class="my-3" id="elo-rank-table">
         <colgroup>
           <col width="10%" />
-          <col width="20%" />
-          <col width="70%" />
+          <col width="40%" />
+          <col width="50%" />
         </colgroup>
         <tbody>
           <tr v-for="(row, index) in eloList" :key="index">
@@ -134,13 +134,18 @@ export default defineComponent({
       top3Player.value = undefined;
       top3Player.value = popTop3Player(response.data);
 
-      const colorCode = "#d9e7a8";
+      const colorCode = [255, 105, 92];
 
       response.data.forEach((value, index, array) => {
         value.label = value.current_elo;
         value.percentage =
           Math.round((value.current_elo / array[0].current_elo) * 1000) / 10;
-        value.color = colorCode;
+        colorCode[3] = value.color = [
+          colorCode[0],
+          colorCode[1],
+          colorCode[2],
+          0.3 + 1.05 ** -index,
+        ];
       });
       eloList.value = response.data;
     };
