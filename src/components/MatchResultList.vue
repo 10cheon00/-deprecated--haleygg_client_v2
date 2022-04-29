@@ -54,6 +54,7 @@
               :class="{
                 'mr-auto': true,
                 'cursor-pointer': true,
+                'match-player': true,
                 'font-bold':
                   resultListOwnerName == player_tuple.winner ? true : false,
               }"

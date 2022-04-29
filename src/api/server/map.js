@@ -34,7 +34,7 @@ const fetchMapStatistics = (mapName) => {
   });
 }
 
-export {
+export default {
   fetchMapDetail,
   fetchMapList,
   fetchMeleeMapList,

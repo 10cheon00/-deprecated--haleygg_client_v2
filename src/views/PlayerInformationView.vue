@@ -27,113 +27,152 @@
       </div>
     </PageHeader>
 
-    <MatchFilter
-      :leagueList="leagueList"
-      :mapList="mapList"
-      :enableTotalLeague="true"
-      :enableTotalMap="true"
-    />
+    <MatchFilter :leagueList="leagueList" :mapList="mapList" />
 
-    <div class="container">
-      <div class="grid grid-nogutter p-3">
-        <!-- League selector -->
-
-        <div class="col-12 grid grid-nogutter">
-          <!-- Statistics -->
-          <div class="col-12 md:col-4 pr-0 md:pr-2 pb-2 md:pb-0">
-            <Panel header="통계">
+    <div class="container grid grid-nogutter p-3 pt-0">
+      <div class="col-12 grid grid-nogutter">
+        <!-- Tier -->
+        <div class="col-12 md:col-4 pr-0 md:pr-2 pb-2 md:pb-0">
+          <Panel header="티어">
+            <div
+              class="flex justify-content-center align-items-center"
+              id="tier"
+            >
               <div
-                v-for="(item, index) in playerInformation.statistics"
-                :key="index"
-                class="grid grid-nogutter"
-                id="content-item"
+                v-if="playerInformation.tier"
+                class="flex flex-column align-items-center"
               >
-                <div class="col-fixed p-2 statistics-label">
-                  {{ item.label }}
-                </div>
-                <div class="col flex p-2">
-                  <div
-                    class="flex justify-content-center statistics-winning-rate"
-                  >
-                    {{ getPercentage(item.winCount, item.loseCount) }}%
-                  </div>
-                  <WinningRateBar
-                    class="w-full"
-                    :winCount="item.winCount"
-                    :loseCount="item.loseCount"
-                  />
-                </div>
-              </div>
-            </Panel>
-          </div>
+                <img class="my-2" :src="playerInformation.tier.imagePath" />
+                <span class="text-sm text-300">
+                  {{ playerInformation.tier.league }}
+                </span>
 
-          <!-- Elo chart -->
-          <div class="col-12 md:col-8">
-            <Panel header="Elo 그래프">
-              <div id="elo-chart">
-                <Chart
-                  v-if="playerInformation.eloChartData"
-                  type="line"
-                  :data="playerInformation.eloChartData"
-                  :options="playerInformation.eloChartOptions"
-                />
-                <NullDataBox v-else class="p-chart" />
+                <span class="text-2xl font-bold">{{
+                  playerInformation.tier.value
+                }}</span>
               </div>
-            </Panel>
-          </div>
+              <NullDataBox v-else />
+            </div>
+          </Panel>
         </div>
 
-        <!-- List of Matches -->
-        <Panel class="col-12 my-2" header="최근 전적">
-          <template #panel-header-right>
-            <CheckBox
-              name="밀리 전적"
-              v-model="isMeleeMatchResultShown"
-              :binary="true"
-            />
-            <label class="ml-1 mr-3">밀리</label>
-            <CheckBox
-              name="팀플 전적"
-              v-model="isTopAndBottomMatchResultShown"
-              :binary="true"
-            />
-            <label class="ml-1">팀플</label>
-          </template>
+        <!-- Elo chart -->
+        <div class="col-12 md:col-8">
+          <Panel header="Elo 그래프">
+            <div id="elo-chart">
+              <Chart
+                v-if="playerInformation.eloChartData"
+                type="line"
+                :data="playerInformation.eloChartData"
+                :options="playerInformation.eloChartOptions"
+              />
+              <NullDataBox v-else />
+            </div>
+          </Panel>
+        </div>
+      </div>
 
-          <!-- Matches summary -->
-          <div
-            v-if="matchResultList.length > 0"
-            class="grid grid-nogutter p-0 flex-column md:flex-row"
-            id="matches-summary"
-          >
-            <!-- nn경기 n승 n패 승률 nn.n% -->
-            <div class="col matches-summary-item">
-              <div>
-                <div class="text-sm mb-3">
-                  {{ matchesSummary.totalCount }}전
-                  {{ matchesSummary.winCount }}승
-                  {{ matchesSummary.loseCount }}패
-                </div>
-                <div class="text-2xl">{{ matchesSummary.winningRate }}%</div>
-              </div>
+      <!-- Statistics -->
+      <div class="col-12 mt-2" id="statistics">
+        <Panel header="통계">
+          <div class="grid grid-nogutter">
+            <!-- Melee -->
+            <StatisticsRateBox
+              class="col-12 item"
+              :statistics="playerInformation.statistics.melee"
+            />
+            <!-- Top and bottom -->
+            <StatisticsRateBox
+              class="col-12 item"
+              :statistics="playerInformation.statistics.topAndBottom"
+            />
+          </div>
+
+          <!-- Race relativity -->
+          <div class="grid grid-nogutter" id="race-relativity">
+            <!-- Protoss -->
+            <div class="col-12 md:col-4 grid grid-nogutter" id="protoss">
+              <StatisticsRateBox
+                v-for="(item, index) in playerInformation.statistics
+                  .raceRelativity.protoss"
+                :key="index"
+                class="col-12 item"
+                :statistics="item"
+              />
+            </div>
+            <!-- Terran -->
+            <div class="col-12 md:col-4 grid grid-nogutter" id="terran">
+              <StatisticsRateBox
+                v-for="(item, index) in playerInformation.statistics
+                  .raceRelativity.terran"
+                :key="index"
+                class="col-12 item"
+                :statistics="item"
+              />
+            </div>
+            <!-- Zerg -->
+            <div class="col-12 md:col-4 grid grid-nogutter" id="zerg">
+              <StatisticsRateBox
+                v-for="(item, index) in playerInformation.statistics
+                  .raceRelativity.zerg"
+                :key="index"
+                class="col-12 item"
+                :statistics="item"
+              />
             </div>
           </div>
-
-          <NullDataBox v-else class="w-full" />
         </Panel>
-        <MatchResultList
-          :matchResultList="matchResultList"
-          :resultListOwnerName="player.name"
-          class="col-12"
-        />
+      </div>
+
+      <!-- List of Matches -->
+      <Panel class="col-12 my-2" header="최근 전적">
+        <template #panel-header-right>
+          <CheckBox
+            name="밀리 전적"
+            v-model="isMeleeMatchResultShown"
+            :binary="true"
+          />
+          <label class="ml-1 mr-3">밀리</label>
+          <CheckBox
+            name="팀플 전적"
+            v-model="isTopAndBottomMatchResultShown"
+            :binary="true"
+          />
+          <label class="ml-1">팀플</label>
+        </template>
+
+        <!-- Matches summary -->
         <div
-          v-if="nextURL"
-          class="flex align-items-center justify-content-center"
-          id="fetch-next-matches-button"
-          @click="fetchNextMatches()"
+          v-if="matchResultList.length > 0"
+          class="grid grid-nogutter p-0 flex-column md:flex-row"
+          id="matches-summary"
         >
-          <i class="pi pi-refresh"></i>&nbsp;더 보기
+          <!-- nn경기 n승 n패 승률 nn.n% -->
+          <div class="col matches-summary-item">
+            <div>
+              <div class="text-sm mb-3">
+                {{ matchesSummary.totalCount }}전
+                {{ matchesSummary.winCount }}승 {{ matchesSummary.loseCount }}패
+              </div>
+              <div class="text-2xl">{{ matchesSummary.winningRate }}%</div>
+            </div>
+          </div>
         </div>
+
+        <NullDataBox v-else class="w-full" />
+      </Panel>
+      <MatchResultList
+        :matchResultList="matchResultList"
+        :resultListOwnerName="player.name"
+        class="col-12"
+      />
+      <div
+        v-if="nextURL"
+        class="flex align-items-center justify-content-center"
+        id="fetch-next-matches-button"
+        @click="fetchNextMatches()"
+      >
+        <i class="pi pi-refresh"></i>&nbsp;더 보기
       </div>
     </div>
   </div>
@@ -149,7 +188,7 @@ import NullDataBox from "@/components/NullDataBox.vue";
 import PageHeader from "@/components/PageHeader.vue";
 import Panel from "@/components/Panel.vue";
 import ServerApi from "@/api/server/module.js";
-import WinningRateBar from "@/components/WinningRateBar.vue";
+import StatisticsRateBox from "@/components/StatisticsRateBox.vue";
 import { getPercentage, convertHyphenWithDateFormat } from "@/utils/utils.js";
 
 export default defineComponent({
@@ -160,8 +199,8 @@ export default defineComponent({
     MatchResultList,
     NullDataBox,
     PageHeader,
-    WinningRateBar,
     Panel,
+    StatisticsRateBox,
   },
   props: {
     playerName: {
@@ -182,6 +221,8 @@ export default defineComponent({
     const selectedLeague = ref(null);
     const mapList = ref(null);
     const selectedMap = ref(null);
+    const selectedLeagueType = ref(null);
+    provide("selectedLeagueType", selectedLeagueType);
     provide("selectedLeague", selectedLeague);
     provide("selectedMap", selectedMap);
 
@@ -197,7 +238,7 @@ export default defineComponent({
 
       // Fetch leagueList first to request only for specific league.
       response = await ServerApi.fetchLeagueList();
-      leagueList.value = response.data.reverse();
+      leagueList.value = response.data;
       leagueList.value.forEach((league) => (league.label = league.name));
 
       response = await ServerApi.fetchMapList();
@@ -206,14 +247,30 @@ export default defineComponent({
 
       // Fetch statistics, Elo and matches
       await fetchMatches();
-      await fetchEloHistory();
       await fetchStatistics();
 
-      watch(selectedLeague, async () => {
+      watch(selectedLeagueType, async () => {
+        clearTier();
+        clearEloHistory();
         await fetchMatches();
-        await fetchEloHistory();
         await fetchStatistics();
+        if (selectedLeagueType.value) {
+          await fetchEloHistory();
+        } else {
+          clearEloHistory();
+        }
       });
+
+      watch(selectedLeague, async () => {
+        if (selectedLeagueType.value) {
+          await fetchMatches();
+          await fetchStatistics();
+          if (selectedLeagueType.value == "proleague" && selectedLeague.value) {
+            await fetchTier();
+          }
+        }
+      });
+
       watch(selectedMap, async () => {
         await fetchMatches();
         await fetchStatistics();
@@ -249,62 +306,87 @@ export default defineComponent({
       const response = await ServerApi.fetchPlayerStatistics(
         player.value.name,
         selectedLeague.value,
+        selectedLeagueType.value,
         selectedMap.value
       );
       playerInformation.value.statistics = aggregateStatistics(response.data);
     };
 
     const aggregateStatistics = (data) => {
-      const list = [
-        {
+      const statistics = {
+        melee: {
           label: "개인",
           winCount: data.winning_melee_matches_count,
           loseCount: data.losing_melee_matches_count,
         },
-        {
+        topAndBottom: {
           label: "팀플",
           winCount: data.winning_top_and_bottom_matches_count,
           loseCount: data.losing_top_and_bottom_matches_count,
         },
-        {
-          label: "P vs T",
-          winCount: data.protoss_wins_to_terran_count,
-          loseCount: data.protoss_loses_to_terran_count,
+        raceRelativity: {
+          protoss: [
+            {
+              label: "P vs P",
+              winCount: data.protoss_wins_to_protoss_count,
+              loseCount: data.protoss_loses_to_protoss_count,
+            },
+            {
+              label: "P vs T",
+              winCount: data.protoss_wins_to_terran_count,
+              loseCount: data.protoss_loses_to_terran_count,
+            },
+            {
+              label: "P vs Z",
+              winCount: data.protoss_wins_to_zerg_count,
+              loseCount: data.protoss_loses_to_zerg_count,
+            },
+          ],
+          terran: [
+            {
+              label: "T vs P",
+              winCount: data.terran_wins_to_protoss_count,
+              loseCount: data.terran_loses_to_protoss_count,
+            },
+            {
+              label: "T vs T",
+              winCount: data.terran_wins_to_terran_count,
+              loseCount: data.terran_loses_to_terran_count,
+            },
+            {
+              label: "T vs Z",
+              winCount: data.terran_wins_to_zerg_count,
+              loseCount: data.terran_loses_to_zerg_count,
+            },
+          ],
+          zerg: [
+            {
+              label: "Z vs P",
+              winCount: data.zerg_wins_to_protoss_count,
+              loseCount: data.zerg_loses_to_protoss_count,
+            },
+            {
+              label: "Z vs T",
+              winCount: data.zerg_wins_to_terran_count,
+              loseCount: data.zerg_loses_to_terran_count,
+            },
+            {
+              label: "Z vs Z",
+              winCount: data.zerg_wins_to_zerg_count,
+              loseCount: data.zerg_loses_to_zerg_count,
+            },
+          ],
         },
-        {
-          label: "P vs Z",
-          winCount: data.protoss_wins_to_zerg_count,
-          loseCount: data.protoss_loses_to_zerg_count,
-        },
-        {
-          label: "T vs P",
-          winCount: data.terran_wins_to_protoss_count,
-          loseCount: data.terran_loses_to_protoss_count,
-        },
-        {
-          label: "T vs Z",
-          winCount: data.terran_wins_to_zerg_count,
-          loseCount: data.terran_loses_to_zerg_count,
-        },
-        {
-          label: "Z vs P",
-          winCount: data.zerg_wins_to_protoss_count,
-          loseCount: data.zerg_loses_to_protoss_count,
-        },
-        {
-          label: "Z vs T",
-          winCount: data.zerg_wins_to_terran_count,
-          loseCount: data.zerg_loses_to_terran_count,
-        },
-      ];
+      };
 
-      return list;
+      return statistics;
     };
 
     const fetchMatches = async () => {
       const response = await ServerApi.fetchPlayerMatches(
         player.value.name,
         selectedLeague.value,
+        selectedLeagueType.value,
         selectedMap.value
       );
       rawMatchResultList.value = [];
@@ -360,18 +442,33 @@ export default defineComponent({
 
     const fetchEloHistory = async () => {
       const response = await ServerApi.fetchPlayerEloHistory(
-        player.value.id,
-        selectedLeague.value
+        player.value.name,
+        selectedLeagueType.value
       );
 
-      // manage chart options
-      if (response.data.length == 0) {
+      // clear chart when fetched empty result.
+      if (response.data.results.length == 0) {
         playerInformation.value.eloList = null;
         playerInformation.value.eloChartData = null;
         playerInformation.value.eloChartOptions = null;
         return;
       }
-      playerInformation.value.eloList = response.data;
+
+      // divide items with same x axis value.
+      const dividedEloList = response.data.results.reverse();
+      const dates = [];
+      let count = 0;
+      dividedEloList.forEach((item) => {
+        const isNotDuplicate = dates.includes(item.date) == false;
+        if (isNotDuplicate) {
+          dates.push(item.date);
+          count = 0;
+        } else {
+          item.date += ` (${++count})`;
+        }
+        item.date = item.date.slice(2);
+      });
+      playerInformation.value.eloList = dividedEloList;
 
       playerInformation.value.eloChartData = {
         datasets: [
@@ -388,18 +485,18 @@ export default defineComponent({
         maintainAspectRatio: false,
         parsing: {
           xAxisKey: "date",
-          yAxisKey: "elo",
+          yAxisKey: "rating",
         },
         plugins: {
           datalabels: {
             anchor: "end",
             align: "top",
-            backgroundColor: "#222c31",
+            backgroundColor: "#222c3155",
             clamp: true,
             color: "white",
             borderRadius: "5",
             formatter: (value) => {
-              return value.elo;
+              return value.rating;
             },
           },
           legend: {
@@ -411,22 +508,71 @@ export default defineComponent({
             suggestedMin:
               parseFloat(
                 playerInformation.value.eloList.reduce((previous, current) => {
-                  return parseFloat(previous.elo) < parseFloat(current.elo)
+                  return parseFloat(previous.rating) <
+                    parseFloat(current.rating)
                     ? previous
                     : current;
-                }).elo
+                }).rating
               ) - 20,
             suggestedMax:
               parseFloat(
                 playerInformation.value.eloList.reduce((previous, current) => {
-                  return parseFloat(previous.elo) > parseFloat(current.elo)
+                  return parseFloat(previous.rating) >
+                    parseFloat(current.rating)
                     ? previous
                     : current;
-                }).elo
+                }).rating
               ) + 20,
+          },
+          x: {
+            ticks: {
+              maxRotation: 0,
+            },
           },
         },
       };
+    };
+
+    const clearEloHistory = () => {
+      playerInformation.value.eloList = null;
+      playerInformation.value.eloChartData = null;
+      playerInformation.value.eloChartOptions = null;
+    };
+
+    const fetchTier = async () => {
+      try {
+        const response = await ServerApi.fetchPlayerTier(
+          player.value.name,
+          selectedLeague.value
+        );
+        playerInformation.value.tier = {
+          league: selectedLeague.value,
+          value: response.data.tier,
+          imagePath: getTierImagePath(response.data.tier),
+        };
+      } catch (err) {
+        if (err.response.status == 404) {
+          clearTier();
+        }
+      }
+    };
+
+    const getTierImagePath = (tier) => {
+      let path = "/tier/";
+      if (tier == "메이저" || tier == "1티어") {
+        path += "1";
+      } else if (tier == "마이너" || tier == "2티어") {
+        path += "2";
+      } else if (tier == "루키" || tier == "3티어") {
+        path += "3";
+      } else if (tier == "4티어") {
+        path += "4";
+      }
+      return path + ".png";
+    };
+
+    const clearTier = () => {
+      playerInformation.value.tier = undefined;
     };
 
     return {
@@ -439,10 +585,10 @@ export default defineComponent({
       nextURL,
       player,
       playerInformation,
+      selectedLeague,
 
       convertHyphenWithDateFormat,
       getPercentage,
-      selectedLeague,
       fetchNextMatches,
     };
   },
@@ -461,14 +607,6 @@ export default defineComponent({
   cursor: pointer;
 }
 
-#content-item {
-  border-bottom: solid 1px #dee2e6;
-}
-
-#content-item:last-child {
-  border-bottom: none;
-}
-
 #player-name {
   color: white;
 }
@@ -477,23 +615,49 @@ export default defineComponent({
   color: #767676;
 }
 
-.p-chart {
-  min-height: 295px;
-  max-height: 295px;
+#tier {
+  height: 145px;
+  min-height: 145px;
+  max-height: 145px;
+}
+
+#tier-data {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#elo-chart {
+  height: 145px;
+  min-height: 145px;
+  max-height: 145px;
   width: 100%;
 }
 
-.statistics-label {
-  border-right: dashed 1px lightgray;
-  min-width: 5rem;
-  text-align: center;
-  white-space: nowrap;
+#statistics .item {
+  border-bottom: solid 1px #dee2e6;
 }
 
-.statistics-winning-rate {
-  color: #435862;
-  font-size: small;
-  min-width: 3rem;
+#statistics #race-relativity .item {
+  border-right: none;
+}
+
+#statistics #race-relativity #zerg .item:last-child {
+  border-bottom: none;
+}
+
+@media (min-width: 768px) {
+  #statistics #race-relativity .item {
+    border-right: solid 1px #dee2e6;
+  }
+
+  #statistics #race-relativity .item:last-child {
+    border-bottom: none;
+  }
+
+  #statistics #race-relativity #zerg .item {
+    border-right: none;
+  }
 }
 
 .matches-summary-item {

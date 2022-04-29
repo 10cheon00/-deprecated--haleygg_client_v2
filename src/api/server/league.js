@@ -8,17 +8,7 @@ const fetchLeagueList = () => {
   });
 }
 
-const fetchEloRatingActiveLeagueList = () => {
-  return axiosInstance.request({
-    method: "GET",
-    url: `api/leagues/`,
-    params: {
-      'is_elo_rating_active': "True"
-    }
-  });
-}
 
-export {
-  fetchEloRatingActiveLeagueList,
+export default {
   fetchLeagueList,
 }

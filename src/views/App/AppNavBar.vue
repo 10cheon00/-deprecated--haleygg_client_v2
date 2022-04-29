@@ -82,11 +82,11 @@ export default defineComponent({
 
     const items = computed(() => {
       const list = [
-        // {
-        //   label: "Elo 랭킹",
-        //   iconClass: "pi pi-fw pi-chart-line",
-        //   to: "/elo-rank/",
-        // },
+        {
+          label: "Elo 랭킹",
+          iconClass: "pi pi-fw pi-chart-line",
+          to: "/elo-rank/",
+        },
         {
           label: "맵별 통계",
           iconClass: "pi pi-fw pi-image",

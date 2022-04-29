@@ -9,40 +9,18 @@
 <script>
 import { defineComponent, computed } from "vue";
 
-import { hexToRgb } from "@/utils/utils.js";
-
 export default defineComponent({
   props: {
     data: {
-      color: String,
+      color: Array,
       percentage: Number,
       label: Number,
     },
   },
   setup(props) {
-    // const dataRef = toRefs(props).data;
-
     const barStyle = computed(() => {
-      const rgbColor = hexToRgb(props.data.color);
       return {
-        // "background-color": props.data.color,
-        background: `
-          repeating-linear-gradient(
-            135deg,
-            ${props.data.color} ,
-            ${props.data.color} 10px,
-            rgb(
-              ${rgbColor[0] * 0.85},
-              ${rgbColor[1] * 0.85},
-              ${rgbColor[2] * 0.85}
-            ) 10px,
-            rgb(
-              ${rgbColor[0] * 0.85},
-              ${rgbColor[1] * 0.85},
-              ${rgbColor[2] * 0.85}
-            ) 20px
-          )
-          `,
+        "background-color": `rgba(${props.data.color})`,
         width: `${props.data.percentage}%`,
       };
     });

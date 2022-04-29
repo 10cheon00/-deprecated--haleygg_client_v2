@@ -16,10 +16,10 @@
       </div>
     </PageHeader>
 
-    <MatchFilter v-if="leagueList" :leagueList="leagueList" />
+    <MatchFilter :disableTotalLeagueType="true" />
 
     <div class="container p-3">
-      <Panel header="ELO Rank">
+      <Panel header="ELO 랭킹">
         <div
           v-if="top3Player"
           class="grid grid-nogutter text-center"
@@ -36,7 +36,7 @@
             </div>
             <div class="text-xl">Elo : {{ top3Player[0].current_elo }}</div>
           </div>
-          <div v-if="top3Player[1]" class="col-12 lg:col-6 elo-podium">
+          <div v-if="top3Player[1]" class="col-12 sm:col-6 elo-podium">
             <div class="text-2xl my-3">
               <span
                 class="cursor-pointer"
@@ -47,7 +47,7 @@
             </div>
             <div class="text-md">Elo : {{ top3Player[1].current_elo }}</div>
           </div>
-          <div v-if="top3Player[2]" class="col-12 lg:col-6 elo-podium">
+          <div v-if="top3Player[2]" class="col-12 sm:col-6 elo-podium">
             <div class="text-2xl my-3">
               <span
                 class="cursor-pointer"
@@ -63,11 +63,11 @@
       </Panel>
 
       <!-- Elo rank table -->
-      <table v-if="eloList" class="p-3" id="elo-rank-table">
+      <table v-if="eloList" class="my-3" id="elo-rank-table">
         <colgroup>
           <col width="10%" />
-          <col width="20%" />
-          <col width="70%" />
+          <col width="40%" />
+          <col width="50%" />
         </colgroup>
         <tbody>
           <tr v-for="(row, index) in eloList" :key="index">
@@ -115,37 +115,37 @@ export default defineComponent({
     const eloList = ref(null);
     const top3Player = ref(null);
     const leagueList = ref(null);
-    const selectedLeague = ref(null);
-    provide("selectedLeague", selectedLeague);
+    const selectedLeagueType = ref("proleague");
+    provide("selectedLeagueType", selectedLeagueType);
     const router = useRouter();
 
     onMounted(async () => {
-      // fetch elo list.
-      const response = await ServerApi.fetchEloRatingActiveLeagueList();
-      leagueList.value = response.data;
+      await fetchEloRanking();
 
-      if (leagueList.value.length > 0) {
-        selectedLeague.value = leagueList.value[0].id;
-        await fetchEloRanking();
-      }
-
-      watch(selectedLeague, async () => {
+      watch(selectedLeagueType, async () => {
         await fetchEloRanking();
       });
     });
 
     const fetchEloRanking = async () => {
-      const response = await ServerApi.fetchEloRanking(selectedLeague.value);
+      const response = await ServerApi.fetchEloRanking(
+        selectedLeagueType.value
+      );
       top3Player.value = undefined;
       top3Player.value = popTop3Player(response.data);
 
-      const colorCode = "#1cf1b1";
+      const colorCode = [255, 105, 92];
 
       response.data.forEach((value, index, array) => {
         value.label = value.current_elo;
         value.percentage =
           Math.round((value.current_elo / array[0].current_elo) * 1000) / 10;
-        value.color = colorCode;
+        colorCode[3] = value.color = [
+          colorCode[0],
+          colorCode[1],
+          colorCode[2],
+          0.3 + 1.05 ** -index,
+        ];
       });
       eloList.value = response.data;
     };
@@ -170,7 +170,6 @@ export default defineComponent({
       eloList,
       leagueList,
       router,
-      selectedLeague,
       top3Player,
       fetchEloRanking,
       routeToPlayerInformation,
@@ -202,7 +201,7 @@ export default defineComponent({
   border-right: none;
 }
 
-@media (max-width: 992px) {
+@media (max-width: 576px) {
   #top3-players .elo-podium {
     border-bottom: 1px #dee2e6 solid;
     border-right: none;

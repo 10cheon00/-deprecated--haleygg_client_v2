@@ -9,5 +9,6 @@
   justify-content: center;
   padding: 1rem;
   color: var(--surface-300);
+  height: 100%;
 }
 </style>
