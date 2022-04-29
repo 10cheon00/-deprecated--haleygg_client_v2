@@ -58,7 +58,7 @@ export default defineComponent({
   props: {
     leagueList: {
       type: Array,
-      required: true,
+      required: false,
     },
     mapList: {
       type: Array,
