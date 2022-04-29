@@ -251,6 +251,7 @@ export default defineComponent({
 
       watch(selectedLeagueType, async () => {
         clearTier();
+        clearEloHistory();
         await fetchMatches();
         await fetchStatistics();
         if (selectedLeagueType.value) {
@@ -445,23 +446,29 @@ export default defineComponent({
         selectedLeagueType.value
       );
 
-      // manage chart options
-      if (response.data.length == 0) {
+      // clear chart when fetched empty result.
+      if (response.data.results.length == 0) {
         playerInformation.value.eloList = null;
         playerInformation.value.eloChartData = null;
         playerInformation.value.eloChartOptions = null;
         return;
       }
-      // remove duplicated data what have equal date
+
+      // divide items with same x axis value.
+      const dividedEloList = response.data.results.reverse();
       const dates = [];
-      const distinctEloList = response.data.results.filter((item) => {
-        const isDuplicate = dates.includes(item.date);
-        if (!isDuplicate) {
+      let count = 0;
+      dividedEloList.forEach((item) => {
+        const isNotDuplicate = dates.includes(item.date) == false;
+        if (isNotDuplicate) {
           dates.push(item.date);
+          count = 0;
+        } else {
+          item.date += ` (${++count})`;
         }
-        return !isDuplicate;
+        item.date = item.date.slice(2);
       });
-      playerInformation.value.eloList = distinctEloList.reverse();
+      playerInformation.value.eloList = dividedEloList;
 
       playerInformation.value.eloChartData = {
         datasets: [
@@ -484,7 +491,7 @@ export default defineComponent({
           datalabels: {
             anchor: "end",
             align: "top",
-            backgroundColor: "#222c31",
+            backgroundColor: "#222c3155",
             clamp: true,
             color: "white",
             borderRadius: "5",
@@ -516,6 +523,12 @@ export default defineComponent({
                     : current;
                 }).rating
               ) + 20,
+          },
+          x: {
+            ticks: {
+              autoSkip: false,
+              maxRotation: 0,
+            },
           },
         },
       };
