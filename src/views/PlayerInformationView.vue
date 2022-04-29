@@ -256,6 +256,7 @@ export default defineComponent({
           await fetchEloHistory();
         } else {
           clearEloHistory();
+          clearTier();
         }
       });
 
@@ -520,6 +521,12 @@ export default defineComponent({
       };
     };
 
+    const clearEloHistory = () => {
+      playerInformation.value.eloList = null;
+      playerInformation.value.eloChartData = null;
+      playerInformation.value.eloChartOptions = null;
+    };
+
     const fetchTier = async () => {
       try {
         const response = await ServerApi.fetchPlayerTier(
@@ -533,7 +540,7 @@ export default defineComponent({
         };
       } catch (err) {
         if (err.response.status == 404) {
-          playerInformation.value.tier = undefined;
+          clearTier();
         }
       }
     };
@@ -552,10 +559,8 @@ export default defineComponent({
       return path + ".png";
     };
 
-    const clearEloHistory = () => {
-      playerInformation.value.eloList = null;
-      playerInformation.value.eloChartData = null;
-      playerInformation.value.eloChartOptions = null;
+    const clearTier = () => {
+      playerInformation.value.tier = undefined;
     };
 
     return {
