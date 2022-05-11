@@ -18,6 +18,9 @@
         />
       </div>
 
+      <!-- Divider -->
+      <div class="my-3 divider" />
+
       <div v-if="rankSheet.isFetched" class="grid grid-nogutter w-full">
         <PlayerRankBoard
           class="col-12 md:col-4 md:pr-2 mb-3"
@@ -39,10 +42,7 @@
         />
 
         <!-- Divider -->
-        <div
-          class="col-12 mb-3"
-          style="background-color: #dee2e6; height: 1px"
-        />
+        <div class="col-12 mb-3 divider" />
 
         <PlayerRankBoard
           class="col-12 md:col-4 md:pr-2 mb-3"
@@ -64,10 +64,7 @@
         />
 
         <!-- Divider -->
-        <div
-          class="col-12 mb-3"
-          style="background-color: #dee2e6; height: 1px"
-        />
+        <div class="col-12 mb-3 divider" />
 
         <PlayerRankBoard
           class="col-12 md:col-4 md:pr-2 mb-3"
@@ -204,3 +201,9 @@ export default defineComponent({
 });
 </script>
 
+<style scoped>
+.divider {
+  background-color: #dee2e6;
+  height: 1px;
+}
+</style>
