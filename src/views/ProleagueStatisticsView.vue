@@ -85,6 +85,13 @@
           unit="패"
         />
       </div>
+      <div
+        v-else
+        class="flex justify-content-center align-items-center"
+        style="height: 200px"
+      >
+        <ProgressSpinner strokeWidth="1" />
+      </div>
     </div>
   </div>
 </template>
@@ -92,6 +99,7 @@
 <script>
 import { defineComponent, reactive, onMounted, ref } from "vue";
 import DropDown from "primevue/dropdown";
+import ProgressSpinner from "primevue/progressspinner";
 
 import PageHeader from "@/components/PageHeader.vue";
 import PlayerRankBoard from "@/components/PlayerRankBoard.vue";
@@ -102,6 +110,7 @@ export default defineComponent({
     DropDown,
     PageHeader,
     PlayerRankBoard,
+    ProgressSpinner,
   },
   setup() {
     const leagueList = ref([]);
@@ -109,6 +118,7 @@ export default defineComponent({
     const rankSheet = reactive({ isFetched: false });
 
     const fetchRankSheet = async () => {
+      rankSheet.isFetched = false;
       // Fetch total match/win/lose count rank.
       let response = await ServerApi.fetchTotalMatchCountRank(
         undefined,
@@ -188,7 +198,7 @@ export default defineComponent({
         name: "Total",
         type: undefined,
       });
-      fetchRankSheet();
+      // fetchRankSheet();
     });
 
     return {
