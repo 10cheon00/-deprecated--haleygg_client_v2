@@ -17,7 +17,7 @@
               {{ item.name }}
             </span>
           </td>
-          <td>{{ item.value }} {{ unit }}</td>
+          <td>{{ item.value }}{{ unit }}</td>
         </tr>
       </tbody>
     </table>
@@ -64,18 +64,7 @@ export default defineComponent({
 .rank {
   text-align: center;
   border-bottom: 1px solid #dee2e6;
-}
-
-.rank:first-child {
-  color: #ffd700;
-}
-
-.rank:nth-child(2) {
-  color: #c0c0c0;
-}
-
-.rank:nth-child(3) {
-  color: #cd7f32;
+  font-size: 0.75rem;
 }
 
 .rank:last-child {
