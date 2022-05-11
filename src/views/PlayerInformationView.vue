@@ -21,6 +21,20 @@
         }}
         가입</small
       >
+      <!-- Tiers -->
+      <div>
+        <Chip
+          v-for="(tier, index) in playerInformation.tierList"
+          :key="index"
+          :label="`${tier.league} ${tier.tier}`"
+          class="tier mr-1 text-white"
+          :style="{
+            opacity:
+              0.5 + ((index + 1) / playerInformation.tierList.length) * 0.5,
+            'background-color': playerInformation.tierColor,
+          }"
+        />
+      </div>
       <!-- Career -->
       <div class="text-200 my-2">
         {{ playerInformation.profile.career }}
@@ -31,33 +45,8 @@
 
     <div class="container grid grid-nogutter p-3 pt-0">
       <div class="col-12 grid grid-nogutter">
-        <!-- Tier -->
-        <div class="col-12 md:col-4 pr-0 md:pr-2 pb-2 md:pb-0">
-          <Panel header="티어">
-            <div
-              class="flex justify-content-center align-items-center"
-              id="tier"
-            >
-              <div
-                v-if="playerInformation.tier"
-                class="flex flex-column align-items-center"
-              >
-                <img class="my-2" :src="playerInformation.tier.imagePath" />
-                <span class="text-sm text-300">
-                  {{ playerInformation.tier.league }}
-                </span>
-
-                <span class="text-2xl font-bold">{{
-                  playerInformation.tier.value
-                }}</span>
-              </div>
-              <NullDataBox v-else />
-            </div>
-          </Panel>
-        </div>
-
         <!-- Elo chart -->
-        <div class="col-12 md:col-8">
+        <div class="col-12">
           <Panel header="Elo 그래프">
             <div id="elo-chart">
               <Chart
@@ -181,6 +170,7 @@
 import { defineComponent, ref, computed, onMounted, watch, provide } from "vue";
 import Chart from "primevue/chart";
 import CheckBox from "primevue/checkbox";
+import Chip from "primevue/chip";
 
 import MatchFilter from "@/components/MatchFilter.vue";
 import MatchResultList from "@/components/MatchResultList.vue";
@@ -190,11 +180,13 @@ import Panel from "@/components/Panel.vue";
 import ServerApi from "@/api/server/module.js";
 import StatisticsRateBox from "@/components/StatisticsRateBox.vue";
 import { getPercentage, convertHyphenWithDateFormat } from "@/utils/utils.js";
+import { getColor } from "@/css/color-config.js";
 
 export default defineComponent({
   components: {
     Chart,
     CheckBox,
+    Chip,
     MatchFilter,
     MatchResultList,
     NullDataBox,
@@ -248,9 +240,9 @@ export default defineComponent({
       // Fetch statistics, Elo and matches
       await fetchMatches();
       await fetchStatistics();
+      await fetchTier();
 
       watch(selectedLeagueType, async () => {
-        clearTier();
         clearEloHistory();
         await fetchMatches();
         await fetchStatistics();
@@ -265,9 +257,6 @@ export default defineComponent({
         if (selectedLeagueType.value) {
           await fetchMatches();
           await fetchStatistics();
-          if (selectedLeagueType.value == "proleague" && selectedLeague.value) {
-            await fetchTier();
-          }
         }
       });
 
@@ -541,15 +530,19 @@ export default defineComponent({
 
     const fetchTier = async () => {
       try {
-        const response = await ServerApi.fetchPlayerTier(
-          player.value.name,
-          selectedLeague.value
-        );
-        playerInformation.value.tier = {
-          league: selectedLeague.value,
-          value: response.data.tier,
-          imagePath: getTierImagePath(response.data.tier),
-        };
+        const response = await ServerApi.fetchPlayerTier(player.value.name);
+        playerInformation.value.tierList = response.data.reverse();
+        switch (playerInformation.value.profile.favorate_race) {
+          case "T":
+            playerInformation.value.tierColor = getColor("terran");
+            break;
+          case "P":
+            playerInformation.value.tierColor = getColor("protoss");
+            break;
+          case "Z":
+            playerInformation.value.tierColor = getColor("zerg");
+            break;
+        }
       } catch (err) {
         if (err.response.status == 404) {
           clearTier();
@@ -557,22 +550,8 @@ export default defineComponent({
       }
     };
 
-    const getTierImagePath = (tier) => {
-      let path = "/tier/";
-      if (tier == "메이저" || tier == "1티어") {
-        path += "1";
-      } else if (tier == "마이너" || tier == "2티어") {
-        path += "2";
-      } else if (tier == "루키" || tier == "3티어") {
-        path += "3";
-      } else if (tier == "4티어") {
-        path += "4";
-      }
-      return path + ".png";
-    };
-
     const clearTier = () => {
-      playerInformation.value.tier = undefined;
+      playerInformation.value.tierList = undefined;
     };
 
     return {
@@ -588,6 +567,7 @@ export default defineComponent({
       selectedLeague,
 
       convertHyphenWithDateFormat,
+      getColor,
       getPercentage,
       fetchNextMatches,
     };
@@ -615,16 +595,8 @@ export default defineComponent({
   color: #767676;
 }
 
-#tier {
-  height: 145px;
-  min-height: 145px;
-  max-height: 145px;
-}
-
-#tier-data {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.tier {
+  font-size: 0.25rem;
 }
 
 #elo-chart {
