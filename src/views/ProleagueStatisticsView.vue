@@ -198,7 +198,7 @@ export default defineComponent({
         name: "Total",
         type: undefined,
       });
-      // fetchRankSheet();
+      fetchRankSheet();
     });
 
     return {
