@@ -17,14 +17,14 @@
           v-if="totalMatchCountRank"
           class="col-12 md:col-6 pr-0 md:pr-2 pb-2 md:pb-0"
           :rankSheet="totalMatchCountRank"
-          title="통합 다전 순위"
+          title="통합 다전 순위 ⚔️"
           unit="경기"
         />
         <PlayerRankBoard
           v-if="totalWinCountRank"
           class="col-12 md:col-6 pl-0 md:pl-2"
           :rankSheet="totalWinCountRank"
-          title="통합 다승 순위"
+          title="통합 다승 순위 ✌️"
           unit="승"
         />
       </div>
