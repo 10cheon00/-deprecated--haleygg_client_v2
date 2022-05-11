@@ -42,6 +42,14 @@ const routes = [
     }
   },
   {
+    name: 'ProleagueStatisticsView',
+    path: '/proleague/',
+    component: () => import("@/views/ProleagueStatisticsView.vue"),
+    meta: {
+      title: "프로리그 통계"
+    }
+  },
+  {
     name: 'MatchResultFormView',
     path: '/add-result/',
     component: () => import("@/views/Form/MatchResultFormView.vue"),

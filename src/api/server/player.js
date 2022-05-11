@@ -59,11 +59,14 @@ const fetchPlayerEloHistory = (playerName, leagueType) => {
   });
 }
 
-const fetchPlayerTier = (playerName, leagueName) => {
+const fetchPlayerTier = (playerName) => {
   return axiosInstance.request({
     method: "GET",
-    url: `api/tier/players/${playerName}/leagues/${leagueName}/`,
-    isNotEssential: true
+    url: `api/tiers/`,
+    isNotEssential: true,
+    params: {
+      "player": playerName
+    }
   });
 }
 

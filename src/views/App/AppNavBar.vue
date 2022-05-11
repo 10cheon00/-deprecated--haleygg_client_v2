@@ -92,6 +92,11 @@ export default defineComponent({
           iconClass: "pi pi-fw pi-image",
           to: "/map/",
         },
+        {
+          label: "프로리그 통계",
+          iconClass: "pi pi-fw pi-sort-amount-up",
+          to: "/proleague/",
+        },
       ];
 
       if (userName.value.length > 0) {

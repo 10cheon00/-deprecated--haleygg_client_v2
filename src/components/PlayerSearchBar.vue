@@ -36,10 +36,16 @@ export default defineComponent({
 
     const search = () => {
       if (player.value) {
+        let playerName = "";
+        if (typeof player.value == "string") {
+          playerName = player.value;
+        } else {
+          playerName = player.value.name;
+        }
         router.push({
           name: "PlayerInformationView",
           params: {
-            playerName: player.value.name,
+            playerName: playerName,
           },
         });
       }
