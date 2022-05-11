@@ -121,21 +121,21 @@ export default defineComponent({
       rankSheet.isFetched = false;
       // Fetch total match/win/lose count rank.
       let response = await ServerApi.fetchTotalMatchCountRank(
-        undefined,
+        "proleague",
         selectedLeague.value,
         undefined
       );
       rankSheet.totalMatchCount = response.data.results;
 
       response = await ServerApi.fetchTotalWinCountRank(
-        undefined,
+        "proleague",
         selectedLeague.value,
         undefined
       );
       rankSheet.totalWinCount = response.data.results;
 
       response = await ServerApi.fetchTotalLoseCountRank(
-        undefined,
+        "proleague",
         selectedLeague.value,
         undefined
       );
@@ -143,21 +143,21 @@ export default defineComponent({
 
       // Fetch melee match/win/lose count rank.
       response = await ServerApi.fetchMeleeMatchCountRank(
-        undefined,
+        "proleague",
         selectedLeague.value,
         undefined
       );
       rankSheet.meleeMatchCount = response.data.results;
 
       response = await ServerApi.fetchMeleeWinCountRank(
-        undefined,
+        "proleague",
         selectedLeague.value,
         undefined
       );
       rankSheet.meleeWinCount = response.data.results;
 
       response = await ServerApi.fetchMeleeLoseCountRank(
-        undefined,
+        "proleague",
         selectedLeague.value,
         undefined
       );
@@ -165,21 +165,21 @@ export default defineComponent({
 
       // Fetch top-and-bottom match/win/lose count rank.
       response = await ServerApi.fetchTopAndBottomMatchCountRank(
-        undefined,
+        "proleague",
         selectedLeague.value,
         undefined
       );
       rankSheet.topAndBottomMatchCount = response.data.results;
 
       response = await ServerApi.fetchTopAndBottomWinCountRank(
-        undefined,
+        "proleague",
         selectedLeague.value,
         undefined
       );
       rankSheet.topAndBottomWinCount = response.data.results;
 
       response = await ServerApi.fetchTopAndBottomLoseCountRank(
-        undefined,
+        "proleague",
         selectedLeague.value,
         undefined
       );
