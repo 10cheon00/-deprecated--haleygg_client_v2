@@ -23,17 +23,18 @@
       >
       <!-- Tiers -->
       <div>
-        <Chip
+        <span
           v-for="(tier, index) in playerInformation.tierList"
           :key="index"
-          :label="`${tier.league} ${tier.tier}`"
-          class="tier mr-1 text-white"
+          class="tier mr-1"
           :style="{
             opacity:
               0.5 + ((index + 1) / playerInformation.tierList.length) * 0.5,
             'background-color': playerInformation.tierColor,
           }"
-        />
+        >
+          {{ tier.league }} {{ tier.tier }}
+        </span>
       </div>
       <!-- Career -->
       <div class="text-200 my-2">
@@ -170,7 +171,6 @@
 import { defineComponent, ref, computed, onMounted, watch, provide } from "vue";
 import Chart from "primevue/chart";
 import CheckBox from "primevue/checkbox";
-import Chip from "primevue/chip";
 
 import MatchFilter from "@/components/MatchFilter.vue";
 import MatchResultList from "@/components/MatchResultList.vue";
@@ -186,7 +186,6 @@ export default defineComponent({
   components: {
     Chart,
     CheckBox,
-    Chip,
     MatchFilter,
     MatchResultList,
     NullDataBox,
@@ -542,6 +541,8 @@ export default defineComponent({
           case "Z":
             playerInformation.value.tierColor = getColor("zerg");
             break;
+          default:
+            playerInformation.value.tierColor = getColor("dark");
         }
       } catch (err) {
         if (err.response.status == 404) {
@@ -596,7 +597,10 @@ export default defineComponent({
 }
 
 .tier {
-  font-size: 0.25rem;
+  font-size: 0.75rem;
+  border-radius: 1rem;
+  padding: 0.1rem 1rem;
+  white-space: nowrap;
 }
 
 #elo-chart {
