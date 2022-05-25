@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Explanation -->
-    <PageHeader>
+    <BasePageHeader>
       <p class="text-4xl m-4 font-bold">Elo 랭킹</p>
       <p>Elo 산출 방식은 위키백과와 같습니다.</p>
       <p class="text-xl font-bold">After = Before + K * (W - R)</p>
@@ -14,12 +14,12 @@
         </p>
         <p>R<small class="text-xs">(=승리할 확률)</small></p>
       </div>
-    </PageHeader>
+    </BasePageHeader>
 
     <MatchFilter :disableTotalLeagueType="true" />
 
-    <div class="container p-3">
-      <Panel header="ELO 랭킹">
+    <BaseLoadingContainer :isLoaded="eloList != null" class="container p-3">
+      <BasePanel header="ELO 랭킹">
         <div
           v-if="top3Player"
           class="grid grid-nogutter text-center"
@@ -59,8 +59,8 @@
             <div class="text-md">Elo : {{ top3Player[2].current_elo }}</div>
           </div>
         </div>
-        <NullDataBox v-else />
-      </Panel>
+        <BaseNullDataBox v-else />
+      </BasePanel>
 
       <!-- Elo rank table -->
       <table v-if="eloList" class="my-3" id="elo-rank-table">
@@ -86,30 +86,31 @@
           </tr>
         </tbody>
       </table>
-    </div>
+    </BaseLoadingContainer>
   </div>
 </template>
 
 <script>
 import { defineComponent, onMounted, ref, provide, watch } from "vue";
-
-import MatchFilter from "@/components/MatchFilter.vue";
-import NullDataBox from "@/components/NullDataBox.vue";
-import PageHeader from "@/components/PageHeader.vue";
-import Panel from "@/components/Panel.vue";
-import PercentageBar from "@/components/PercentageBar.vue";
-import ServerApi from "@/api/server/module.js";
 import { useRouter } from "vue-router";
 
+import BaseLoadingContainer from "@/components/BaseLoadingContainer.vue";
+import BaseNullDataBox from "@/components/BaseNullDataBox.vue";
+import BasePageHeader from "@/components/BasePageHeader.vue";
+import BasePanel from "@/components/BasePanel.vue";
+import MatchFilter from "@/components/MatchFilter.vue";
+import PercentageBar from "@/components/PercentageBar.vue";
+import ServerApi from "@/api/server/module.js";
 import { routeToPlayerInformation } from "@/utils/utils.js";
 
 export default defineComponent({
   components: {
+    BaseLoadingContainer,
+    BaseNullDataBox,
+    BasePageHeader,
+    BasePanel,
     MatchFilter,
-    NullDataBox,
-    PageHeader,
     PercentageBar,
-    Panel,
   },
   setup() {
     const eloList = ref(null);

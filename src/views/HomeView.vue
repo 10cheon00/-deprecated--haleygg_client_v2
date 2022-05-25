@@ -1,11 +1,11 @@
 <template>
   <div>
-    <PageHeader>
+    <BasePageHeader>
       <div class="text-center">
         <p class="my-4 text-4xl font-bold">Haleygg.kr</p>
         <PlayerSearchBar class="p-fluid" id="search-bar" :size="1.25" />
       </div>
-    </PageHeader>
+    </BasePageHeader>
 
     <div class="container p-3">
       <div id="information">
@@ -35,14 +35,14 @@
 <script>
 import { defineComponent, ref, onMounted } from "vue";
 
-import PageHeader from "@/components/PageHeader.vue";
-import PlayerSearchBar from "@/components/PlayerSearchBar.vue";
+import BasePageHeader from "@/components/BasePageHeader.vue";
 import PlayerRankBoard from "@/components/PlayerRankBoard.vue";
+import PlayerSearchBar from "@/components/PlayerSearchBar.vue";
 import ServerApi from "@/api/server/module.js";
 
 export default defineComponent({
   components: {
-    PageHeader,
+    BasePageHeader,
     PlayerRankBoard,
     PlayerSearchBar,
   },

@@ -1,17 +1,17 @@
 <template>
   <div v-if="resources">
-    <PageHeader>
+    <BasePageHeader>
       <p class="text-4xl m-4 font-bold">전적 입력</p>
       <p class="text-300">
         게임 타입에 맞게 전적을 추가해 입력한 후, 저장 버튼을 누르시면 한 번에
         저장됩니다.
       </p>
       <p class="text-300">기권승 등 기타 사항은 비고란에 입력하시면 됩니다.</p>
-    </PageHeader>
+    </BasePageHeader>
 
     <div class="container p-3">
       <div v-for="(item, index) in matchResultForms" :key="index">
-        <Panel class="form" header="새 전적 입력">
+        <BasePanel class="form" header="새 전적 입력">
           <template #panel-header-right>
             <Button
               icon="pi pi-trash"
@@ -36,7 +36,7 @@
               class="m-2"
             />
           </div>
-        </Panel>
+        </BasePanel>
       </div>
       <!-- Controller -->
       <div class="flex mb-2">
@@ -69,9 +69,9 @@
 import { defineComponent, onMounted, ref, reactive, shallowRef } from "vue";
 import Button from "primevue/button";
 
+import BasePageHeader from "@/components/BasePageHeader.vue";
+import BasePanel from "@/components/BasePanel.vue";
 import ServerApi from "@/api/server/module.js";
-import PageHeader from "@/components/PageHeader.vue";
-import Panel from "@/components/Panel.vue";
 import ValidationErrorMessage from "@/components/ValidationErrorMessage.vue";
 import {
   initializeErrorObj,
@@ -82,9 +82,9 @@ import {
 
 export default defineComponent({
   components: {
+    BasePageHeader,
+    BasePanel,
     Button,
-    PageHeader,
-    Panel,
     ValidationErrorMessage,
   },
   setup() {

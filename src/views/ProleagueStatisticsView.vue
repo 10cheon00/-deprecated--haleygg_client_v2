@@ -1,9 +1,9 @@
 <template>
   <div>
-    <PageHeader>
+    <BasePageHeader>
       <p class="text-4xl m-4 font-bold">프로리그 통계</p>
       <p class="text-300">경기타입별로 다전/다승/다패 순위를 보여드립니다.</p>
-    </PageHeader>
+    </BasePageHeader>
     <div class="container p-3">
       <div class="flex align-items-center mb-3">
         <label class="flex-none pr-2">리그</label>
@@ -21,7 +21,10 @@
       <!-- Divider -->
       <div class="my-3 divider" />
 
-      <div v-if="rankSheet.isFetched" class="grid grid-nogutter w-full">
+      <BaseLoadingContainer
+        :isLoaded="rankSheet.isFetched"
+        class="grid grid-nogutter w-full"
+      >
         <PlayerRankBoard
           class="col-12 md:col-4 md:pr-2 mb-3"
           :rankSheet="rankSheet.totalMatchCount"
@@ -84,14 +87,7 @@
           title="팀전 다패 랭킹 😥"
           unit="패"
         />
-      </div>
-      <div
-        v-else
-        class="flex justify-content-center align-items-center"
-        style="height: 200px"
-      >
-        <ProgressSpinner strokeWidth="1" />
-      </div>
+      </BaseLoadingContainer>
     </div>
   </div>
 </template>
@@ -99,18 +95,18 @@
 <script>
 import { defineComponent, reactive, onMounted, ref } from "vue";
 import DropDown from "primevue/dropdown";
-import ProgressSpinner from "primevue/progressspinner";
 
-import PageHeader from "@/components/PageHeader.vue";
+import BaseLoadingContainer from "@/components/BaseLoadingContainer.vue";
+import BasePageHeader from "@/components/BasePageHeader.vue";
 import PlayerRankBoard from "@/components/PlayerRankBoard.vue";
 import ServerApi from "@/api/server/module.js";
 
 export default defineComponent({
   components: {
+    BaseLoadingContainer,
+    BasePageHeader,
     DropDown,
-    PageHeader,
     PlayerRankBoard,
-    ProgressSpinner,
   },
   setup() {
     const leagueList = ref([]);

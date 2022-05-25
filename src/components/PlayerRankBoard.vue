@@ -1,5 +1,5 @@
 <template>
-  <Panel :header="title">
+  <BasePanel :header="title">
     <table class="w-full">
       <colgroup>
         <col width="30%" />
@@ -21,14 +21,14 @@
         </tr>
       </tbody>
     </table>
-  </Panel>
+  </BasePanel>
 </template>
 
 <script>
 import { defineComponent } from "vue";
 import { useRouter } from "vue-router";
 
-import Panel from "@/components/Panel";
+import BasePanel from "@/components/BasePanel";
 import { routeToPlayerInformation } from "@/utils/utils.js";
 
 export default defineComponent({
@@ -47,7 +47,7 @@ export default defineComponent({
     },
   },
   components: {
-    Panel,
+    BasePanel,
   },
   setup() {
     const router = useRouter();
