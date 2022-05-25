@@ -114,6 +114,13 @@ export default defineComponent({
         return item.type == filter.selectedLeagueType;
       });
 
+      // extract season string
+      result.forEach((item) => {
+        console.log(item.label);
+        item.label = /S[0-9]+$/g.exec(item.label)[0];
+      });
+
+      // unshift Total button
       if (!props.disableTotalLeague) {
         result.unshift({
           label: "Total",
