@@ -14,7 +14,7 @@
       </div>
     </div>
     <div
-      v-if="filter.filteredleagueList.length > 0 || filter.mapList"
+      v-if="filter.filteredleagueList || filter.mapList"
       class="container p-3"
     >
       <div id="filter">
