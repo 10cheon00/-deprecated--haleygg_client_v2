@@ -1,5 +1,5 @@
 <template>
-  <div v-if="playerInformation.isFetched">
+  <BaseLoadingContainer :isLoaded="playerInformation.isFetched">
     <!-- Profile -->
     <PageHeader
       :style="{
@@ -165,13 +165,14 @@
         <i class="pi pi-refresh"></i>&nbsp;더 보기
       </div>
     </div>
-  </div>
+  </BaseLoadingContainer>
 </template>
 <script>
 import { defineComponent, ref, computed, onMounted, watch, provide } from "vue";
 import Chart from "primevue/chart";
 import CheckBox from "primevue/checkbox";
 
+import BaseLoadingContainer from "@/components/BaseLoadingContainer.vue";
 import MatchFilter from "@/components/MatchFilter.vue";
 import MatchResultList from "@/components/MatchResultList.vue";
 import NullDataBox from "@/components/NullDataBox.vue";
@@ -184,6 +185,7 @@ import { getColor } from "@/css/color-config.js";
 
 export default defineComponent({
   components: {
+    BaseLoadingContainer,
     Chart,
     CheckBox,
     MatchFilter,

@@ -21,7 +21,10 @@
       <!-- Divider -->
       <div class="my-3 divider" />
 
-      <div v-if="rankSheet.isFetched" class="grid grid-nogutter w-full">
+      <BaseLoadingContainer
+        :isLoaded="rankSheet.isFetched"
+        class="grid grid-nogutter w-full"
+      >
         <PlayerRankBoard
           class="col-12 md:col-4 md:pr-2 mb-3"
           :rankSheet="rankSheet.totalMatchCount"
@@ -84,14 +87,7 @@
           title="팀전 다패 랭킹 😥"
           unit="패"
         />
-      </div>
-      <div
-        v-else
-        class="flex justify-content-center align-items-center"
-        style="height: 200px"
-      >
-        <ProgressSpinner strokeWidth="1" />
-      </div>
+      </BaseLoadingContainer>
     </div>
   </div>
 </template>
@@ -99,18 +95,18 @@
 <script>
 import { defineComponent, reactive, onMounted, ref } from "vue";
 import DropDown from "primevue/dropdown";
-import ProgressSpinner from "primevue/progressspinner";
 
+import BaseLoadingContainer from "@/components/BaseLoadingContainer.vue";
 import PageHeader from "@/components/PageHeader.vue";
 import PlayerRankBoard from "@/components/PlayerRankBoard.vue";
 import ServerApi from "@/api/server/module.js";
 
 export default defineComponent({
   components: {
+    BaseLoadingContainer,
     DropDown,
     PageHeader,
     PlayerRankBoard,
-    ProgressSpinner,
   },
   setup() {
     const leagueList = ref([]);

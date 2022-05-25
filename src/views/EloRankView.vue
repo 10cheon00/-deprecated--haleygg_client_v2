@@ -18,7 +18,7 @@
 
     <MatchFilter :disableTotalLeagueType="true" />
 
-    <div class="container p-3">
+    <BaseLoadingContainer :isLoaded="eloList != null" class="container p-3">
       <Panel header="ELO 랭킹">
         <div
           v-if="top3Player"
@@ -86,7 +86,7 @@
           </tr>
         </tbody>
       </table>
-    </div>
+    </BaseLoadingContainer>
   </div>
 </template>
 
@@ -101,10 +101,12 @@ import PercentageBar from "@/components/PercentageBar.vue";
 import ServerApi from "@/api/server/module.js";
 import { useRouter } from "vue-router";
 
+import BaseLoadingContainer from "@/components/BaseLoadingContainer.vue";
 import { routeToPlayerInformation } from "@/utils/utils.js";
 
 export default defineComponent({
   components: {
+    BaseLoadingContainer,
     MatchFilter,
     NullDataBox,
     PageHeader,
