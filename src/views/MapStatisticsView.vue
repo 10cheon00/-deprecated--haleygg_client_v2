@@ -1,8 +1,8 @@
 <template>
   <div>
-    <PageHeader>
+    <BasePageHeader>
       <p class="m-4 text-4xl font-bold">맵별 통계</p>
-    </PageHeader>
+    </BasePageHeader>
     <BaseLoadingContainer :isLoaded="mapDataList != undefined">
       <!-- Header -->
       <div class="container p-3">
@@ -15,15 +15,15 @@
 import { defineComponent, onMounted, ref } from "vue";
 
 import BaseLoadingContainer from "@/components/BaseLoadingContainer.vue";
-import PageHeader from "@/components/PageHeader.vue";
-import ServerApi from "@/api/server/module.js";
+import BasePageHeader from "@/components/BasePageHeader.vue";
 import MapStatisticsList from "@/components/MapStatisticsList.vue";
+import ServerApi from "@/api/server/module.js";
 
 export default defineComponent({
   components: {
     BaseLoadingContainer,
+    BasePageHeader,
     MapStatisticsList,
-    PageHeader,
   },
   setup() {
     const mapDataList = ref(null);

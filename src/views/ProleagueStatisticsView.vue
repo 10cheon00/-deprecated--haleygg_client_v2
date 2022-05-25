@@ -1,9 +1,9 @@
 <template>
   <div>
-    <PageHeader>
+    <BasePageHeader>
       <p class="text-4xl m-4 font-bold">프로리그 통계</p>
       <p class="text-300">경기타입별로 다전/다승/다패 순위를 보여드립니다.</p>
-    </PageHeader>
+    </BasePageHeader>
     <div class="container p-3">
       <div class="flex align-items-center mb-3">
         <label class="flex-none pr-2">리그</label>
@@ -97,15 +97,15 @@ import { defineComponent, reactive, onMounted, ref } from "vue";
 import DropDown from "primevue/dropdown";
 
 import BaseLoadingContainer from "@/components/BaseLoadingContainer.vue";
-import PageHeader from "@/components/PageHeader.vue";
+import BasePageHeader from "@/components/BasePageHeader.vue";
 import PlayerRankBoard from "@/components/PlayerRankBoard.vue";
 import ServerApi from "@/api/server/module.js";
 
 export default defineComponent({
   components: {
     BaseLoadingContainer,
+    BasePageHeader,
     DropDown,
-    PageHeader,
     PlayerRankBoard,
   },
   setup() {

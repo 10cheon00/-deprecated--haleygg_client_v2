@@ -5,7 +5,7 @@
   <div
     v-else
     class="flex justify-content-center align-items-center"
-    style="height: 200px"
+    style="height: 50vh"
   >
     <ProgressSpinner strokeWidth="1" />
   </div>

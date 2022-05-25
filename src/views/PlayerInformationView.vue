@@ -1,7 +1,7 @@
 <template>
   <BaseLoadingContainer :isLoaded="playerInformation.isFetched">
     <!-- Profile -->
-    <PageHeader
+    <BasePageHeader
       :style="{
         width: 'auto',
         'background-image': `linear-gradient(90deg, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0)),
@@ -43,7 +43,7 @@
       <div class="text-200 my-2">
         {{ playerInformation.profile.career }}
       </div>
-    </PageHeader>
+    </BasePageHeader>
 
     <MatchFilter :leagueList="leagueList" :mapList="mapList" />
 
@@ -51,7 +51,7 @@
       <div class="col-12 grid grid-nogutter">
         <!-- Elo chart -->
         <div class="col-12">
-          <Panel header="Elo 그래프">
+          <BasePanel header="Elo 그래프">
             <div id="elo-chart">
               <Chart
                 v-if="playerInformation.eloChartData"
@@ -59,15 +59,15 @@
                 :data="playerInformation.eloChartData"
                 :options="playerInformation.eloChartOptions"
               />
-              <NullDataBox v-else />
+              <BaseNullDataBox v-else />
             </div>
-          </Panel>
+          </BasePanel>
         </div>
       </div>
 
       <!-- Statistics -->
       <div class="col-12 mt-2" id="statistics">
-        <Panel header="통계">
+        <BasePanel header="통계">
           <div class="grid grid-nogutter">
             <!-- Melee -->
             <StatisticsRateBox
@@ -114,12 +114,12 @@
               />
             </div>
           </div>
-        </Panel>
+        </BasePanel>
       </div>
 
       <!-- List of Matches -->
-      <Panel class="col-12 my-2" header="최근 전적">
-        <template #panel-header-right>
+      <BasePanel class="col-12 my-2" header="최근 전적">
+        <template #BasePanel-header-right>
           <CheckBox
             name="밀리 전적"
             v-model="isMeleeMatchResultShown"
@@ -152,8 +152,8 @@
           </div>
         </div>
 
-        <NullDataBox v-else class="w-full" />
-      </Panel>
+        <BaseNullDataBox v-else class="w-full" />
+      </BasePanel>
       <MatchResultList
         :matchResultList="matchResultList"
         :resultListOwnerName="player.name"
@@ -176,11 +176,11 @@ import Chart from "primevue/chart";
 import CheckBox from "primevue/checkbox";
 
 import BaseLoadingContainer from "@/components/BaseLoadingContainer.vue";
+import BaseNullDataBox from "@/components/BaseNullDataBox.vue";
+import BasePageHeader from "@/components/BasePageHeader.vue";
+import BasePanel from "@/components/BasePanel.vue";
 import MatchFilter from "@/components/MatchFilter.vue";
 import MatchResultList from "@/components/MatchResultList.vue";
-import NullDataBox from "@/components/NullDataBox.vue";
-import PageHeader from "@/components/PageHeader.vue";
-import Panel from "@/components/Panel.vue";
 import ServerApi from "@/api/server/module.js";
 import StatisticsRateBox from "@/components/StatisticsRateBox.vue";
 import { getPercentage, convertHyphenWithDateFormat } from "@/utils/utils.js";
@@ -189,13 +189,13 @@ import { getColor } from "@/css/color-config.js";
 export default defineComponent({
   components: {
     BaseLoadingContainer,
+    BaseNullDataBox,
+    BasePageHeader,
+    BasePanel,
     Chart,
     CheckBox,
     MatchFilter,
     MatchResultList,
-    NullDataBox,
-    PageHeader,
-    Panel,
     StatisticsRateBox,
   },
   props: {
