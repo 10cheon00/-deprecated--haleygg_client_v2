@@ -1,5 +1,5 @@
 <template>
-  <div id="filter">
+  <div>
     <div class="flex justify-content-center px-3" id="league-type-filter">
       <div
         v-for="type in typeList"
@@ -14,11 +14,11 @@
       </div>
     </div>
     <div
-      v-if="filter.leagueList || filter.mapList"
-      class="container my-2 pt-2 px-3"
+      v-if="filter.filteredleagueList.length > 0 || filter.mapList"
+      class="container p-3"
     >
-      <div class="flex justify-content-center p-2" id="filter-group">
-        <div v-if="filter.filteredleagueList" id="league-filter">
+      <div id="filter">
+        <div v-if="filter.filteredleagueList.length > 0" id="league-filter">
           <div
             v-for="league in filter.filteredleagueList"
             :key="league"
@@ -31,21 +31,18 @@
             {{ league.label }}
           </div>
         </div>
-        <select
-          v-if="filter.mapList"
-          v-model="filter.selectedMap"
-          id="map-filter"
-          required
-        >
-          <option selected disabled :value="null">맵 선택</option>
-          <option
-            v-for="map in filter.mapList"
-            :key="map"
-            class="maplist-item"
-            :label="map.label"
-            :value="map.name"
-          />
-        </select>
+        <div v-if="filter.mapList" id="map-filter">
+          <select v-model="filter.selectedMap" required>
+            <option selected disabled :value="null">맵 선택</option>
+            <option
+              v-for="map in filter.mapList"
+              :key="map"
+              class="maplist-item"
+              :label="map.label"
+              :value="map.name"
+            />
+          </select>
+        </div>
       </div>
     </div>
   </div>
@@ -172,36 +169,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-@media (pointer: fine) {
-  ::-webkit-scrollbar {
-    height: 8px;
-  }
-
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    background: #bbb;
-    border-radius: 1rem;
-  }
-
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
-    background: #999;
-  }
-
-  ::-webkit-scrollbar-thumb:active {
-    background: #666;
-  }
-}
-
-#filter {
-  background-color: white;
-}
-
-#filter-group {
-  background-color: #f0f0f0;
-  border: 1px solid #dee2e6;
-}
-
 #league-type-filter {
   background-color: #404040;
   display: flex;
@@ -221,20 +188,30 @@ export default defineComponent({
   color: black;
 }
 
+#filter {
+  background-color: #f0f0f0;
+  border: 1px solid #dee2e6;
+}
+
 #league-filter {
+  border-bottom: 1px solid #dee2e6;
   display: flex;
-  margin-right: auto;
   overflow-y: auto;
   white-space: nowrap;
+  padding: 0.5rem 0;
+  margin: 0 0.5rem;
+  align-items: center;
 }
 
 #league-filter .button {
+  background-color: white;
   border-radius: 1.5rem;
-  background-color: #ffffff;
   color: #c25e53;
-  text-align: center;
-  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+  height: 28px;
   margin: 0 0.25rem;
+  padding: 0.25rem 1rem;
+  text-align: center;
 }
 
 #league-filter .button.active {
@@ -242,27 +219,17 @@ export default defineComponent({
   color: white;
 }
 
-@media (max-width: 768px) {
-  .league-filter .button {
-    padding: 0.75rem;
-  }
+#map-filter {
+  display: flex;
+  margin: 0.5rem;
 }
 
-#map-filter {
-  border: 1px solid #a6a9ac;
-  margin: auto 0 auto 1rem;
-  max-width: 8rem;
+#map-filter select {
+  flex-grow: 1;
   padding: 0.5rem;
-  vertical-align: baseline;
 }
 
 #map-filter option[disabled] {
   display: none;
-}
-
-@media (max-width: 768px) {
-  #map-filter {
-    margin-left: 0.25rem;
-  }
 }
 </style>
