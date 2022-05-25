@@ -15,7 +15,10 @@
       <div class="text-4xl font-bold my-2" id="player-name">
         {{ playerInformation.profile.name }}
       </div>
-      <small class="text-sm" id="signup-date"
+      <small
+        v-if="playerInformation.profile.joined_date > '2019-01-01'"
+        class="text-sm"
+        id="signup-date"
         >{{
           convertHyphenWithDateFormat(playerInformation.profile.joined_date)
         }}
