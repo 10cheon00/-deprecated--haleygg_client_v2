@@ -214,7 +214,7 @@ export default defineComponent({
   background-color: white;
   border-radius: 1.5rem;
   color: #c25e53;
-  font-size: 0.75rem;
+  font-size: 0.9rem;
   height: 28px;
   margin: 0 0.25rem;
   padding: 0.25rem 1rem;
