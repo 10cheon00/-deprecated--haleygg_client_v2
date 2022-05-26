@@ -110,6 +110,9 @@ export default defineComponent({
             },
           ],
         };
+
+        copyPreviousLeagueAndTitleIfExists(state);
+
         const rules = {
           league: { Required },
           title: { Required },
@@ -160,6 +163,9 @@ export default defineComponent({
             },
           ],
         };
+
+        copyPreviousLeagueAndTitleIfExists(state);
+
         const rules = {
           league: { Required },
           title: { Required },
@@ -208,6 +214,23 @@ export default defineComponent({
         return `${duplicates}이(가) 중복되었습니다.`;
       }
       return false;
+    };
+
+    const copyPreviousLeagueAndTitleIfExists = (state) => {
+      if (matchResultForms.length == 0) {
+        return;
+      }
+      const previousLeague =
+        matchResultForms[matchResultForms.length - 1].state.league;
+      if (previousLeague) {
+        state.league = previousLeague;
+      }
+
+      const previousTitle =
+        matchResultForms[matchResultForms.length - 1].state.title;
+      if (previousTitle) {
+        state.title = previousTitle;
+      }
     };
 
     const deleteMatchResult = (index) => {
