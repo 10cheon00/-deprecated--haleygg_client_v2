@@ -6,6 +6,7 @@ import "primevue/resources/primevue.min.css";
 import "primevue/resources/themes/nova-alt/theme.css";
 import "primeicons/primeicons.css";
 import "primeflex/primeflex.css";
+import ConfirmationService from "primevue/confirmationservice";
 
 import "@/css/reset.css";
 import "@/css/font.css";
@@ -18,6 +19,7 @@ Chart.register(ChartDatalabels)
 
 const app = createApp(App)
 app.use(PrimeVue, { inputStyle: 'filled' })
+app.use(ConfirmationService)
 app.use(VueRouter)
 app.use(VuexStore)
 app.mount('#app')
