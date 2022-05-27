@@ -56,18 +56,24 @@
         </Button>
       </div>
       <div class="flex">
-        <Button class="p-button-success controller-button" @click="postMatch()">
+        <Button
+          class="p-button-success controller-button"
+          @click="showConfirmDialog()"
+        >
           <i class="pi pi-save" />
           <span>&nbsp;저장</span>
         </Button>
       </div>
     </div>
+    <ConfirmDialog></ConfirmDialog>
   </div>
 </template>
 
 <script>
 import { defineComponent, onMounted, ref, reactive, shallowRef } from "vue";
 import Button from "primevue/button";
+import { useConfirm } from "primevue/useconfirm";
+import ConfirmDialog from "primevue/confirmdialog";
 
 import BasePageHeader from "@/components/BasePageHeader.vue";
 import BasePanel from "@/components/BasePanel.vue";
@@ -85,10 +91,12 @@ export default defineComponent({
     BasePageHeader,
     BasePanel,
     Button,
+    ConfirmDialog,
     ValidationErrorMessage,
   },
   setup() {
     const resources = ref(null);
+    const confirm = useConfirm();
     const matchResultForms = reactive([]);
 
     const addMeleeMatchResult = () => {
@@ -110,6 +118,9 @@ export default defineComponent({
             },
           ],
         };
+
+        copyPreviousLeagueAndTitleIfExists(state);
+
         const rules = {
           league: { Required },
           title: { Required },
@@ -160,6 +171,9 @@ export default defineComponent({
             },
           ],
         };
+
+        copyPreviousLeagueAndTitleIfExists(state);
+
         const rules = {
           league: { Required },
           title: { Required },
@@ -203,18 +217,34 @@ export default defineComponent({
       const duplicates = Object.keys(aggregation).filter(
         (key) => aggregation[key] > 1
       );
-      console.log(duplicates);
       if (duplicates.length > 0) {
         return `${duplicates}이(가) 중복되었습니다.`;
       }
       return false;
     };
 
+    const copyPreviousLeagueAndTitleIfExists = (state) => {
+      if (matchResultForms.length == 0) {
+        return;
+      }
+      const previousLeague =
+        matchResultForms[matchResultForms.length - 1].state.league;
+      if (previousLeague) {
+        state.league = previousLeague;
+      }
+
+      const previousTitle =
+        matchResultForms[matchResultForms.length - 1].state.title;
+      if (previousTitle) {
+        state.title = previousTitle;
+      }
+    };
+
     const deleteMatchResult = (index) => {
       matchResultForms.splice(index, 1);
     };
 
-    const postMatch = () => {
+    const showConfirmDialog = () => {
       const isFormHasError = matchResultForms.reduce((result, form) => {
         validate(form);
         result = isErrorExists(form) || result;
@@ -224,6 +254,18 @@ export default defineComponent({
       if (isFormHasError) {
         return;
       }
+
+      confirm.require({
+        message: "전적을 추가하시겠습니까?",
+        header: "알림",
+        icon: "pi pi-question-circle",
+        accept: () => {
+          postMatch();
+        },
+      });
+    };
+
+    const postMatch = () => {
       const forms = matchResultForms.reduce((acc, cur) => {
         acc.push(cur.state);
         return acc;
@@ -232,8 +274,8 @@ export default defineComponent({
       if (forms.length > 0) {
         ServerApi.createMatch(forms)
           .then((res) => {
-            console.log(forms, res);
-            //alert result.
+            console.log(res);
+            alert("전적이 추가되었습니다.");
           })
           .catch((error) => {
             error.response.data.forEach((data, index) => {
@@ -295,6 +337,7 @@ export default defineComponent({
       addMeleeMatchResult,
       addTopAndBottomMatchResult,
       deleteMatchResult,
+      showConfirmDialog,
       postMatch,
     };
   },

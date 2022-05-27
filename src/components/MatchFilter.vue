@@ -116,7 +116,6 @@ export default defineComponent({
 
       // extract season string
       result.forEach((item) => {
-        console.log(item.label);
         item.label = /S[0-9]+$/g.exec(item.label)[0];
       });
 
