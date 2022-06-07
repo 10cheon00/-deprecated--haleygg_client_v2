@@ -48,13 +48,11 @@
           :errorObj="form.errorObj.player_tuples.$child[0].winner"
         >
           <label class="form-label">승자</label>
-          <DropDown
+          <input
+            class="form-suggestion-input w-full"
+            type="text"
+            list="playerList"
             v-model="form.state.player_tuples[0].winner"
-            class="w-full"
-            :filter="true"
-            optionLabel="name"
-            optionValue="name"
-            :options="resources.players"
           />
           <ValidationErrorMessage
             class="w-full my-2"
@@ -83,13 +81,11 @@
           :errorObj="form.errorObj.player_tuples.$child[0].loser"
         >
           <label class="form-label">패자</label>
-          <DropDown
+          <input
+            class="form-suggestion-input w-full"
+            type="text"
+            list="playerList"
             v-model="form.state.player_tuples[0].loser"
-            class="w-full"
-            :filter="true"
-            optionLabel="name"
-            optionValue="name"
-            :options="resources.players"
           />
           <ValidationErrorMessage
             class="w-full my-2"
@@ -122,6 +118,16 @@
         v-model="form.state.miscellaneous"
       />
     </div>
+
+    <datalist id="playerList">
+      <option
+        v-for="player in resources.players"
+        :key="player"
+        :value="player.name"
+      >
+        {{ player.name }}
+      </option>
+    </datalist>
   </div>
 </template>
 <script>
@@ -183,6 +189,14 @@ export default defineComponent({
 
 .form-player-tuples {
   border-top: 1px dashed #dee2e6;
+}
+
+.form-suggestion-input {
+  padding: 0.429rem;
+  font-size: 1rem;
+  display: inline-block;
+  border: 1px solid #a6a6a6;
+  border-radius: 3px;
 }
 
 #miscellaneous {
