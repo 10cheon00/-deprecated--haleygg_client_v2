@@ -119,7 +119,7 @@
 
       <!-- List of Matches -->
       <BasePanel class="col-12 my-2" header="최근 전적">
-        <template #BasePanel-header-right>
+        <template #panel-header-right>
           <CheckBox
             name="밀리 전적"
             v-model="isMeleeMatchResultShown"
