@@ -3,13 +3,10 @@
     <!-- League -->
     <ValidationWrapper class="form-content" :errorObj="form.errorObj.league">
       <label class="form-label">리그</label>
-      <DropDown
-        v-model="form.state.league"
-        class="w-full"
-        :filter="true"
-        optionLabel="name"
-        optionValue="name"
-        :options="resources.leagues"
+      <FormDataListInputField
+        :form="form.state"
+        field="league"
+        datalist="leagueList"
       />
     </ValidationWrapper>
     <!-- Title -->
@@ -30,13 +27,10 @@
     <!-- Map -->
     <ValidationWrapper class="form-content" :errorObj="form.errorObj.map">
       <label class="form-label">맵</label>
-      <DropDown
-        v-model="form.state.map"
-        class="w-full"
-        :filter="true"
-        optionLabel="name"
-        optionValue="name"
-        :options="resources.maps"
+      <FormDataListInputField
+        :form="form.state"
+        field="map"
+        datalist="mapList"
       />
     </ValidationWrapper>
 
@@ -48,11 +42,10 @@
           :errorObj="form.errorObj.player_tuples.$child[0].winner"
         >
           <label class="form-label">승자</label>
-          <input
-            class="form-suggestion-input w-full"
-            type="text"
-            list="playerList"
-            v-model="form.state.player_tuples[0].winner"
+          <FormDataListInputField
+            :form="form.state.player_tuples[0]"
+            field="winner"
+            datalist="playerList"
           />
           <ValidationErrorMessage
             class="w-full my-2"
@@ -81,11 +74,10 @@
           :errorObj="form.errorObj.player_tuples.$child[0].loser"
         >
           <label class="form-label">패자</label>
-          <input
-            class="form-suggestion-input w-full"
-            type="text"
-            list="playerList"
-            v-model="form.state.player_tuples[0].loser"
+          <FormDataListInputField
+            :form="form.state.player_tuples[0]"
+            field="loser"
+            datalist="playerList"
           />
           <ValidationErrorMessage
             class="w-full my-2"
@@ -119,33 +111,29 @@
       />
     </div>
 
-    <datalist id="playerList">
-      <option
-        v-for="player in resources.players"
-        :key="player"
-        :value="player.name"
-      >
-        {{ player.name }}
-      </option>
-    </datalist>
+    <FormDataList :datalist="resources.players" datalistId="playerList" />
+    <FormDataList :datalist="resources.maps" datalistId="mapList" />
+    <FormDataList :datalist="resources.leagues" datalistId="leagueList" />
   </div>
 </template>
 <script>
 import { defineComponent, toRef } from "vue";
-import DropDown from "primevue/dropdown";
 import InputMask from "primevue/inputmask";
 import InputText from "primevue/inputtext";
 import SelectButton from "primevue/selectbutton";
 
+import FormDataListInputField from "@/components/FormDataListInputField.vue";
+import FormDataList from "@/components/FormDataList.vue";
 import ValidationErrorMessage from "@/components/ValidationErrorMessage.vue";
 import ValidationWrapper from "@/components/ValidationWrapper.vue";
 
 export default defineComponent({
   components: {
-    DropDown,
     InputMask,
     InputText,
     SelectButton,
+    FormDataListInputField,
+    FormDataList,
     ValidationErrorMessage,
     ValidationWrapper,
   },
@@ -189,14 +177,6 @@ export default defineComponent({
 
 .form-player-tuples {
   border-top: 1px dashed #dee2e6;
-}
-
-.form-suggestion-input {
-  padding: 0.429rem;
-  font-size: 1rem;
-  display: inline-block;
-  border: 1px solid #a6a6a6;
-  border-radius: 3px;
 }
 
 #miscellaneous {

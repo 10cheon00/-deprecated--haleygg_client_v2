@@ -119,7 +119,7 @@ export default defineComponent({
           ],
         };
 
-        copyPreviousLeagueAndTitleIfExists(state);
+        copyPreviousLeagueAndTitleAndDateIfExists(state);
 
         const rules = {
           league: { Required },
@@ -172,7 +172,7 @@ export default defineComponent({
           ],
         };
 
-        copyPreviousLeagueAndTitleIfExists(state);
+        copyPreviousLeagueAndTitleAndDateIfExists(state);
 
         const rules = {
           league: { Required },
@@ -223,7 +223,7 @@ export default defineComponent({
       return false;
     };
 
-    const copyPreviousLeagueAndTitleIfExists = (state) => {
+    const copyPreviousLeagueAndTitleAndDateIfExists = (state) => {
       if (matchResultForms.length == 0) {
         return;
       }
@@ -237,6 +237,12 @@ export default defineComponent({
         matchResultForms[matchResultForms.length - 1].state.title;
       if (previousTitle) {
         state.title = previousTitle;
+      }
+
+      const previousDate =
+        matchResultForms[matchResultForms.length - 1].state.date;
+      if(previousDate){
+        state.date = previousDate;
       }
     };
 
