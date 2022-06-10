@@ -51,13 +51,11 @@
         :errorObj="form.errorObj.player_tuples.$child[index].winner"
       >
         <label class="form-label">승자</label>
-        <DropDown
+        <input
+          class="form-suggestion-input w-full"
+          type="text"
+          list="playerList"
           v-model="playerTuple.winner"
-          class="w-full"
-          :filter="true"
-          optionLabel="name"
-          optionValue="name"
-          :options="resources.players"
         />
         <ValidationErrorMessage
           class="w-full my-2"
@@ -69,13 +67,11 @@
         :errorObj="form.errorObj.player_tuples.$child[index].loser"
       >
         <label class="form-label">패자</label>
-        <DropDown
+        <input
+          class="form-suggestion-input w-full"
+          type="text"
+          list="playerList"
           v-model="playerTuple.loser"
-          class="w-full"
-          :filter="true"
-          optionLabel="name"
-          optionValue="name"
-          :options="resources.players"
         />
         <ValidationErrorMessage
           class="w-full my-2"
@@ -93,10 +89,20 @@
         v-model="form.state.miscellaneous"
       />
     </div>
+
+    <datalist id="playerList">
+      <option
+        v-for="player in resources.players"
+        :key="player"
+        :value="player.name"
+      >
+        {{ player.name }}
+      </option>
+    </datalist>
   </div>
 </template>
 <script>
-import { defineComponent, toRef } from "vue";
+import { defineComponent, toRef, ref } from "vue";
 import DropDown from "primevue/dropdown";
 import InputMask from "primevue/inputmask";
 import InputText from "primevue/inputtext";
@@ -124,14 +130,40 @@ export default defineComponent({
   },
   setup(props) {
     const form = toRef(props, "wrappedForm");
+
+    const filteredPlayerList = ref();
+
+    const findPlayerInList = (event) => {
+      if (!event.query.trim().length) {
+        filteredPlayerList.value = [...props.resources.players];
+      } else {
+        filteredPlayerList.value = props.resources.players.filter((player) => {
+          return player.name
+            .toLowerCase()
+            .startsWith(event.query.toLowerCase());
+        });
+      }
+    };
+
+    const log = () => {
+      console.log(form.value.state.player_tuples);
+    };
+
     return {
       form,
+      filteredPlayerList,
+      findPlayerInList,
+      log,
     };
   },
 });
 </script>
 
 <style scoped>
+input::-webkit-calendar-picker-indicator {
+  display: none;
+}
+
 .form-label {
   color: gray;
   font-size: smaller;
@@ -152,6 +184,14 @@ export default defineComponent({
 
 .form-player-tuples {
   border-top: 1px dashed #dee2e6;
+}
+
+.form-suggestion-input {
+  padding: 0.429rem;
+  font-size: 1rem;
+  display: inline-block;
+  border: 1px solid #a6a6a6;
+  border-radius: 3px;
 }
 
 #miscellaneous {
