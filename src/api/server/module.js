@@ -2,7 +2,7 @@ import axiosInstance from "@/api/axios";
 import EloModule from "@/api/server/elo.js"
 import MapModule from "@/api/server/map.js";
 import LeagueModule from "@/api/server/league.js";
-import PlayerModule from "@/api/server/player.js";
+import PlayerModule from "@/api/server/player";
 import RankModule from "@/api/server/rank.js";
 
 const server = {

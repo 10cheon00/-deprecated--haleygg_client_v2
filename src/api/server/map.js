@@ -1,13 +1,15 @@
 import axiosInstance from "@/api/axios.js"
 
-const fetchMapList = () => {
+const api = {};
+
+api.fetchMapList = () => {
   return axiosInstance.request({
     method: "GET",
     url: `api/maps/`
   });
 }
 
-const fetchMeleeMapList = () => {
+api.fetchMeleeMapList = () => {
   return axiosInstance.request({
     method: "GET",
     url: `api/maps/`,
@@ -17,14 +19,14 @@ const fetchMeleeMapList = () => {
   });
 }
 
-const fetchMapDetail = (mapName) => {
+api.fetchMapDetail = (mapName) => {
   return axiosInstance.request({
     method: "GET",
     url: `api/maps/${mapName}`
   });
 }
 
-const fetchMapStatistics = (mapName) => {
+api.fetchMapStatistics = (mapName) => {
   return axiosInstance.request({
     method: "GET",
     url: `api/matches-summary/`,
@@ -34,9 +36,4 @@ const fetchMapStatistics = (mapName) => {
   });
 }
 
-export default {
-  fetchMapDetail,
-  fetchMapList,
-  fetchMeleeMapList,
-  fetchMapStatistics,
-}
+export default api;
