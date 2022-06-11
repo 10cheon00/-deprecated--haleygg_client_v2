@@ -28,27 +28,35 @@
           unit="승"
         />
       </div>
+
+      <BasePanel header="최근 추가된 전적" class="my-3" />
+      <MatchResultList v-if="recentMatches" :matchResultList="recentMatches" />
     </div>
   </div>
 </template>
 
 <script>
 import { defineComponent, ref, onMounted } from "vue";
+import ServerApi from "@/api/server/module.js";
 
 import BasePageHeader from "@/components/BasePageHeader.vue";
+import BasePanel from "@/components/BasePanel.vue";
 import PlayerRankBoard from "@/components/PlayerRankBoard.vue";
 import PlayerSearchBar from "@/components/PlayerSearchBar.vue";
-import ServerApi from "@/api/server/module.js";
+import MatchResultList from "@/components/MatchResultList.vue";
 
 export default defineComponent({
   components: {
     BasePageHeader,
+    BasePanel,
+    MatchResultList,
     PlayerRankBoard,
     PlayerSearchBar,
   },
   setup() {
     const totalMatchCountRank = ref(null);
     const totalWinCountRank = ref(null);
+    const recentMatches = ref(null);
 
     const fetchRank = async () => {
       let response = await ServerApi.fetchTotalMatchCountRank();
@@ -58,11 +66,18 @@ export default defineComponent({
       totalWinCountRank.value = response.data.results;
     };
 
+    const fetchRecentMatches = async () => {
+      const response = await ServerApi.fetchPlayerMatches();
+      recentMatches.value = response.data.results.slice(0, 5);
+    };
+
     onMounted(() => {
       fetchRank();
+      fetchRecentMatches();
     });
 
     return {
+      recentMatches,
       totalMatchCountRank,
       totalWinCountRank,
     };
