@@ -1,7 +1,9 @@
 import axiosInstance from "@/api/axios.js";
 
 
-const fetchLeagueList = () => {
+const api = {};
+
+api.fetchLeagueList = () => {
   return axiosInstance.request({
     method: "GET",
     url: `api/leagues/`
@@ -9,6 +11,4 @@ const fetchLeagueList = () => {
 }
 
 
-export default {
-  fetchLeagueList,
-}
+export default api;

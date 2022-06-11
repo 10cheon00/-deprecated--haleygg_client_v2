@@ -215,13 +215,18 @@ export default defineComponent({
   font-size: small;
 }
 
+.match-result-none {
+  background-color: #fef4e7;
+}
+
 .match-result-none .match-result-date {
   border-right: 1px dashed #3e3e3e;
   border-bottom: 1px dashed #3e3e3e;
 }
 
+/* Not provide match result owner */
 .match-result-none .match-result-header {
-  background-color: #cecece;
+  background-color: #fad49e;
 }
 
 .match-result-none .match-result-league {
@@ -239,6 +244,11 @@ export default defineComponent({
   }
 }
 
+/* Provided match result owner */
+.match-result-win {
+  background-color: #e6efff;
+}
+
 .match-result-win .match-result-date {
   border-right: 1px dashed rgb(var(--win-color));
   border-bottom: 1px dashed rgb(var(--win-color));
@@ -250,6 +260,10 @@ export default defineComponent({
 
 .match-result-win .match-result-league {
   border-bottom: 1px dashed rgb(var(--win-color));
+}
+
+.match-result-lose {
+  background-color: #ffe6e6;
 }
 
 .match-result-lose .match-result-date {

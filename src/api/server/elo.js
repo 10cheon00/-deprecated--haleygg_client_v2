@@ -1,7 +1,9 @@
 import axiosInstance from "@/api/axios.js";
 
 
-const fetchEloRanking = (leagueType) => {
+const api = {};
+
+api.fetchEloRanking = (leagueType) => {
   return axiosInstance.request({
     method: "GET",
     url: `api/elo/ranking/`,
@@ -11,6 +13,4 @@ const fetchEloRanking = (leagueType) => {
   });
 }
 
-export default {
-  fetchEloRanking
-}
+export default api;

@@ -37,6 +37,10 @@ export default defineComponent({
 </script>
 
 <style scoped>
+input::-webkit-calendar-picker-indicator {
+  opacity: 0;
+}
+
 .form-suggestion-input {
   padding: 0.429rem 0.429rem;
   font-size: 1rem;

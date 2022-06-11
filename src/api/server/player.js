@@ -1,21 +1,22 @@
 import axiosInstance from "@/api/axios.js"
 
+const api = {};
 
-const fetchPlayerList = () => {
+api.fetchPlayerList = () => {
   return axiosInstance.request({
     method: "GET",
     url: `api/players/`
   });
 }
 
-const fetchPlayerDetail = (playerName) => {
+api.fetchPlayerDetail = (playerName) => {
   return axiosInstance.request({
     method: "GET",
     url: `api/players/${playerName}/`
   });
 }
 
-const fetchPlayerMatches = (playerName, leagueName = null, leagueType = null, mapName = null) => {
+api.fetchPlayerMatches = (playerName = null, leagueName = null, leagueType = null, mapName = null) => {
   return axiosInstance.request({
     method: "GET",
     url: `api/matches/`,
@@ -28,14 +29,14 @@ const fetchPlayerMatches = (playerName, leagueName = null, leagueType = null, ma
   });
 }
 
-const fetchPlayerNextMatches = (url) => {
+api.fetchPlayerNextMatches = (url) => {
   return axiosInstance.request({
     method: "GET",
     url: url
   });
 }
 
-const fetchPlayerStatistics = (playerName, leagueName = null, leagueType = null, mapName = null) => {
+api.fetchPlayerStatistics = (playerName, leagueName = null, leagueType = null, mapName = null) => {
   return axiosInstance.request({
     method: "GET",
     url: `api/matches-summary/`,
@@ -48,7 +49,7 @@ const fetchPlayerStatistics = (playerName, leagueName = null, leagueType = null,
   });
 }
 
-const fetchPlayerEloHistory = (playerName, leagueType) => {
+api.fetchPlayerEloHistory = (playerName, leagueType) => {
   return axiosInstance.request({
     method: "GET",
     url: `api/elo/`,
@@ -59,7 +60,7 @@ const fetchPlayerEloHistory = (playerName, leagueType) => {
   });
 }
 
-const fetchPlayerTier = (playerName) => {
+api.fetchPlayerTier = (playerName) => {
   return axiosInstance.request({
     method: "GET",
     url: `api/tiers/`,
@@ -70,12 +71,4 @@ const fetchPlayerTier = (playerName) => {
   });
 }
 
-export default {
-  fetchPlayerDetail,
-  fetchPlayerEloHistory,
-  fetchPlayerList,
-  fetchPlayerMatches,
-  fetchPlayerNextMatches,
-  fetchPlayerStatistics,
-  fetchPlayerTier
-}
+export default api;
