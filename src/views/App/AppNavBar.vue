@@ -97,6 +97,11 @@ export default defineComponent({
           iconClass: "pi pi-fw pi-sort-amount-up",
           to: "/proleague/",
         },
+        {
+          label: "상대 전적 검색",
+          iconClass: "pi pi-fw pi-users",
+          to: "/compare/",
+        },
       ];
 
       if (userName.value.length > 0) {
