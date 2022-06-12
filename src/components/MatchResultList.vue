@@ -220,8 +220,8 @@ export default defineComponent({
 }
 
 .match-result-none .match-result-date {
-  border-right: 1px dashed #3e3e3e;
-  border-bottom: 1px dashed #3e3e3e;
+  border-right: 1px dashed #f6b355;
+  border-bottom: 1px dashed #f6b355;
 }
 
 /* Not provide match result owner */
@@ -230,7 +230,7 @@ export default defineComponent({
 }
 
 .match-result-none .match-result-league {
-  border-bottom: 1px dashed #3e3e3e;
+  border-bottom: 1px dashed #f6b355;
 }
 
 @media (min-width: 768px) {
@@ -239,7 +239,7 @@ export default defineComponent({
   }
 
   .match-result-none .match-result-league {
-    border-right: 1px dashed #3e3e3e;
+    border-right: 1px dashed #f6b355;
     border-bottom: none;
   }
 }
