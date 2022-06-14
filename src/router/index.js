@@ -52,7 +52,7 @@ const routes = [
   {
     name: 'ComparePlayerView',
     path: '/compare/',
-    component: () => import("@/views/ComparePlayerView.vue"),
+    component: () => import("@/views/PlayerComparisonView.vue"),
     meta: {
       title: "상대 전적 검색"
     }

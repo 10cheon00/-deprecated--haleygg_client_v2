@@ -76,6 +76,8 @@ export default defineComponent({
     const playerList = ref(null);
     const searchResult = false;
 
+    console.log(process.env);
+
     onMounted(async () => {
       const response = await ServerApi.fetchPlayerList();
       playerList.value = response.data;
