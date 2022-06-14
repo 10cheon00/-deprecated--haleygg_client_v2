@@ -5,6 +5,9 @@ const Required = (state) => {
     if (typeof state == "string" && state.length > 0) {
       return false;
     }
+    else {
+      return false;
+    }
   }
   return "이 항목은 필수입니다."
 }
@@ -14,26 +17,12 @@ const validate = (form) => {
 }
 
 const updateErrorObj = (state, rules) => {
-  console.log(rules);
-
   return Object.keys(state).reduce((acc, key) => {
     // check value is array
     if (Array.isArray(state[key])) {
       acc[key] = {
         $this: computed(() => {
-          const validationFunctions = rules[key].$this;
-          return Object.keys(validationFunctions).reduce((errorObj, _key) => {
-            const _validate = validationFunctions[_key]
-            const errorMessage = _validate(state[key]);
-            if (errorMessage) {
-              errorObj.isErrorExists = true;
-              errorObj.message = errorMessage;
-            }
-            return errorObj;
-          }, {
-            isErrorExists: false,
-            message: ""
-          });
+          return runValidators(state[key], rules[key].$this);
         }),
         $child: state[key].reduce((_acc, _cur) => {
           _acc.push(updateErrorObj(_cur, rules[key].$child));
@@ -50,26 +39,31 @@ const updateErrorObj = (state, rules) => {
       }
       else {
         acc[key] = computed(() => {
-          const validationFunctions = rules[key];
-          console.dir(rules[key]);
-          return Object.keys(validationFunctions).reduce((errorObj, _key) => {
-            const _validate = validationFunctions[_key]
-            const errorMessage = _validate(state[key]);
-            if (errorMessage) {
-              errorObj.isErrorExists = true;
-              errorObj.message = errorMessage;
-            }
-            return errorObj;
-          }, {
-            isErrorExists: false,
-            message: ""
-          });
+          return runValidators(state[key], rules[key]);
         });
       }
     }
     return acc;
   }, new Object());
 };
+
+const runValidators = (state, validationFunctions) => {
+  for (const key in validationFunctions) {
+    const validate = validationFunctions[key];
+    const errorMessage = validate(state);
+    console.log(validate, state, errorMessage)
+    if (errorMessage) {
+      return {
+        isErrorExists: true,
+        message: errorMessage
+      }
+    }
+  }
+  return {
+    isErrorExists: false,
+    message: ""
+  }
+}
 
 const initializeErrorObj = (state) => {
   const result = Object.keys(state).reduce((acc, key) => {
