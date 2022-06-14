@@ -2,7 +2,9 @@ import { computed } from "vue";
 
 const Required = (state) => {
   if (state) {
-    return false;
+    if (typeof state == "string" && state.length > 0) {
+      return false;
+    }
   }
   return "이 항목은 필수입니다."
 }
@@ -12,6 +14,8 @@ const validate = (form) => {
 }
 
 const updateErrorObj = (state, rules) => {
+  console.log(rules);
+
   return Object.keys(state).reduce((acc, key) => {
     // check value is array
     if (Array.isArray(state[key])) {
@@ -47,6 +51,7 @@ const updateErrorObj = (state, rules) => {
       else {
         acc[key] = computed(() => {
           const validationFunctions = rules[key];
+          console.dir(rules[key]);
           return Object.keys(validationFunctions).reduce((errorObj, _key) => {
             const _validate = validationFunctions[_key]
             const errorMessage = _validate(state[key]);
