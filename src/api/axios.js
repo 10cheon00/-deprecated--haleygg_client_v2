@@ -3,10 +3,9 @@ import axios from "axios";
 import vuexStore from "@/store/store.js";
 import router from "@/router/index.js";
 
-const serverUrl = "https://haleygg.10cheon00.xyz/"
 
 const axiosInstance = axios.create({
-  baseURL: serverUrl,
+  baseURL: process.env.VUE_APP_SERVER_URL,
   timeout: 5000,
 })
 
