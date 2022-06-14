@@ -35,9 +35,26 @@ const routeToPlayerInformation = (router, playerName) => {
     },
   });
 };
+
+const getWallpaperUrlByRace = (race) => {
+  const wallpaper = {
+    P: "https://bnetcmsus-a.akamaihd.net/cms/gallery/7EKSWN98V7M91498587613057.jpg",
+    T: "https://bnetcmsus-a.akamaihd.net/cms/gallery/lt/LTHPT2MPAS8P1502725038501.jpg",
+    Z: "https://bnetcmsus-a.akamaihd.net/cms/gallery/JHXVBPP04GHH1498587636883.jpg",
+  };
+  let url = "";
+  if (Object.keys(wallpaper).find((key) => key == race)) {
+    url = wallpaper[race];
+  } else {
+    url = "https://i.imgur.com/SK3Kyyf.jpeg";
+  }
+  return url;
+};
+
 export {
   convertHyphenWithDateFormat,
   getPercentage,
+  getWallpaperUrlByRace,
   hexToRgb,
   routeToPlayerInformation
 }
