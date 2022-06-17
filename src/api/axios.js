@@ -1,4 +1,5 @@
 import axios from "axios";
+import Qs from "qs";
 
 import vuexStore from "@/store/store.js";
 import router from "@/router/index.js";
@@ -7,6 +8,9 @@ import router from "@/router/index.js";
 const axiosInstance = axios.create({
   baseURL: process.env.VUE_APP_SERVER_URL,
   timeout: 5000,
+  paramsSerializer: (params) => {
+    return Qs.stringify(params, { arrayFormat: 'repeat' })
+  }
 })
 
 axiosInstance.interceptors.request.use(
@@ -57,6 +61,7 @@ axiosInstance.interceptors.response.use(response => {
         name: "500View"
       })
     }
+
     if (error.response.status == 400) {
       if (error.config.url == 'api/auth/token/verify/') {
         router.replace({
@@ -65,12 +70,7 @@ axiosInstance.interceptors.response.use(response => {
         return Promise.reject(error);
       }
     }
-    if (error.response.status == 404) {
-      router.replace({
-        name: "404View"
-      });
-      return Promise.reject(error)
-    }
+
     if (error.response.status == 401) {
       // exception on login request.
       if (error.config.url == "api/auth/token/") {
