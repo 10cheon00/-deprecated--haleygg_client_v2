@@ -51,7 +51,6 @@ const runValidators = (state, validationFunctions) => {
   for (const key in validationFunctions) {
     const validate = validationFunctions[key];
     const errorMessage = validate(state);
-    console.log(validate, state, errorMessage)
     if (errorMessage) {
       return {
         isErrorExists: true,
