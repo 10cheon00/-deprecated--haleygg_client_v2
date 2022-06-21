@@ -16,16 +16,18 @@ api.fetchPlayerDetail = (playerName) => {
   });
 }
 
-api.fetchPlayerMatches = (playerName = null, leagueName = null, leagueType = null, mapName = null) => {
+api.fetchPlayerMatches = (playerNameList = [], leagueName = null, leagueType = null, mapName = null, matchType = null) => {
+
   return axiosInstance.request({
     method: "GET",
     url: `api/matches/`,
     params: {
-      "players": playerName,
+      "players": playerNameList,
       "league": leagueName,
       "league__type": leagueType,
-      "map": mapName
-    }
+      "map": mapName,
+      "match_type": matchType
+    },
   });
 }
 
@@ -68,6 +70,13 @@ api.fetchPlayerTier = (playerName) => {
     params: {
       "player": playerName
     }
+  });
+}
+
+api.fetchPlayerStatisticsAgainstOpponent = (playerName, opponentName) => {
+  return axiosInstance.request({
+    method: "GET",
+    url: `api/compare/?player=${playerName}&opponent=${opponentName}`
   });
 }
 
