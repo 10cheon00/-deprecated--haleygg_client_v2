@@ -149,11 +149,16 @@
                   v-for="match in comparisonResult.timeline.results"
                   :key="match"
                 >
-                  <TooltipBox class="information">
+                  <TooltipBox class="information" direction="bottom">
                     <template #content>
-                      <div class="date">{{ match.date }}</div>
-                      <div class="league">{{ match.league }}</div>
-                      <div class="title">{{ match.title }}</div>
+                      <div class="date">
+                        {{ convertHyphenWithDateFormat(match.date) }}
+                      </div>
+                      <div class="grid grid-nogutter content">
+                        <div class="col-6 league">{{ match.league }}</div>
+                        <div class="col-6 map">{{ match.map }}</div>
+                        <div class="col-12 title">{{ match.title }}</div>
+                      </div>
                       <div
                         :class="{
                           icon: true,
@@ -169,8 +174,11 @@
                       </div>
                     </template>
                     <template #tooltip>
-                      <div>{{ match.league }}</div>
-                      <div>{{ match.title }}</div>
+                      <div class="grid grid-nogutter">
+                        <div class="col-6 league">{{ match.league }}</div>
+                        <div class="col-6 map">{{ match.map }}</div>
+                        <div class="col-12 title">{{ match.title }}</div>
+                      </div>
                     </template>
                   </TooltipBox>
                 </li>
@@ -428,7 +436,8 @@ export default defineComponent({
         },
       };
 
-      return `${getPercentage(
+      return `vs ${opponentRace} / 
+      ${getPercentage(
         statistics[keyMap[playerRace][opponentRace][0]],
         statistics[keyMap[playerRace][opponentRace][1]]
       )}%`;
@@ -538,7 +547,7 @@ export default defineComponent({
 
 /* ------------ Timeline item ------------ */
 .timeline ul li {
-  background: white;
+  background: #f0f0f0;
   border: var(--timeline-item-border-length) solid #dee2e6;
   border-radius: 15px;
   list-style-type: none;
@@ -593,13 +602,40 @@ export default defineComponent({
   right: calc((var(--winner-icon-size) + 15px) * -1);
 }
 
+/* ------------ Timeline item information ------------ */
+.timeline ul li .information {
+  color: black;
+}
+
+.timeline ul li .information .date {
+  border-radius: 10px 10px 0 0;
+  padding: 0.25rem 0;
+  background: white;
+}
+
 .timeline ul li .information .league {
-  border-top: 1px solid #dee2e6;
+  border-right: 1px dashed #c7c7c7;
+}
+
+.timeline ul li .information .title {
+  border-top: 1px dashed #c7c7c7;
+  color: #7c7c7c;
+}
+
+.timeline ul li .information .league,
+.timeline ul li .information .map,
+.timeline ul li .information .title {
+  font-size: 0.5rem;
 }
 
 @media screen and (max-width: 768px) {
-  .timeline ul li .information .league,
-  .timeline ul li .information .title {
+  .timeline ul li .information .date {
+    border-radius: 10px;
+  }
+
+  .timeline ul li .information .content .league,
+  .timeline ul li .information .content .map,
+  .timeline ul li .information .content .title {
     display: none;
     visibility: hidden;
   }
