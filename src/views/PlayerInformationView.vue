@@ -1,41 +1,29 @@
 <template>
   <BaseLoadingContainer :isLoaded="playerInformation.isFetched">
     <!-- Profile -->
-    <BasePageHeader
-      :style="{
-        width: 'auto',
-        'background-image': `linear-gradient(90deg, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0)),
-                      url('${playerInformation.profile.favorate_race_wallpaperUrl}')`,
-        'background-position': 'top',
-        'background-repeat': 'no-repeat',
-        'background-size': 'cover',
-      }"
-    >
+    <BasePageHeader :style="{
+      width: 'auto',
+      'background-image': `linear-gradient(90deg, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0)),
+                          url('${playerInformation.profile.favorate_race_wallpaperUrl}')`,
+      'background-position': 'top',
+      'background-repeat': 'no-repeat',
+      'background-size': 'cover',
+    }">
       <!-- Profile -->
       <div class="text-4xl font-bold my-2" id="player-name">
         {{ playerInformation.profile.name }}
       </div>
-      <small
-        v-if="playerInformation.profile.joined_date > '2019-01-01'"
-        class="text-sm"
-        id="signup-date"
-        >{{
+      <small v-if="playerInformation.profile.joined_date > '2019-01-01'" class="text-sm" id="signup-date">{{
           convertHyphenWithDateFormat(playerInformation.profile.joined_date)
-        }}
-        가입</small
-      >
+      }}
+        가입</small>
       <!-- Tiers -->
       <div>
-        <span
-          v-for="(tier, index) in playerInformation.tierList"
-          :key="index"
-          class="tier mr-1"
-          :style="{
-            opacity:
-              0.5 + ((index + 1) / playerInformation.tierList.length) * 0.5,
-            'background-color': playerInformation.tierColor,
-          }"
-        >
+        <span v-for="(tier, index) in playerInformation.tierList" :key="index" class="tier mr-1" :style="{
+          opacity:
+            0.5 + ((index + 1) / playerInformation.tierList.length) * 0.5,
+          'background-color': playerInformation.tierColor,
+        }">
           {{ tier.league }} {{ tier.tier }}
         </span>
       </div>
@@ -53,12 +41,8 @@
         <div class="col-12">
           <BasePanel header="Elo 그래프">
             <div id="elo-chart">
-              <Chart
-                v-if="playerInformation.eloChartData"
-                type="line"
-                :data="playerInformation.eloChartData"
-                :options="playerInformation.eloChartOptions"
-              />
+              <Chart v-if="playerInformation.eloChartData" type="line" :data="playerInformation.eloChartData"
+                :options="playerInformation.eloChartOptions" />
               <BaseNullDataBox v-else />
             </div>
           </BasePanel>
@@ -70,48 +54,27 @@
         <BasePanel header="통계">
           <div class="grid grid-nogutter">
             <!-- Melee -->
-            <StatisticsRateBox
-              class="col-12 item"
-              :statistics="playerInformation.statistics.melee"
-            />
+            <StatisticsRateBox class="col-12 item" :statistics="playerInformation.statistics.melee" />
             <!-- Top and bottom -->
-            <StatisticsRateBox
-              class="col-12 item"
-              :statistics="playerInformation.statistics.topAndBottom"
-            />
+            <StatisticsRateBox class="col-12 item" :statistics="playerInformation.statistics.topAndBottom" />
           </div>
 
           <!-- Race relativity -->
           <div class="grid grid-nogutter" id="race-relativity">
             <!-- Protoss -->
             <div class="col-12 md:col-4 grid grid-nogutter" id="protoss">
-              <StatisticsRateBox
-                v-for="(item, index) in playerInformation.statistics
-                  .raceRelativity.protoss"
-                :key="index"
-                class="col-12 item"
-                :statistics="item"
-              />
+              <StatisticsRateBox v-for="(item, index) in playerInformation.statistics
+              .raceRelativity.protoss" :key="index" class="col-12 item" :statistics="item" />
             </div>
             <!-- Terran -->
             <div class="col-12 md:col-4 grid grid-nogutter" id="terran">
-              <StatisticsRateBox
-                v-for="(item, index) in playerInformation.statistics
-                  .raceRelativity.terran"
-                :key="index"
-                class="col-12 item"
-                :statistics="item"
-              />
+              <StatisticsRateBox v-for="(item, index) in playerInformation.statistics
+              .raceRelativity.terran" :key="index" class="col-12 item" :statistics="item" />
             </div>
             <!-- Zerg -->
             <div class="col-12 md:col-4 grid grid-nogutter" id="zerg">
-              <StatisticsRateBox
-                v-for="(item, index) in playerInformation.statistics
-                  .raceRelativity.zerg"
-                :key="index"
-                class="col-12 item"
-                :statistics="item"
-              />
+              <StatisticsRateBox v-for="(item, index) in playerInformation.statistics
+              .raceRelativity.zerg" :key="index" class="col-12 item" :statistics="item" />
             </div>
           </div>
         </BasePanel>
@@ -120,26 +83,15 @@
       <!-- List of Matches -->
       <BasePanel class="col-12 my-2" header="최근 전적">
         <template #panel-header-right>
-          <CheckBox
-            name="밀리 전적"
-            v-model="isMeleeMatchResultShown"
-            :binary="true"
-          />
+          <CheckBox name="밀리 전적" v-model="isMeleeMatchResultShown" :binary="true" />
           <label class="ml-1 mr-3">밀리</label>
-          <CheckBox
-            name="팀플 전적"
-            v-model="isTopAndBottomMatchResultShown"
-            :binary="true"
-          />
+          <CheckBox name="팀플 전적" v-model="isTopAndBottomMatchResultShown" :binary="true" />
           <label class="ml-1">팀플</label>
         </template>
 
         <!-- Matches summary -->
-        <div
-          v-if="matchResultList.length > 0"
-          class="grid grid-nogutter p-0 flex-column md:flex-row"
-          id="matches-summary"
-        >
+        <div v-if="matchResultList.length > 0" class="grid grid-nogutter p-0 flex-column md:flex-row"
+          id="matches-summary">
           <!-- nn경기 n승 n패 승률 nn.n% -->
           <div class="col matches-summary-item">
             <div>
@@ -154,17 +106,9 @@
 
         <BaseNullDataBox v-else class="w-full" />
       </BasePanel>
-      <MatchResultList
-        :matchResultList="matchResultList"
-        :resultListOwnerName="player.name"
-        class="col-12"
-      />
-      <div
-        v-if="nextURL"
-        class="flex align-items-center justify-content-center"
-        id="fetch-next-matches-button"
-        @click="fetchNextMatches()"
-      >
+      <MatchResultList :matchResultList="matchResultList" :resultListOwnerName="player.name" class="col-12" />
+      <div v-if="nextURL" class="flex align-items-center justify-content-center" id="fetch-next-matches-button"
+        @click="fetchNextMatches()">
         <i class="pi pi-refresh"></i>&nbsp;더 보기
       </div>
     </div>
@@ -183,7 +127,7 @@ import MatchFilter from "@/components/MatchFilter.vue";
 import MatchResultList from "@/components/MatchResultList.vue";
 import ServerApi from "@/api/server/module.js";
 import StatisticsRateBox from "@/components/StatisticsRateBox.vue";
-import { getPercentage, convertHyphenWithDateFormat } from "@/utils/utils.js";
+import { getPercentage, getWallpaperUrlByRace, convertHyphenWithDateFormat } from "@/utils/utils.js";
 import { getColor } from "@/css/color-config.js";
 
 export default defineComponent({
@@ -271,21 +215,6 @@ export default defineComponent({
 
       playerInformation.value.isFetched = true;
     });
-
-    const getWallpaperUrlByRace = (race) => {
-      const wallpaper = {
-        P: "https://bnetcmsus-a.akamaihd.net/cms/gallery/7EKSWN98V7M91498587613057.jpg",
-        T: "https://bnetcmsus-a.akamaihd.net/cms/gallery/lt/LTHPT2MPAS8P1502725038501.jpg",
-        Z: "https://bnetcmsus-a.akamaihd.net/cms/gallery/JHXVBPP04GHH1498587636883.jpg",
-      };
-      let url = "";
-      if (Object.keys(wallpaper).find((key) => key == race)) {
-        url = wallpaper[race];
-      } else {
-        url = "https://i.imgur.com/SK3Kyyf.jpeg";
-      }
-      return url;
-    };
 
     const fetchNextMatches = async () => {
       if (nextURL.value) {

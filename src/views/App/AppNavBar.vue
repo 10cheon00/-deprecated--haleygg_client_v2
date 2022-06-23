@@ -1,7 +1,9 @@
 <template>
   <div id="navbar">
     <div id="top">
-      <img src="/logo.png" @click="routeToHome()" />
+      <a href="/">
+        <img src="/logo.png" @click="routeToHome()" />
+      </a>
       <PlayerSearchBar class="player-search-bar" />
       <span class="credential-user-name">
         {{ userName }}
@@ -97,6 +99,11 @@ export default defineComponent({
           iconClass: "pi pi-fw pi-sort-amount-up",
           to: "/proleague/",
         },
+        {
+          label: "상대 전적 검색",
+          iconClass: "pi pi-fw pi-users",
+          to: "/compare/",
+        },
       ];
 
       if (userName.value.length > 0) {
@@ -132,10 +139,6 @@ i {
   vertical-align: middle;
 }
 
-img {
-  image-rendering: pixelated;
-}
-
 #navbar {
   background-color: #fd7f71;
   border: none;
@@ -152,13 +155,17 @@ img {
   display: flex;
 }
 
-#navbar #top img {
-  cursor: pointer;
+#navbar #top a {
   display: block;
+  cursor: pointer;
   margin-right: auto;
   margin-top: auto;
   width: 153px;
   height: 33px;
+}
+
+#navbar #top a img {
+  image-rendering: pixelated;
 }
 
 #navbar #top .credential-button {
