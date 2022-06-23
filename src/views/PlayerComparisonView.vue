@@ -554,7 +554,6 @@ export default defineComponent({
   margin: 0 auto;
   margin-bottom: var(--timeline-vertical-line-length);
   width: 50%;
-  font-size: 0.75rem;
   text-align: center;
   position: relative;
 }
@@ -612,6 +611,11 @@ export default defineComponent({
   padding: 0.25rem 0;
   background: white;
 }
+.timeline ul li .information .league,
+.timeline ul li .information .map,
+.timeline ul li .information .title {
+  font-size: 0.75rem;
+}
 
 .timeline ul li .information .league {
   border-right: 1px dashed #c7c7c7;
@@ -620,12 +624,7 @@ export default defineComponent({
 .timeline ul li .information .title {
   border-top: 1px dashed #c7c7c7;
   color: #7c7c7c;
-}
-
-.timeline ul li .information .league,
-.timeline ul li .information .map,
-.timeline ul li .information .title {
-  font-size: 0.5rem;
+  font-size: 0.75rem;
 }
 
 @media screen and (max-width: 768px) {
