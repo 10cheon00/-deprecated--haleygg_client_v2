@@ -19,7 +19,7 @@ export default defineComponent({
       required: true,
       default: () => {
         return {
-          isErrorExists: false,
+          hasError: false,
           message: "",
         };
       },

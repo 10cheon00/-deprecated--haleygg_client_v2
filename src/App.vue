@@ -13,7 +13,7 @@
       <div>
         <p>Haley 클랜 전적검색기</p>
         <p>Made by mAziciAn</p>
-        <p>0.3.3</p>
+        <p>{{ version }}</p>
       </div>
       <div></div>
       <div>
@@ -35,6 +35,8 @@
 </template>
 
 <script>
+import { version } from "/package.json";
+
 import { defineComponent } from "vue";
 import AppNavBar from "@/views/App/AppNavBar.vue";
 import "@/css/responsive-layout.css";
@@ -44,7 +46,11 @@ export default defineComponent({
   components: {
     AppNavBar,
   },
-  setup() {},
+  setup() {
+    return {
+      version,
+    };
+  },
 });
 </script>
 

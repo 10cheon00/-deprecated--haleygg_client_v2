@@ -8,10 +8,10 @@
       <div class="grid grid-nogutter flex align-items-center" id="form">
         <ValidationWrapper
           class="col-12 md:col-4"
-          :errorObj="form.errorObj.playerName"
+          :errorObj="errorObj.playerName"
         >
           <FormDataListInputField
-            :form="form.state"
+            :form="state"
             field="playerName"
             datalist="playerList"
             placeholder="플레이어"
@@ -26,10 +26,10 @@
         </div>
         <ValidationWrapper
           class="col-12 md:col-4"
-          :errorObj="form.errorObj.opponentName"
+          :errorObj="errorObj.opponentName"
         >
           <FormDataListInputField
-            :form="form.state"
+            :form="state"
             field="opponentName"
             datalist="playerList"
             placeholder="상대"
@@ -207,12 +207,7 @@ import {
   getPercentage,
   getWallpaperUrlByRace,
 } from "@/utils/utils.js";
-import {
-  validate,
-  initializeErrorObj,
-  Required,
-  isErrorExists,
-} from "@/utils/validator.js";
+import { Required, Validator } from "@/utils/validator.js";
 
 export default defineComponent({
   components: {
@@ -227,10 +222,10 @@ export default defineComponent({
   },
   setup() {
     const playerList = ref(null);
-    const state = {
+    const state = reactive({
       playerName: "",
       opponentName: "",
-    };
+    });
 
     // const PlayerNameInList = (state) => {
     //   const isPlayerNameInList =
@@ -248,11 +243,8 @@ export default defineComponent({
       opponentName: { Required /*PlayerNameInList*/ },
     };
 
-    const form = reactive({
-      state: state,
-      rules: rules,
-      errorObj: initializeErrorObj(state, rules),
-    });
+    const validator = new Validator(state, rules);
+    const errorObj = validator.errorObj;
 
     const comparisonResult = reactive({
       player: null,
@@ -266,8 +258,8 @@ export default defineComponent({
     });
 
     const comparePlayerAndOpponent = () => {
-      validate(form);
-      if (isErrorExists(form)) {
+      validator.validate();
+      if (validator.hasError()) {
         return;
       }
 
@@ -281,17 +273,15 @@ export default defineComponent({
       try {
         // fetch player and opponent profile.
         const fetchedInformation = {};
-        let response = await ServerApi.fetchPlayerDetail(form.state.playerName);
+        let response = await ServerApi.fetchPlayerDetail(state.playerName);
         fetchedInformation.playerProfile = response.data;
-        response = await ServerApi.fetchPlayerDetail(form.state.opponentName);
+        response = await ServerApi.fetchPlayerDetail(state.opponentName);
         fetchedInformation.opponentProfile = response.data;
 
         // fetch player and opponent statistics.
-        response = await ServerApi.fetchPlayerStatistics(form.state.playerName);
+        response = await ServerApi.fetchPlayerStatistics(state.playerName);
         fetchedInformation.playerStatistics = response.data;
-        response = await ServerApi.fetchPlayerStatistics(
-          form.state.opponentName
-        );
+        response = await ServerApi.fetchPlayerStatistics(state.opponentName);
         fetchedInformation.opponentStatistics = response.data;
 
         // fetch player and opponent win rate
@@ -427,7 +417,7 @@ export default defineComponent({
         T: {
           P: ["terran_wins_to_protoss_count", "terran_loses_to_protoss_count"],
           T: ["terran_wins_to_terran_count", "terran_loses_to_terran_count"],
-          Z: ["terran_wins_to_zerg_count", "terran_loses_to_zerg_count"],
+          Z: ["terran_wins_to_zerg_count", "terran_los`es_to_zerg_count"],
         },
         Z: {
           P: ["zerg_wins_to_protoss_count", "zerg_loses_to_protoss_count"],
@@ -450,7 +440,8 @@ export default defineComponent({
 
     return {
       comparisonResult,
-      form,
+      state,
+      errorObj,
       playerList,
 
       convertHyphenWithDateFormat,

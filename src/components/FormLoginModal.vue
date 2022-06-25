@@ -7,18 +7,14 @@
   >
     <template #header> Login </template>
     <form class="p-3" id="login-form" @submit.prevent="login()">
-      <ValidationWrapper class="my-2" :errorObj="form.errorObj.id">
+      <ValidationWrapper class="my-2" :errorObj="errorObj.id">
         <label class="form-label">ID</label>
-        <InputText class="w-full" v-model="form.state.id" type="text" />
+        <InputText class="w-full" v-model="state.id" type="text" />
       </ValidationWrapper>
 
-      <ValidationWrapper class="my-2" :errorObj="form.errorObj.password">
+      <ValidationWrapper class="my-2" :errorObj="errorObj.password">
         <label class="form-label">Password</label>
-        <InputText
-          class="w-full"
-          v-model="form.state.password"
-          type="password"
-        />
+        <InputText class="w-full" v-model="state.password" type="password" />
       </ValidationWrapper>
       <div v-if="isLoginFailed" class="mt-2 form-error">
         아이디나 비밀번호가 잘못되었습니다.
@@ -40,12 +36,7 @@ import InputText from "primevue/inputtext";
 
 import ServerApi from "@/api/server/module.js";
 import ValidationWrapper from "@/components/ValidationWrapper.vue";
-import {
-  validate,
-  initializeErrorObj,
-  Required,
-  isErrorExists,
-} from "@/utils/validator.js";
+import { Validator, Required } from "@/utils/validator.js";
 
 export default defineComponent({
   components: {
@@ -60,32 +51,31 @@ export default defineComponent({
     const visible = inject("isLoginButtonClicked");
 
     const isLoginFailed = ref(false);
+
     const rules = {
       id: { Required },
       password: { Required },
     };
-    const state = {
+
+    const state = reactive({
       id: "",
       password: "",
-    };
-
-    const form = reactive({
-      state: state,
-      rules: rules,
-      errorObj: initializeErrorObj(state, rules),
     });
+
+    const validator = new Validator(state, rules);
+    const errorObj = validator.errorObj;
 
     const closeModal = () => {
       visible.value = false;
     };
 
     const login = () => {
-      validate(form);
-      if (isErrorExists(form)) {
+      validator.validate();
+      if (validator.hasError()) {
         return;
       }
 
-      ServerApi.requestLogin(form.state.id, form.state.password)
+      ServerApi.requestLogin(state.id, state.password)
         .then((response) => {
           vuexStore.commit("tokenStore/setAccessToken", response.data.access);
           vuexStore.commit("tokenStore/setRefreshToken", response.data.refresh);
@@ -101,9 +91,10 @@ export default defineComponent({
     };
 
     return {
-      form,
       isLoginFailed,
       visible,
+      state,
+      errorObj,
       closeModal,
       login,
     };
