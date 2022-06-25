@@ -79,12 +79,7 @@ import BasePageHeader from "@/components/BasePageHeader.vue";
 import BasePanel from "@/components/BasePanel.vue";
 import ServerApi from "@/api/server/module.js";
 import ValidationErrorMessage from "@/components/ValidationErrorMessage.vue";
-import {
-  initializeErrorObj,
-  isErrorExists,
-  validate,
-  Required,
-} from "@/utils/validator.js";
+import { Validator, Required } from "@/utils/validator.js";
 
 export default defineComponent({
   components: {
@@ -103,7 +98,7 @@ export default defineComponent({
       const component = shallowRef("");
       import("@/components/FormMeleeMatch.vue").then((val) => {
         component.value = val.default;
-        const state = {
+        const state = reactive({
           league: "",
           date: new Date().toISOString().slice(0, 10),
           title: "",
@@ -117,7 +112,7 @@ export default defineComponent({
               loser_race: "",
             },
           ],
-        };
+        });
 
         copyPreviousLeagueAndTitleAndDateIfExists(state);
 
@@ -136,12 +131,14 @@ export default defineComponent({
             },
           },
         };
+
+        const validator = new Validator(state, rules);
         matchResultForms.push({
           component: component,
           state: state,
-          rules: rules,
-          errorObj: initializeErrorObj(state),
+          errorObj: validator.errorObj,
           errorMessagesFromServer: [],
+          validator: validator,
         });
       });
     };
@@ -187,12 +184,15 @@ export default defineComponent({
             },
           },
         };
+
+        const validator = new Validator(state, rules);
+
         matchResultForms.push({
           component: component,
           state: state,
-          rules: rules,
-          errorObj: initializeErrorObj(state, rules),
+          errorObj: validator.errorObj,
           errorMessagesFromServer: [],
+          validator: validator,
         });
       });
     };
@@ -241,7 +241,7 @@ export default defineComponent({
 
       const previousDate =
         matchResultForms[matchResultForms.length - 1].state.date;
-      if(previousDate){
+      if (previousDate) {
         state.date = previousDate;
       }
     };
@@ -251,9 +251,10 @@ export default defineComponent({
     };
 
     const showConfirmDialog = () => {
-      const isFormHasError = matchResultForms.reduce((result, form) => {
-        validate(form);
-        result = isErrorExists(form) || result;
+      const isFormHasError = matchResultForms.reduce((result, matchResult) => {
+        const validator = matchResult.validator;
+        validator.validate();
+        result = validator.hasError() || result;
         return result;
       }, false);
 
