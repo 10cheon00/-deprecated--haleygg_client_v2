@@ -75,7 +75,7 @@ class Validator {
   }
 
   hasError = () => {
-    return getError(this.#errorObj);
+    return this.__getError__(this.#errorObj);
   }
 
   __getError__ = (errorObj) => {
@@ -86,7 +86,7 @@ class Validator {
         // call getError method recursively on each child errorObj.
         result = errorObj[key].$child.reduce(
           (_result, erorrObjRef) => {
-            _result = getError(erorrObjRef) || _result;
+            _result = this.__getError__(erorrObjRef) || _result;
             return _result;
           }, false
         ) || result;
