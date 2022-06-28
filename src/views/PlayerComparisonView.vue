@@ -6,59 +6,25 @@
     <div class="container p-3">
       <!-- Form -->
       <div class="grid grid-nogutter flex align-items-center" id="form">
-        <ValidationWrapper
-          class="col-12 md:col-4"
-          :errorObj="errorObj.playerName"
-        >
-          <FormDataListInputField
-            :form="state"
-            field="playerName"
-            datalist="playerList"
-            placeholder="플레이어"
-          />
-          <!-- <ValidationErrorMessage class="w-full my-2" message="존재하지 않는 플레이어입니다." /> -->
+        <ValidationWrapper class="col-12 md:col-4" :errorObj="errorObj.playerName">
+          <FormDataListInputField :form="state" field="playerName" datalist="playerList" placeholder="플레이어" />
         </ValidationWrapper>
-        <div
-          class="col-12 md:col-1 flex align-items-center justify-content-center"
-          id="versus"
-        >
+        <div class="col-12 md:col-1 flex align-items-center justify-content-center" id="versus">
           <span>VS</span>
         </div>
-        <ValidationWrapper
-          class="col-12 md:col-4"
-          :errorObj="errorObj.opponentName"
-        >
-          <FormDataListInputField
-            :form="state"
-            field="opponentName"
-            datalist="playerList"
-            placeholder="상대"
-          />
-          <!-- <ValidationErrorMessage class="w-full my-2" message="존재하지 않는 플레이어입니다." /> -->
+        <ValidationWrapper class="col-12 md:col-4" :errorObj="errorObj.opponentName">
+          <FormDataListInputField :form="state" field="opponentName" datalist="playerList" placeholder="상대" />
         </ValidationWrapper>
         <div class="col-12 md:col-3 flex justify-content-center">
-          <Button
-            class="flex justify-content-center my-3"
-            id="button-compare"
-            @click="comparePlayerAndOpponent()"
-          >
+          <Button class="flex justify-content-center my-3" id="button-compare" @click="comparePlayerAndOpponent()">
             <span><i class="pi pi-search" /> 검색</span>
           </Button>
         </div>
-        <FormDataList
-          v-if="playerList"
-          :datalist="playerList"
-          datalistId="playerList"
-        />
+        <FormDataList v-if="playerList" :datalist="playerList" datalistId="playerList" />
       </div>
 
       <!-- Result -->
-      <BasePanel
-        v-if="comparisonResult.hasEverBeenSubmitted"
-        class="pt-3"
-        header="검색 결과"
-        id="result"
-      >
+      <BasePanel v-if="comparisonResult.hasEverBeenSubmitted" class="pt-3" header="검색 결과" id="result">
         <BaseLoadingContainer :isLoaded="comparisonResult.isFetched">
           <div v-if="comparisonResult.hasError" id="null-data">
             <span>
@@ -69,55 +35,39 @@
             <!-- Profiles -->
             <div class="grid grid-nogutter">
               <!-- Player profile -->
-              <div
-                class="profile-box profile-player"
-                :style="comparisonResult.profiles.player.style"
-              >
+              <div class="profile-box profile-player" :style="comparisonResult.profiles.player.style">
                 <div class="text-4xl font-bold my-1">
                   {{ comparisonResult.profiles.player.name }}
-                  <span class="text-xl"
-                    >(
-                    {{ comparisonResult.profiles.player.favorate_race }} )</span
-                  >
+                  <span class="text-xl">(
+                    {{ comparisonResult.profiles.player.favorate_race }} )</span>
                 </div>
-                <div
-                  v-if="
-                    comparisonResult.profiles.player.joined_date > '2019-01-01'
-                  "
-                  class="text-sm text-300"
-                >
+                <div v-if="
+                  comparisonResult.profiles.player.joined_date > '2019-01-01'
+                " class="text-sm text-300">
                   {{
-                    convertHyphenWithDateFormat(
-                      comparisonResult.profiles.player.joined_date
-                    )
+                      convertHyphenWithDateFormat(
+                        comparisonResult.profiles.player.joined_date
+                      )
                   }}
                   가입
                 </div>
               </div>
               <!-- Opponent profile -->
-              <div
-                class="profile-box profile-opponent"
-                :style="comparisonResult.profiles.opponent.style"
-              >
+              <div class="profile-box profile-opponent" :style="comparisonResult.profiles.opponent.style">
                 <div class="text-4xl font-bold my-1">
                   {{ comparisonResult.profiles.opponent.name }}
-                  <span class="text-xl"
-                    >(
+                  <span class="text-xl">(
                     {{ comparisonResult.profiles.opponent.favorate_race }}
-                    )</span
-                  >
+                    )</span>
                 </div>
-                <div
-                  v-if="
-                    comparisonResult.profiles.opponent.joined_date >
-                    '2019-01-01'
-                  "
-                  class="text-sm text-300"
-                >
+                <div v-if="
+                  comparisonResult.profiles.opponent.joined_date >
+                  '2019-01-01'
+                " class="text-sm text-300">
                   {{
-                    convertHyphenWithDateFormat(
-                      comparisonResult.profiles.opponent.joined_date
-                    )
+                      convertHyphenWithDateFormat(
+                        comparisonResult.profiles.opponent.joined_date
+                      )
                   }}
                   가입
                 </div>
@@ -145,10 +95,7 @@
             <!-- Timeline -->
             <div class="timeline">
               <ul v-if="comparisonResult.timeline">
-                <li
-                  v-for="match in comparisonResult.timeline.results"
-                  :key="match"
-                >
+                <li v-for="match in comparisonResult.timeline.results" :key="match">
                   <TooltipBox class="information" direction="bottom">
                     <template #content>
                       <div class="date">
@@ -159,17 +106,15 @@
                         <div class="col-6 map">{{ match.map }}</div>
                         <div class="col-12 title">{{ match.title }}</div>
                       </div>
-                      <div
-                        :class="{
-                          icon: true,
-                          left:
-                            match.player_tuples[0].winner ==
-                            comparisonResult.profiles.player.name,
-                          right:
-                            match.player_tuples[0].winner !=
-                            comparisonResult.profiles.player.name,
-                        }"
-                      >
+                      <div :class="{
+                        icon: true,
+                        left:
+                          match.player_tuples[0].winner ==
+                          comparisonResult.profiles.player.name,
+                        right:
+                          match.player_tuples[0].winner !=
+                          comparisonResult.profiles.player.name,
+                      }">
                         W
                       </div>
                     </template>
@@ -332,8 +277,8 @@ export default defineComponent({
           linear-gradient(45deg, #00000000, #000000ff 75%),
           url(
             ${getWallpaperUrlByRace(
-              fetchedInformation.playerProfile.favorate_race
-            )}
+          fetchedInformation.playerProfile.favorate_race
+        )}
           )`,
         "background-position": "top",
         "background-repeat": "no-repeat",
@@ -344,8 +289,8 @@ export default defineComponent({
           linear-gradient(225deg, #00000000, #000000ff 75%),
           url(
             ${getWallpaperUrlByRace(
-              fetchedInformation.opponentProfile.favorate_race
-            )}
+          fetchedInformation.opponentProfile.favorate_race
+        )}
           )`,
         "background-position": "top",
         "background-repeat": "no-repeat",
@@ -554,9 +499,7 @@ export default defineComponent({
   background: #dee2e6;
   content: "";
   width: 6px;
-  height: calc(
-    var(--timeline-vertical-line-length) + var(--timeline-item-border-length)
-  );
+  height: calc(var(--timeline-vertical-line-length) + var(--timeline-item-border-length));
   position: absolute;
   left: calc(50% - 3px);
   z-index: 1;
@@ -602,6 +545,7 @@ export default defineComponent({
   padding: 0.25rem 0;
   background: white;
 }
+
 .timeline ul li .information .league,
 .timeline ul li .information .map,
 .timeline ul li .information .title {
