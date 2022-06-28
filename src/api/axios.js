@@ -89,13 +89,9 @@ axiosInstance.interceptors.response.use(response => {
           vuexStore.commit("tokenStore/setAccessToken", response.data.access);
           return axiosInstance.request(error.config);
         }
-        else {
-          // failed to refresh token.
-          vuexStore.commit("tokenStore/flushToken");
-          router.replace({
-            name: "401View"
-          });
-        }
+        // failed to refresh token.
+        vuexStore.commit("tokenStore/flushToken");
+        router.go();
         return Promise.reject(error);
       }
     }
