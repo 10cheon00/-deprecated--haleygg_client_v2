@@ -7,7 +7,7 @@ import router from "@/router/index.js";
 
 const axiosInstance = axios.create({
   baseURL: process.env.VUE_APP_SERVER_URL,
-  timeout: 5000,
+  timeout: 10000,
   paramsSerializer: (params) => {
     return Qs.stringify(params, { arrayFormat: 'repeat' })
   }
@@ -15,6 +15,7 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   config => {
+    // Include token when authentication needed.
     if (config.url == 'api/auth/token/refresh/') {
       config.data = {
         refresh: vuexStore.getters["tokenStore/getRefreshToken"]
@@ -25,7 +26,7 @@ axiosInstance.interceptors.request.use(
         token: vuexStore.getters["tokenStore/getAccessToken"]
       }
     }
-    else if (vuexStore.getters["tokenStore/isTokenExists"]) {
+    else if (vuexStore.getters["tokenStore/hasToken"]) {
       config.headers = {
         "Content-Type": "application/json; charset=utf-8",
         "Authorization": `Bearer ${vuexStore.getters["tokenStore/getAccessToken"]}`
@@ -76,13 +77,6 @@ axiosInstance.interceptors.response.use(response => {
       if (error.config.url == "api/auth/token/") {
         return Promise.reject(error);
       }
-      else if (vuexStore.getters["tokenStore/isTokenExists"] == false) {
-        // Wrong access
-        router.replace({
-          name: "401View"
-        });
-        return Promise.reject(error);
-      }
       else {
         if (error.config.isRetried === undefined) {
           // Request to refresh token.
@@ -99,7 +93,7 @@ axiosInstance.interceptors.response.use(response => {
           // failed to refresh token.
           vuexStore.commit("tokenStore/flushToken");
           router.replace({
-            name: "HomeView"
+            name: "401View"
           });
         }
         return Promise.reject(error);
