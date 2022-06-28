@@ -102,28 +102,6 @@ const router = createRouter({
   routes
 });
 
-router.beforeEach(async (to, from, next) => {
-  if (
-    to.name == "401View" ||
-    to.name == "404View" ||
-    to.name == "500View" ||
-    to.name == "RequestErrorView" ||
-    to.name == "DeadServerView"
-  ) {
-    next();
-  }
-  else {
-    const response = await ServerApi.requestHostCheck() || false;
-    const isServerLive = (response.status == 200)
-    if (isServerLive) {
-      next();
-    }
-    else {
-      next({ name: "500View" });
-    }
-  }
-});
-
 router.afterEach((to) => {
   if (to.meta.title === undefined) {
     document.title = "Haley 클랜 전적검색기 - Haleygg.kr";
