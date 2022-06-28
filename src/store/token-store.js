@@ -12,7 +12,7 @@ const tokenStore = {
     getRefreshToken(state) {
       return state.refreshToken;
     },
-    isTokenExists(state) {
+    hasToken(state) {
       return state.accessToken.length > 0 && state.refreshToken.length > 0;
     },
     getUserName(state) {
