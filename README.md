@@ -1,4 +1,4 @@
-![Generic badge](https://img.shields.io/badge/version-0.3.3-stable.svg)
+![Generic badge](https://img.shields.io/badge/version-0.4.0-stable.svg)
 
 # Haleygg.kr
 
